@@ -1,0 +1,31 @@
+@mixin box-shadow($top, $left, $blur, $color) {
+    -webkit-box-shadow: $top $left $blur $color !important;
+    -moz-box-shadow: $top $left $blur $color !important;
+    box-shadow: $top $left $blur $color !important;
+}
+
+@mixin border-radius($radius) {
+    -webkit-border-radius: $radius !important;
+    -moz-border-radius: $radius !important;
+    border-radius: $radius !important;
+}
+
+@mixin border-radius-by-corner($top-left, $top-right, $bottom-left, $bottom-right) {
+    -webkit-border-radius: $top-left $top-right $bottom-left $bottom-right !important;
+    -moz-border-radius: $top-left $top-right $bottom-left $bottom-right !important;
+    border-radius: $top-left $top-right $bottom-left $bottom-right !important;
+}
+
+@mixin custom-selection($color, $bg-color) {
+    ::selection {
+        background-color: $bg-color;
+        color: $color;
+        text-shadow: none;
+    }
+
+    ::-moz-selection {
+        background-color: $bg-color;
+        color: $color;
+        text-shadow: none;
+    }
+}

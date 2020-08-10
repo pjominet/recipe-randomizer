@@ -24,66 +24,11 @@ $input-focus-border-color: lighten($primary, 15%);
 /* override mixins */
 @import 'mixins';
 
+@include custom-selection(white, $primary);
+
 /* Bootstrap Button Extensions */
 @mixin bootstrap-button($bg-color) {
     @include button-variant($bg-color, $bg-color,
         darken($bg-color, 7.5%), darken($bg-color, 10%),
         darken($bg-color, 10%), darken($bg-color, 12.5%));
-}
-
-.btn {
-    border: none !important;
-
-    &:focus, .focus {
-        outline: none !important;
-    }
-
-    &[class*='-outline-'] {
-        &:focus, .focus {
-            box-shadow: none !important;
-        }
-    }
-
-    &-primary, &-secondary, &-info, &-danger, &-warning, &-success {
-        @include box-shadow(3px, 3px, 5px, rgba(66, 66, 66, 0.7));
-
-        &:hover:not(:disabled) {
-            @include box-shadow(2px, 2px, 3px, rgba(66, 66, 66, 0.7));
-        }
-    }
-
-    &-remove {
-        margin-top: 2rem;
-        width: 100%;
-    }
-}
-
-.badge {
-    font-weight: normal !important;
-    font-size: 85% !important;
-
-    &-lg {
-        font-size: 100% !important;
-    }
-}
-
-.container {
-    &-lg {
-        max-width: 80vw;
-    }
-}
-
-.input-group .btn {
-    border: none !important;
-    box-shadow: none !important;
-
-    &:hover:not(:disabled) {
-        box-shadow: none !important;
-        border-top-right-radius: $border-radius !important;
-        border-bottom-right-radius: $border-radius !important;
-    }
-}
-
-.toast-body {
-    background-color: rgba(255, 255, 255, .85);
 }
