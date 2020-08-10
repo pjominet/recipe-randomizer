@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using RecipeRandomizer.Business.Models;
-using RecipeRandomizer.Business.Utils;
 
 namespace RecipeRandomizer.Business.Interfaces
 {

@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Data;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using RecipeRandomizer.Business.Interfaces;
@@ -18,14 +17,14 @@ namespace RecipeRandomizer.Web.Controllers
         }
 
         [HttpGet]
-        [ProducesResponseType(typeof(List<Rule>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(List<Tag>), StatusCodes.Status200OK)]
         public IActionResult GetTags()
         {
             return Ok(_tagService.GetTags());
         }
 
         [HttpGet("{id}")]
-        [ProducesResponseType(typeof(Rule), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(Tag), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public IActionResult GetTag([FromRoute] int id)
         {
@@ -74,14 +73,14 @@ namespace RecipeRandomizer.Web.Controllers
         }
 
         [HttpGet("categories")]
-        [ProducesResponseType(typeof(List<Rule>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(List<TagCategory>), StatusCodes.Status200OK)]
         public IActionResult GetTagCategories()
         {
             return Ok(_tagService.GetTagCategories());
         }
 
         [HttpGet("categories/{id}")]
-        [ProducesResponseType(typeof(Rule), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(TagCategory), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public IActionResult GetTagCategory([FromRoute] int id)
         {

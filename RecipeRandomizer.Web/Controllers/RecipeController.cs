@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Data;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using RecipeRandomizer.Business.Interfaces;
@@ -19,7 +18,7 @@ namespace RecipeRandomizer.Web.Controllers
         }
 
         [HttpGet]
-        [ProducesResponseType(typeof(List<Rule>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(List<Recipe>), StatusCodes.Status200OK)]
         public IActionResult GetRecipes([FromQuery(Name = "tag")] int[] tagIds)
         {
             return tagIds.Any()
@@ -27,25 +26,32 @@ namespace RecipeRandomizer.Web.Controllers
                 : Ok(_recipeService.GetRecipes());
         }
 
+        [HttpGet("deleted")]
+        [ProducesResponseType(typeof(List<Recipe>), StatusCodes.Status200OK)]
+        public IActionResult GetDeletedRecipes()
+        {
+            return Ok(_recipeService.GetDeletedRecipes());
+        }
+
         [HttpGet("{id}")]
-        [ProducesResponseType(typeof(Rule), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(Recipe), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public IActionResult GetRecipe([FromRoute] int id)
         {
-            var tag = _recipeService.GetRecipe(id);
-            return tag != null
-                ? Ok(tag)
+            var recipe = _recipeService.GetRecipe(id);
+            return recipe != null
+                ? Ok(recipe)
                 : (IActionResult) NotFound();
         }
 
         [HttpGet("random")]
-        [ProducesResponseType(typeof(Rule), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(Recipe), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public IActionResult GetRandomRecipe([FromRoute] int id)
+        public IActionResult GetRandomRecipe()
         {
-            var tag = _recipeService.GetRecipe(id);
-            return tag != null
-                ? Ok(tag)
+            var recipe = _recipeService.GetRandomRecipe();
+            return recipe != null
+                ? Ok(recipe)
                 : (IActionResult) NotFound();
         }
 
