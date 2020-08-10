@@ -7,8 +7,8 @@ namespace RecipeRandomizer.Business.Utils.AutoMapperProfiles
     {
         public IngredientProfile()
         {
-            CreateMap<Entities.Shared.Ingredient, Models.Shared.Ingredient>();
-            CreateMap<Models.Shared.Ingredient, Entities.Shared.Ingredient>()
+            CreateMap<Entities.Ingredient, Models.Ingredient>();
+            CreateMap<Models.Ingredient, Entities.Ingredient>()
                 .ForMember(dest => dest.Id, opt => opt.Ignore())
                 .ForMember(dest => dest.Quantity, opt => opt.Ignore())
                 .ForMember(dest => dest.Recipe, opt => opt.Ignore());

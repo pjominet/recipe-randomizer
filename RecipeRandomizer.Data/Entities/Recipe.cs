@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using RecipeRandomizer.Data.Entities.Nomenclature;
 
-namespace RecipeRandomizer.Data.Entities.Shared
+namespace RecipeRandomizer.Data.Entities
 {
     public class Recipe
     {

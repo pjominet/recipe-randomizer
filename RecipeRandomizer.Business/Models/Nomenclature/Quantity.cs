@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using RecipeRandomizer.Business.Models.Shared;
 
 namespace RecipeRandomizer.Business.Models.Nomenclature
 {

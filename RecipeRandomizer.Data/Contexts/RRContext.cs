@@ -26,7 +26,7 @@ namespace RecipeRandomizer.Data.Contexts
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            OnModelCreatingShared(modelBuilder);
+            OnModelCreatingBase(modelBuilder);
             OnModelCreatingNomenclature(modelBuilder);
         }
     }

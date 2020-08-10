@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using RecipeRandomizer.Business.Models.Nomenclature;
 
-namespace RecipeRandomizer.Business.Models.Shared
+namespace RecipeRandomizer.Business.Models
 {
     public class Recipe
     {

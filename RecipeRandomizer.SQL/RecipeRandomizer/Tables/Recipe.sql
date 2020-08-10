@@ -14,6 +14,6 @@
     [LastUpdated]    datetime2           not null,
     [IsDeleted]      bit                 not null default 0,
     constraint [PK_Recipe] primary key clustered ([Id] asc),
-    constraint [FK_Recipe_Cost] foreign key ([CostId]) references [Nomenclature].[Cost] ([Id]),
-    constraint [FK_Recipe_Difficulty] foreign key ([DifficultyId]) references [Nomenclature].[Difficulty] ([Id])
+    constraint [FK_Recipe_Cost] foreign key ([CostId]) references [Nomenclature].[Cost] ([Id]) on delete set null,
+    constraint [FK_Recipe_Difficulty] foreign key ([DifficultyId]) references [Nomenclature].[Difficulty] ([Id]) on delete set null
 );

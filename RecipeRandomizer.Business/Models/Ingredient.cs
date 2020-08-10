@@ -1,7 +1,7 @@
-﻿using RecipeRandomizer.Data.Entities.Shared;
-using Quantity = RecipeRandomizer.Business.Models.Nomenclature.Quantity;
+﻿using Quantity = RecipeRandomizer.Business.Models.Nomenclature.Quantity;
+using Recipe = RecipeRandomizer.Business.Models.Recipe;
 
-namespace RecipeRandomizer.Business.Models.Shared
+namespace RecipeRandomizer.Business.Models
 {
     public class Ingredient
     {
