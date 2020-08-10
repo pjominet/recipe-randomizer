@@ -4,10 +4,14 @@ using System.Reflection;
 using AutoMapper;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
+using RecipeRandomizer.Business.Interfaces;
+using RecipeRandomizer.Business.Services;
+using RecipeRandomizer.Data.Contexts;
 
 namespace RecipeRandomizer.Web
 {
@@ -25,10 +29,12 @@ namespace RecipeRandomizer.Web
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            /*services.AddDbContext<RRContext>(
+            services.AddDbContext<RRContext>(
                 options => options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"),
                     sqlServerOptions => sqlServerOptions.CommandTimeout(60))
-            );*/
+            );
+
+            InjectServices(services);
 
             // configure CORS
             services.AddCors(options =>
@@ -101,6 +107,11 @@ namespace RecipeRandomizer.Web
                 if (env.IsDevelopment())
                     spa.UseProxyToSpaDevelopmentServer("http://localhost:4200");
             });
+        }
+
+        private void InjectServices(IServiceCollection services)
+        {
+            services.AddTransient<IRecipeService, RecipeService>();
         }
     }
 }
