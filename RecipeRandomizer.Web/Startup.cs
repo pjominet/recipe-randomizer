@@ -19,11 +19,13 @@ namespace RecipeRandomizer.Web
     {
         private IConfiguration Configuration { get; }
         private readonly string _version;
+        private readonly string _appName;
 
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
             _version = Configuration.GetValue<string>("Version");
+            _appName = Configuration.GetValue<string>("AppName");
         }
 
         // This method gets called by the runtime. Use this method to add services to the container.
@@ -63,7 +65,7 @@ namespace RecipeRandomizer.Web
             // Register the Swagger API documentation generator
             services.AddSwaggerGen(gen =>
             {
-                gen.SwaggerDoc(_version, new OpenApiInfo {Title = "Amiet API", Version = _version});
+                gen.SwaggerDoc(_version, new OpenApiInfo {Title = $"{_appName} API", Version = _version});
                 gen.CustomSchemaIds(selector => selector.FullName);
                 gen.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, $"{Assembly.GetExecutingAssembly().GetName().Name}.xml"));
             });
@@ -95,7 +97,7 @@ namespace RecipeRandomizer.Web
 
             // enable swagger
             app.UseSwagger();
-            app.UseSwaggerUI(opt => { opt.SwaggerEndpoint("/swagger/" + _version + "/swagger.json", "Amiet API " + _version); });
+            app.UseSwaggerUI(opt => { opt.SwaggerEndpoint($"/swagger/{_version}/swagger.json", $"{_appName} {_version}"); });
 
             // enable SPA frontend
             app.UseSpa(spa =>
