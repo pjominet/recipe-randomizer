@@ -66,6 +66,7 @@ namespace RecipeRandomizer.Business.Services
             {
                 $"{nameof(Entities.TagCategory.Tags)}"
             };
+
             return _mapper.Map<TagCategory>(_tagRepository.GetFirstOrDefault<Entities.TagCategory>(tc => tc.Id == id, includes));
         }
     }
