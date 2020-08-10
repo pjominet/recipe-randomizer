@@ -11,8 +11,8 @@ namespace RecipeRandomizer.Business.Interfaces
         public Recipe GetRecipe(int id);
         public Recipe GetRandomRecipe();
         public IEnumerable<Recipe> GetRecipesFromTags(IEnumerable<int> tagIds);
-        public RequestResult<int> CreateRecipe(Recipe recipe);
+        public int CreateRecipe(Recipe recipe);
         public bool UpdateRecipe(Recipe recipe);
-        public bool DeleteRecipe(int id);
+        public bool DeleteRecipe(int id, bool hard = false);
     }
 }

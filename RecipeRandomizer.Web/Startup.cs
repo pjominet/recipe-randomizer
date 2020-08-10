@@ -112,6 +112,8 @@ namespace RecipeRandomizer.Web
         private void InjectServices(IServiceCollection services)
         {
             services.AddTransient<IRecipeService, RecipeService>();
+            services.AddTransient<ITagService, TagService>();
+            services.AddTransient<IQuantityService, QuantityService>();
         }
     }
 }

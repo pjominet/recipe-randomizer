@@ -7,7 +7,6 @@ namespace RecipeRandomizer.Business.Utils
     {
         public T ReturnValue { get; set; }
         public List<string> Log { get; }
-        public bool IsSuccess { get; set; }
         public HttpStatusCode StatusCode { get; set; }
 
         public static implicit operator T(RequestResult<T> value)
@@ -20,10 +19,9 @@ namespace RecipeRandomizer.Business.Utils
             return new RequestResult<T> {ReturnValue = value};
         }
 
-        public RequestResult(List<string> log = null, bool isSuccess = false, HttpStatusCode statusCode = HttpStatusCode.InternalServerError)
+        public RequestResult(HttpStatusCode statusCode = HttpStatusCode.InternalServerError)
         {
-            Log = log ?? new List<string>();
-            IsSuccess = isSuccess;
+            Log = new List<string>();
             StatusCode = statusCode;
         }
 

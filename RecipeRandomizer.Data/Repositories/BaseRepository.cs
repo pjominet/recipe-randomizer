@@ -67,12 +67,6 @@ namespace RecipeRandomizer.Data.Repositories
 
         #region public
 
-        public int CountAll<T>(Expression<Func<T, bool>> expression = null) where T : class
-        {
-            var result = expression == null ? FindAll<T>() : FindAll(expression);
-            return result.Count();
-        }
-
         public IEnumerable<T> GetAll<T>(Expression<Func<T, bool>> expression = null, params string[] includes) where T : class
         {
             return expression == null ? FindAll<T>(includes) : FindAll(expression, includes);
