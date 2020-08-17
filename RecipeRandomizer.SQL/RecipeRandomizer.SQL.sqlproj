@@ -75,9 +75,12 @@
     <Build Include="RecipeRandomizer\Tables\Ingredient.sql" />
     <Build Include="RecipeRandomizer\Tables\Recipe.sql" />
     <Build Include="RecipeRandomizer\Tables\RecipeTag.sql" />
+    <Build Include="RR_Identity\Tables\RefreshToken.sql" />
+    <Build Include="RR_Identity\Tables\User.sql" />    
+    <Build Include="Security\RR_Identity.sql" /> 
     <Build Include="Security\RecipeRandomizer.sql" />
-    <Build Include="Security\Nomenclature.sql" />
+    <Build Include="Security\Nomenclature.sql" />  
     <Content Include="PostDeployScript.sql" />    
-    <Content Include="PurgeScript.sql" />    
+    <Content Include="PurgeScript.sql" />                
   </ItemGroup>
 </Project>

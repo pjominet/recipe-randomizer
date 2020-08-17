@@ -77,9 +77,9 @@ namespace RecipeRandomizer.Data.Repositories
             return expression == null ? FindFirstOrDefault<T>(includes) : FindFirstOrDefault(expression, includes);
         }
 
-        public bool Exists<T>(T entity) where T : class
+        public bool Exists<T>(Func<T, bool> expression) where T : class
         {
-            return Context.Set<T>().Local.Any(e => e == entity);
+            return Context.Set<T>().Local.Any(expression);
         }
 
         public void Insert<T>(T entity) where T : class

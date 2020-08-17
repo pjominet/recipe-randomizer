@@ -78,16 +78,12 @@ namespace RecipeRandomizer.Web.Controllers
                 : StatusCode(StatusCodes.Status404NotFound);
         }
 
-        [HttpPut("{id}")]
+        [HttpPut]
         [Consumes("application/json")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public IActionResult EditRecipe([FromRoute] int id, [FromBody] Recipe recipe)
+        public IActionResult EditRecipe([FromBody] Recipe recipe)
         {
-            if (id != recipe.Id)
-                return BadRequest();
-
             return _recipeService.UpdateRecipe(recipe)
                 ? NoContent()
                 : StatusCode(StatusCodes.Status500InternalServerError);

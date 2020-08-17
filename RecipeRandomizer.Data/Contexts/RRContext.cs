@@ -28,6 +28,7 @@ namespace RecipeRandomizer.Data.Contexts
         {
             OnModelCreatingBase(modelBuilder);
             OnModelCreatingNomenclature(modelBuilder);
+            OnModelCreatingIdentity(modelBuilder);
         }
     }
 }

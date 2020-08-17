@@ -1,13 +1,16 @@
 using System;
 using System.IO;
 using System.Reflection;
+using System.Text;
 using AutoMapper;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using RecipeRandomizer.Business.Interfaces;
 using RecipeRandomizer.Business.Services;
@@ -43,9 +46,10 @@ namespace RecipeRandomizer.Web
             {
                 options.AddPolicy("RRCorsPolicy",
                     builder => builder
-                        .AllowAnyOrigin()
+                        .SetIsOriginAllowed(origin => true)
                         .AllowAnyMethod()
-                        .AllowAnyHeader());
+                        .AllowAnyHeader()
+                        .AllowCredentials());
             });
 
             services.AddHsts(options =>
@@ -54,6 +58,27 @@ namespace RecipeRandomizer.Web
                 options.IncludeSubDomains = true;
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
             });
+
+            // configure jwt authentication
+            services.AddAuthentication(x =>
+                {
+                    x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                    x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+                })
+                .AddJwtBearer(x =>
+                {
+                    x.RequireHttpsMetadata = false;
+                    x.SaveToken = true;
+                    x.TokenValidationParameters = new TokenValidationParameters
+                    {
+                        ValidateIssuerSigningKey = true,
+                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(Configuration.GetValue<string>("JWTSecret"))),
+                        ValidateIssuer = false,
+                        ValidateAudience = false,
+                        // set clock skew to zero so tokens expire exactly at token expiration time (instead of 5 minutes later)
+                        ClockSkew = TimeSpan.Zero
+                    };
+                });
 
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
@@ -88,6 +113,8 @@ namespace RecipeRandomizer.Web
             app.Map("/api", builder =>
             {
                 builder.UseRouting();
+                app.UseAuthentication();
+                app.UseAuthorization();
                 builder.UseEndpoints(endpoints => { endpoints.MapControllers(); });
             });
 
@@ -116,6 +143,7 @@ namespace RecipeRandomizer.Web
             services.AddTransient<IRecipeService, RecipeService>();
             services.AddTransient<ITagService, TagService>();
             services.AddTransient<IQuantityService, QuantityService>();
+            services.AddTransient<IUserService, UserService>();
         }
     }
 }
