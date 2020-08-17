@@ -6,6 +6,7 @@ using AutoMapper;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.SpaServices.AngularCli;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -138,7 +139,7 @@ namespace RecipeRandomizer.Web
             });
         }
 
-        private void InjectServices(IServiceCollection services)
+        private static void InjectServices(IServiceCollection services)
         {
             services.AddTransient<IRecipeService, RecipeService>();
             services.AddTransient<ITagService, TagService>();
