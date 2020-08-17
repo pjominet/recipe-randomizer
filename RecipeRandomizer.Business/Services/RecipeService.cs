@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using AutoMapper;
 using RecipeRandomizer.Business.Interfaces;
 using RecipeRandomizer.Business.Models;
@@ -52,6 +54,16 @@ namespace RecipeRandomizer.Business.Services
             return _mapper.Map<IEnumerable<Recipe>>(_recipeRepository.GetRecipesFromTags(tagIds));
         }
 
+        public IEnumerable<Recipe> GetRecipesFromUser(int userId)
+        {
+            return _mapper.Map<IEnumerable<Recipe>>(_recipeRepository.GetAll<Entities.Recipe>(r => r.UserId == userId, _baseIncludes));
+        }
+
+        public IEnumerable<Recipe> GetRecipesFromUserAndTags(int userId, IEnumerable<int> tagIds)
+        {
+            return _mapper.Map<IEnumerable<Recipe>>(_recipeRepository.GetRecipesFromTags(tagIds).Where(r => r.UserId == userId));
+        }
+
         public int CreateRecipe(Recipe recipe)
         {
             var newRecipe = _mapper.Map<Entities.Recipe>(recipe);
@@ -74,7 +86,7 @@ namespace RecipeRandomizer.Business.Services
             else
             {
                 var recipeToDelete = _recipeRepository.GetFirstOrDefault<Entities.Recipe>(r => r.Id == id);
-                recipeToDelete.IsDeleted = true;
+                recipeToDelete.DeletedOn = DateTime.UtcNow;
                 _recipeRepository.Update(recipeToDelete);
             }
 

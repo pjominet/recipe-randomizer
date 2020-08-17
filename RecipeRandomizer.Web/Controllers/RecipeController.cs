@@ -19,11 +19,16 @@ namespace RecipeRandomizer.Web.Controllers
 
         [HttpGet]
         [ProducesResponseType(typeof(List<Recipe>), StatusCodes.Status200OK)]
-        public IActionResult GetRecipes([FromQuery(Name = "tag")] int[] tagIds)
+        public IActionResult GetRecipes([FromQuery(Name = "tag")] int[] tagIds, [FromQuery(Name = "user")] int? userId = null)
         {
-            return tagIds.Any()
-                ? Ok(_recipeService.GetRecipesFromTags(tagIds))
-                : Ok(_recipeService.GetRecipes());
+            if (tagIds.Any() && !userId.HasValue)
+                return Ok(_recipeService.GetRecipesFromTags(tagIds));
+            if (!tagIds.Any() && userId.HasValue)
+                return Ok(_recipeService.GetRecipesFromUser(userId.Value));
+            if (tagIds.Any() && userId.HasValue)
+                return Ok(_recipeService.GetRecipesFromUserAndTags(userId.Value, tagIds));
+
+            return Ok(_recipeService.GetRecipes());
         }
 
         [HttpGet("deleted")]

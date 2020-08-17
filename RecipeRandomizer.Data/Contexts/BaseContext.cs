@@ -36,10 +36,6 @@ namespace RecipeRandomizer.Data.Contexts
             {
                 entity.ToTable("Recipe", "RecipeRandomizer");
 
-                entity.Property(r => r.Description).HasMaxLength(512);
-
-                entity.Property(r => r.ImageUri).HasMaxLength(128);
-
                 entity.Property(r => r.Name)
                     .IsRequired()
                     .HasMaxLength(256);
@@ -67,14 +63,20 @@ namespace RecipeRandomizer.Data.Contexts
                 entity.HasOne(r => r.Cost)
                     .WithMany(c => c.Recipes)
                     .HasForeignKey(r => r.CostId)
-                    .OnDelete(DeleteBehavior.SetNull)
+                    .OnDelete(DeleteBehavior.Restrict)
                     .HasConstraintName("FK_Recipe_Cost");
 
                 entity.HasOne(r => r.Difficulty)
                     .WithMany(d => d.Recipes)
                     .HasForeignKey(r => r.DifficultyId)
-                    .OnDelete(DeleteBehavior.SetNull)
+                    .OnDelete(DeleteBehavior.Restrict)
                     .HasConstraintName("FK_Recipe_Difficulty");
+
+                entity.HasOne(r => r.User)
+                    .WithMany(u => u.Recipes)
+                    .HasForeignKey(r => r.UserId)
+                    .OnDelete(DeleteBehavior.Restrict)
+                    .HasConstraintName("FK_Recipe_User");
             });
 
             modelBuilder.Entity<RecipeTagAssociation>(entity =>

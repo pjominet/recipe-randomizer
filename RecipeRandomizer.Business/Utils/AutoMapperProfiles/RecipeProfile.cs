@@ -20,7 +20,8 @@ namespace RecipeRandomizer.Business.Utils.AutoMapperProfiles
                 .ForMember(dest => dest.CostId, opt => opt.MapFrom(src => (int) src.Cost))
                 .ForMember(dest => dest.Difficulty, opt => opt.Ignore())
                 .ForMember(dest => dest.DifficultyId, opt => opt.MapFrom(src => (int) src.Difficulty))
-                .ForMember(dest => dest.RecipeTagAssociations, opt => opt.Ignore());
+                .ForMember(dest => dest.RecipeTagAssociations, opt => opt.Ignore())
+                .ForMember(dest => dest.IsDeleted, opt => opt.Ignore());
         }
     }
 }

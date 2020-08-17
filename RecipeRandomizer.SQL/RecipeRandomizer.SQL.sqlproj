@@ -63,6 +63,8 @@
     <Folder Include="RecipeRandomizer\" />
     <Folder Include="RecipeRandomizer\Tables\" />
     <Folder Include="Security\" />
+    <Folder Include="RR_Identity\" />
+    <Folder Include="RR_Identity\Tables\" />
   </ItemGroup>
   <ItemGroup>
     <Build Include="dbo\Stored Procedures\sp_MSforeachtable.sql" />
@@ -71,16 +73,16 @@
     <Build Include="Nomenclature\Tables\Tag.sql" />
     <Build Include="Nomenclature\Tables\Cost.sql" />
     <Build Include="Nomenclature\Tables\Difficulty.sql" />
-    <Build Include="Nomenclature\Tables\TagCategory.sql" />    
+    <Build Include="Nomenclature\Tables\TagCategory.sql" />
     <Build Include="RecipeRandomizer\Tables\Ingredient.sql" />
     <Build Include="RecipeRandomizer\Tables\Recipe.sql" />
     <Build Include="RecipeRandomizer\Tables\RecipeTag.sql" />
     <Build Include="RR_Identity\Tables\RefreshToken.sql" />
-    <Build Include="RR_Identity\Tables\User.sql" />    
-    <Build Include="Security\RR_Identity.sql" /> 
+    <Build Include="RR_Identity\Tables\User.sql" />
+    <Build Include="Security\RR_Identity.sql" />
     <Build Include="Security\RecipeRandomizer.sql" />
-    <Build Include="Security\Nomenclature.sql" />  
-    <Content Include="PostDeployScript.sql" />    
-    <Content Include="PurgeScript.sql" />                
+    <Build Include="Security\Nomenclature.sql" />
+    <Content Include="PostDeployScript.sql" />
+    <Content Include="PurgeScript.sql" />
   </ItemGroup>
 </Project>

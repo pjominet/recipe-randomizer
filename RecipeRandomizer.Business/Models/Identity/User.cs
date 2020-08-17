@@ -1,4 +1,5 @@
-﻿using Entities = RecipeRandomizer.Data.Entities.Identity;
+﻿using System.Collections.Generic;
+using Entities = RecipeRandomizer.Data.Entities.Identity;
 
 namespace RecipeRandomizer.Business.Models.Identity
 {
@@ -13,6 +14,8 @@ namespace RecipeRandomizer.Business.Models.Identity
 
         // refresh token is returned in http only cookie
         public string RefreshToken { get; set; }
+
+        public IList<Recipe> Recipes { get; set; }
 
         public User(Entities.User user, string jwtToken, string refreshToken)
         {

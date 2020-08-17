@@ -7,6 +7,7 @@ namespace RecipeRandomizer.Data.Entities.Identity
         public User()
         {
             RefreshTokens = new HashSet<RefreshToken>();
+            Recipes = new HashSet<Recipe>();
         }
 
         public int Id { get; set; }
@@ -17,5 +18,6 @@ namespace RecipeRandomizer.Data.Entities.Identity
         public byte[] PasswordSalt { get; set; }
 
         public virtual ICollection<RefreshToken> RefreshTokens { get; set; }
+        public virtual ICollection<Recipe> Recipes { get; set; }
     }
 }
