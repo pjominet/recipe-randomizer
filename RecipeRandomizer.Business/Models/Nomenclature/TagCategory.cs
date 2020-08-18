@@ -1,9 +1,12 @@
-﻿namespace RecipeRandomizer.Business.Models.Nomenclature
+﻿using System.Collections.Generic;
+
+namespace RecipeRandomizer.Business.Models.Nomenclature
 {
-    public enum TagCategory
+    public class TagCategory
     {
-        Cuisine = 1,
-        Diet = 2,
-        FoodType = 3
+        public int Id { get; set; }
+        public string Label { get; set; }
+
+        public IList<Tag> Tags { get; set; }
     }
 }
