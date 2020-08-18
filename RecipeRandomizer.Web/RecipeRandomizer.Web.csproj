@@ -39,6 +39,8 @@
     </ItemGroup>
 
     <ItemGroup>
+      <Folder Include="ClientApp\src\app\components" />
+      <Folder Include="ClientApp\src\app\views" />
       <Folder Include="ClientApp\src\assets\img" />
     </ItemGroup>
 

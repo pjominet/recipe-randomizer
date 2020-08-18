@@ -1,0 +1,12 @@
+.topbar {
+    background-color: #f7f7f7;
+    border-bottom: 1px solid #d6d5d5;
+    height: 4rem;
+}
+
+@media (min-width: 768px) {
+    .topbar {
+        position: sticky;
+        top: 0;
+    }
+}
