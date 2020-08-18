@@ -1,4 +1,5 @@
 begin transaction
+
     merge [Nomenclature].[Cost] as target
     using (values (1, N'Cheap'),
                   (2, N'Average'),
@@ -61,6 +62,7 @@ begin transaction
     when not matched by source then
         delete;
 
+    set identity_insert [Nomenclature].[Tag] on
     merge [Nomenclature].[Tag] as target
     using (values (1, 1, N'Vegetarian'),
                   (2, 1, N'Vegan'),
@@ -89,4 +91,6 @@ begin transaction
         values (source.[Id], source.[TagCategoryId], source.[Label])
     when not matched by source then
         delete;
-commit
+    set identity_insert [Nomenclature].[Tag] off
+
+commit transaction;
