@@ -114,8 +114,8 @@ namespace RecipeRandomizer.Web
             app.Map("/api", builder =>
             {
                 builder.UseRouting();
-                app.UseAuthentication();
-                app.UseAuthorization();
+                builder.UseAuthentication();
+                builder.UseAuthorization();
                 builder.UseEndpoints(endpoints => { endpoints.MapControllers(); });
             });
 

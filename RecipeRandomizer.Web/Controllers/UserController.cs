@@ -24,7 +24,7 @@ namespace RecipeRandomizer.Web.Controllers
         [Consumes("application/json")]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(typeof(User), StatusCodes.Status200OK)]
-        public IActionResult Authenticate([FromBody] AuthenticateRequest model)
+        public IActionResult Authenticate([FromBody] AuthRequest model)
         {
             var user = _userService.Authenticate(model, IpAddress());
 

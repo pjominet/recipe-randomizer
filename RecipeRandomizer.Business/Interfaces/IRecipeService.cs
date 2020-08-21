@@ -8,7 +8,7 @@ namespace RecipeRandomizer.Business.Interfaces
         public IEnumerable<Recipe> GetRecipes();
         public IEnumerable<Recipe> GetDeletedRecipes();
         public Recipe GetRecipe(int id);
-        public Recipe GetRandomRecipe();
+        public Recipe GetRandomRecipe(IEnumerable<int> tagIds);
         public IEnumerable<Recipe> GetRecipesFromTags(IEnumerable<int> tagIds);
         public IEnumerable<Recipe> GetRecipesFromUser(int userId);
         public IEnumerable<Recipe> GetRecipesFromUserAndTags(int userId, IEnumerable<int> tagIds);

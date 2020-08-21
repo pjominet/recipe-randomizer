@@ -1,8 +1,24 @@
-/* current theme */
+// current theme
 @import 'theme';
 
 /* --- General --- */
 body, html {
     font-family: $font-family-sans-serif;
     scroll-behavior: smooth;
+}
+
+body {
+    position: relative;
+    min-height: 100vh;
+    background-color: $primary;
+    background-image: url("../assets/img/artwork-bg-overlay.png");
+}
+
+.btn-no-outline {
+    border: none !important;
+
+    &:focus, .focus {
+        outline: none !important;
+        box-shadow: none;
+    }
 }

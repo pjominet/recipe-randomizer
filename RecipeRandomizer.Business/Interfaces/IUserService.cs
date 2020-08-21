@@ -5,7 +5,7 @@ namespace RecipeRandomizer.Business.Interfaces
 {
     public interface IUserService
     {
-        public User Authenticate(AuthenticateRequest model, string ipAddress);
+        public User Authenticate(AuthRequest model, string ipAddress);
         public User RefreshToken(string token, string ipAddress);
         public bool RevokeToken(string token, string ipAddress);
         public IEnumerable<User> GetUsers();

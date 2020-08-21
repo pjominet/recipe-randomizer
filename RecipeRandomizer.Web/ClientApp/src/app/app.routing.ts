@@ -1,12 +1,13 @@
 import {NgModule} from '@angular/core';
 import {RouterModule, Routes} from '@angular/router';
+import {AuthGuard} from '@app/helpers/auth.guard';
 
 /* Routable views */
-import {HomeComponent} from './views/home/home.component';
+import {DashboardComponent} from '@app/views/dashboard/dashboard.component';
 
 const routes: Routes = [
-    {path: 'home', component: HomeComponent},
-    {path: '', redirectTo: '/home', pathMatch: 'full'},
+    {path: 'dashboard', component: DashboardComponent, canActivate: [AuthGuard]},
+    {path: '', redirectTo: '/', pathMatch: 'full'},
     {path: '**', redirectTo: '/404', pathMatch: 'full'}
 ];
 

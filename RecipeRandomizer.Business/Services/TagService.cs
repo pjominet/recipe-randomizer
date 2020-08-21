@@ -57,7 +57,11 @@ namespace RecipeRandomizer.Business.Services
 
         public IEnumerable<TagCategory> GetTagCategories()
         {
-            return _mapper.Map<IEnumerable<TagCategory>>(_tagRepository.GetAll<Entities.TagCategory>());
+            string[] includes =
+            {
+                $"{nameof(Entities.TagCategory.Tags)}"
+            };
+            return _mapper.Map<IEnumerable<TagCategory>>(_tagRepository.GetAll<Entities.TagCategory>(null, includes));
         }
 
         public TagCategory GetTagCategory(int id)

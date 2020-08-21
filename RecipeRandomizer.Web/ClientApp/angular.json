@@ -4,10 +4,7 @@
     "newProjectRoot": "projects",
     "projects": {
         "RecipeRandomizer": {
-            "root": "",
-            "sourceRoot": "src",
             "projectType": "application",
-            "prefix": "app",
             "schematics": {
                 "@schematics/angular:component": {
                     "style": "scss",
@@ -32,18 +29,19 @@
                     "skipTests": true
                 }
             },
+            "root": "",
+            "sourceRoot": "src",
+            "prefix": "app",
             "architect": {
                 "build": {
                     "builder": "@angular-devkit/build-angular:browser",
                     "options": {
-                        "aot": true,
-                        "progress": true,
-                        "extractCss": true,
-                        "outputPath": "dist",
+                        "outputPath": "dist/RecipeRandomizer",
                         "index": "src/index.html",
                         "main": "src/main.ts",
                         "polyfills": "src/polyfills.ts",
-                        "tsConfig": "src/tsconfig.app.json",
+                        "tsConfig": "tsconfig.app.json",
+                        "aot": true,
                         "assets": [
                             "src/assets"
                         ],
@@ -60,12 +58,6 @@
                     },
                     "configurations": {
                         "production": {
-                            "budgets": [
-                                {
-                                    "type": "anyComponentStyle",
-                                    "maximumWarning": "6kb"
-                                }
-                            ],
                             "fileReplacements": [
                                 {
                                     "replace": "src/environments/environment.ts",
@@ -77,10 +69,21 @@
                             "sourceMap": false,
                             "extractCss": true,
                             "namedChunks": false,
-                            "aot": true,
                             "extractLicenses": true,
                             "vendorChunk": false,
-                            "buildOptimizer": true
+                            "buildOptimizer": true,
+                            "budgets": [
+                                {
+                                    "type": "initial",
+                                    "maximumWarning": "2mb",
+                                    "maximumError": "5mb"
+                                },
+                                {
+                                    "type": "anyComponentStyle",
+                                    "maximumWarning": "6kb",
+                                    "maximumError": "10kb"
+                                }
+                            ]
                         }
                     }
                 },
@@ -105,8 +108,7 @@
                     "builder": "@angular-devkit/build-angular:tslint",
                     "options": {
                         "tsConfig": [
-                            "src/tsconfig.app.json",
-                            "src/tsconfig.spec.json"
+                            "tsconfig.app.json"
                         ],
                         "exclude": [
                             "**/node_modules/**"

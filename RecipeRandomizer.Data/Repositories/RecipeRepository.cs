@@ -11,12 +11,18 @@ namespace RecipeRandomizer.Data.Repositories
     {
         public RecipeRepository(RRContext context) : base(context) { }
 
-        public Recipe GetRandomRecipe()
+        public Recipe GetRandomRecipe(IList<int> tagIds)
         {
             var total = Context.Recipes.Count();
             var rnd = new Random();
 
-            return Context.Recipes
+            var recipes = Context.Recipes.Select(r => r);
+            if (tagIds.Any())
+                recipes = Context.RecipeTagAssociations
+                    .Where(rta => tagIds.Contains(rta.TagId))
+                    .Select(rta => rta.Recipe);
+
+            return recipes
                 .Skip(rnd.Next(0, total))
                 .Include(r => r.Cost)
                 .Include(r => r.Difficulty)

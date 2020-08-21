@@ -30,7 +30,7 @@ namespace RecipeRandomizer.Business.Services
             _jwtSecret = configuration.GetValue<string>("JWTSecret");
         }
 
-        public User Authenticate(AuthenticateRequest model, string ipAddress)
+        public User Authenticate(AuthRequest model, string ipAddress)
         {
             var user = _userRepository.GetFirstOrDefault<Entities.User>(x => x.Email == model.Email);
 

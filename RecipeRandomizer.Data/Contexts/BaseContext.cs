@@ -56,9 +56,7 @@ namespace RecipeRandomizer.Data.Contexts
                     .HasColumnType("datetime2")
                     .IsRequired();
 
-                entity.Property(r => r.IsDeleted)
-                    .HasDefaultValue(false)
-                    .IsRequired();
+                entity.Property(r => r.DeletedOn).HasColumnType("datetime2");
 
                 entity.HasOne(r => r.Cost)
                     .WithMany(c => c.Recipes)

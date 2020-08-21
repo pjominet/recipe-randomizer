@@ -1,33 +1,24 @@
 ﻿@import 'variables';
 
-.app {
-    position: relative;
+#fortuneWheel {
+    height: 150px;
     display: flex;
-    flex-direction: column;
-}
+    align-items: center;
+    justify-content: center;
 
-main {
-    flex: 1;
-}
-
-aside {
-    background-image: linear-gradient(180deg, $primary, $secondary);
-}
-
-@media (min-width: 768px) {
-    .app {
-        flex-direction: row;
+    > .btn {
+        border-radius: 45px;
     }
+}
 
-    aside {
-        width: 250px;
-        height: 100vh;
-        position: sticky;
-        top: 0;
+.custom-ng-select {
+    width: 100%;
+    margin-left: auto;
+    margin-right: auto;
+}
 
-        .collapse {
-            /* Never collapse the sidebar for wide screens */
-            display: block;
-        }
+@media (min-width: $bp-md) {
+    .custom-ng-select {
+        width: 60%;
     }
 }
