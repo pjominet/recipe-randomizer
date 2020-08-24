@@ -9,6 +9,7 @@ import {AuthRequest} from '@app/models/identity/authRequest';
 import {ResetPasswordRequest} from '@app/models/identity/resetPasswordRequest';
 import {ForgotPasswordRequest} from '@app/models/identity/forgotPasswordRequest';
 import {UpdateUserRequest} from '@app/models/identity/updateUserRequest';
+import {RegisterRequest} from '@app/models/identity/registerRequest';
 
 @Injectable({
     providedIn: 'root'
@@ -28,12 +29,12 @@ export class AuthService {
         return this.userSubject.value;
     }
 
-    public register(user: User): Observable<User> {
-        return this.http.post<User>(`${environment.apiUrl}/users/register`, user)
-            .pipe(map(registeredUser => {
-                this.userSubject.next(registeredUser);
+    public register(registerRequest: RegisterRequest): Observable<User> {
+        return this.http.post<User>(`${environment.apiUrl}/users/register`, registerRequest)
+            .pipe(map(user => {
+                this.userSubject.next(user);
                 this.startRefreshTokenTimer();
-                return registeredUser;
+                return user;
             }));
     }
 

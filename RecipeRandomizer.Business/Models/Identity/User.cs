@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text.Json.Serialization;
-using RecipeRandomizer.Business.Models.Nomenclature;
 using Entities = RecipeRandomizer.Data.Entities.Identity;
 
 namespace RecipeRandomizer.Business.Models.Identity
@@ -18,7 +16,7 @@ namespace RecipeRandomizer.Business.Models.Identity
         public bool IsVerified { get; set; }
         public string JwtToken { get; set; }
 
-        [JsonIgnore] // refresh token is returned in http only cookie
+        // refresh token is returned in http only cookie
         public string RefreshToken { get; set; }
 
         public IList<Recipe> Recipes { get; set; }

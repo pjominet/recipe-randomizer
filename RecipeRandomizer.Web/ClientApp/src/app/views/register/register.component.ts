@@ -3,8 +3,9 @@ import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {ActivatedRoute, Router} from '@angular/router';
 import {AuthService} from '@app/services/auth.service';
 import {first} from 'rxjs/operators';
-import {User} from '@app/models/identity/user';
 import {NgbActiveModal} from '@ng-bootstrap/ng-bootstrap';
+import {RegisterRequest} from '@app/models/identity/registerRequest';
+import {MustMatchValidator} from '@app/helpers/must-match.validator';
 
 @Component({
     selector: 'app-register',
@@ -29,8 +30,12 @@ export class RegisterComponent implements OnInit {
         this.registerForm = this.formBuilder.group({
             firstName: ['', Validators.required],
             lastName: ['', Validators.required],
-            email: ['', Validators.required],
-            password: ['', [Validators.required, Validators.minLength(6)]]
+            email: ['', [Validators.required, Validators.email]],
+            password: ['', [Validators.required, Validators.minLength(6)]],
+            confirmPassword: ['', Validators.required],
+            acceptTerms: [false, Validators.requiredTrue]
+        }, {
+            validators: MustMatchValidator('password', 'confirmPassword')
         });
     }
 
@@ -48,7 +53,13 @@ export class RegisterComponent implements OnInit {
         }
 
         this.isLoading = true;
-        this.authService.register(new User(this.f.firstName.value, this.f.lastName.value, this.f.email.value, this.f.password.value))
+        this.authService.register(new RegisterRequest(
+            this.f.firstName.value,
+            this.f.lastName.value,
+            this.f.email.value,
+            this.f.password.value,
+            this.f.confirmPassword.value,
+            this.f.acceptTerms.value))
             .pipe(first())
             .subscribe(
                 () => {

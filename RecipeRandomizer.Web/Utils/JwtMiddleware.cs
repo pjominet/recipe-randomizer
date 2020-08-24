@@ -12,28 +12,26 @@ namespace RecipeRandomizer.Web.Utils
 {
     public class JwtMiddleware
     {
-        private readonly IUserService _userService;
         private readonly RequestDelegate _next;
         private readonly string _jwtSecret;
 
-        public JwtMiddleware(RequestDelegate next, IUserService userService, IConfiguration configuration)
+        public JwtMiddleware(RequestDelegate next, IConfiguration configuration)
         {
             _next = next;
-            _userService = userService;
             _jwtSecret = configuration.GetValue<string>("JWTSecret");
         }
 
-        public async Task Invoke(HttpContext httpContext)
+        public async Task Invoke(HttpContext httpContext, IUserService userService)
         {
             var token = httpContext.Request.Headers["Authorization"].FirstOrDefault()?.Split(" ").Last();
 
             if (token != null)
-                AttachUserToContext(httpContext, token);
+                AttachUserToContext(httpContext, userService, token);
 
             await _next(httpContext);
         }
 
-        private void AttachUserToContext(HttpContext httpContext, string token)
+        private void AttachUserToContext(HttpContext httpContext, IUserService userService, string token)
         {
             try
             {
@@ -53,7 +51,7 @@ namespace RecipeRandomizer.Web.Utils
                 var userId = int.Parse(jwtToken.Claims.First(c => c.Type == "id").Value);
 
                 // attach current user to context on successful jwt validation
-                httpContext.Items["User"] = _userService.GetUser(userId);
+                httpContext.Items["User"] = userService.GetUser(userId);
             }
             catch
             {
