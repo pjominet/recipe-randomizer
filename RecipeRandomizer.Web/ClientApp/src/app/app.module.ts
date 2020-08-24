@@ -21,11 +21,10 @@ import {TopbarComponent} from './components/topbar/topbar.component';
 import {LoginComponent} from './views/login/login.component';
 import {RegisterComponent} from './views/register/register.component';
 import {DashboardComponent} from './views/dashboard/dashboard.component';
-import {ResetPasswordComponent} from './views/reset-password/reset-password.component';
-import { SpinnerComponent } from './components/spinner/spinner.component';
-import { AlertComponent } from './components/alert/alert.component';
-import { ForgotPasswordComponent } from './views/forgot-password/forgot-password.component';
-import { NotFoundComponent } from './views/not-found/not-found.component';
+import {SpinnerComponent} from './components/spinner/spinner.component';
+import {AlertComponent} from './components/alert/alert.component';
+import {ForgotPasswordComponent} from './views/forgot-password/forgot-password.component';
+import {NotFoundComponent} from './views/not-found/not-found.component';
 
 @NgModule({
     declarations: [
@@ -35,7 +34,6 @@ import { NotFoundComponent } from './views/not-found/not-found.component';
         LoginComponent,
         RegisterComponent,
         DashboardComponent,
-        ResetPasswordComponent,
         SpinnerComponent,
         AlertComponent,
         ForgotPasswordComponent,
@@ -53,7 +51,7 @@ import { NotFoundComponent } from './views/not-found/not-found.component';
     entryComponents: [
         LoginComponent,
         RegisterComponent,
-        ResetPasswordComponent
+        ForgotPasswordComponent
     ],
     providers: [
         {provide: APP_INITIALIZER, useFactory: appInitializer, multi: true, deps: [AuthService]},
