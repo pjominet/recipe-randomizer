@@ -4,6 +4,7 @@ import {ActivatedRoute, Router} from '@angular/router';
 import {AuthService} from '@app/services/auth.service';
 import {NgbActiveModal} from '@ng-bootstrap/ng-bootstrap';
 import {first} from 'rxjs/operators';
+import {ForgotPasswordRequest} from '@app/models/identity/forgotPasswordRequest';
 
 @Component({
   selector: 'app-forgot-password',
@@ -27,7 +28,7 @@ export class ForgotPasswordComponent implements OnInit {
 
     public ngOnInit() {
         this.forgotPasswordForm = this.formBuilder.group({
-            email: ['', Validators.required]
+            email: ['', [Validators.required, Validators.email]]
         });
 
         // get return url from route parameters or default to '/'
@@ -48,7 +49,7 @@ export class ForgotPasswordComponent implements OnInit {
         }
 
         this.isLoading = true;
-        this.authenticationService.resetPassword(this.f.email.value)
+        this.authenticationService.forgotPassword(new ForgotPasswordRequest(this.f.email.value))
             .pipe(first())
             .subscribe({
                 next: () => {

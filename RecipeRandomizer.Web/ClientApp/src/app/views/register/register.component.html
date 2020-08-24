@@ -23,6 +23,7 @@
                 <input type="text" formControlName="email" class="form-control" [ngClass]="{ 'is-invalid': isSubmitted && f.email.errors }" id="emailInput" tabindex="3"/>
                 <div *ngIf="isSubmitted && f.email.errors" class="invalid-feedback">
                     <div *ngIf="f.email.errors.required">Email is required</div>
+                    <div *ngIf="f.email.errors.email">Current input is no valid email address</div>
                 </div>
             </div>
             <div class="form-row">
