@@ -5,8 +5,16 @@ export class User {
     firstName: string;
     lastName: string;
     email: string;
-    password: string;
+    role: Role;
+    createdOn: Date;
+    updatedOn: Date;
+    isVerified: boolean;
     jwtToken?: string;
 
     recipes: Recipe[];
+}
+
+export enum Role {
+    admin = 1,
+    user = 2
 }

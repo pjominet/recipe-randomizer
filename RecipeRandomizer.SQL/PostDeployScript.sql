@@ -93,4 +93,17 @@ begin transaction
         delete;
     set identity_insert [Nomenclature].[Tag] off
 
+    merge [RR_Identity].[Role] as target
+    using (values (1, N'Admin'),
+                  (2, N'User')
+    ) as source ([Id], [Label])
+    on (target.[Id] = source.[Id])
+    when matched then
+        update set [Label] = source.[Label]
+    when not matched then
+        insert ([Id], [Label])
+        values (source.[Id], source.[Label])
+    when not matched by source then
+        delete;
+
 commit transaction;

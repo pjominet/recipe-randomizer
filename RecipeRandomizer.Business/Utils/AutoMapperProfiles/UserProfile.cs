@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using Entities = RecipeRandomizer.Data.Entities.Identity;
+using Entities = RecipeRandomizer.Data.Entities;
 
 namespace RecipeRandomizer.Business.Utils.AutoMapperProfiles
 {
@@ -7,18 +7,31 @@ namespace RecipeRandomizer.Business.Utils.AutoMapperProfiles
     {
         public UserProfile()
         {
-            CreateMap<Entities.User, Models.Identity.User>()
+            CreateMap<Entities.Identity.User, Models.Identity.User>()
                 .ForMember(dest => dest.RefreshToken, opt => opt.Ignore())
                 .ForMember(dest => dest.JwtToken, opt => opt.Ignore())
-                .ForMember(dest => dest.Password, opt => opt.Ignore())
                 .DisableCtorValidation();
-            CreateMap<Models.Identity.User, Entities.User>()
-                .ForMember(dest => dest.Id, opt => opt.Ignore())
-                .ForMember(dest => dest.RefreshTokens, opt => opt.Ignore())
-                .ForMember(dest => dest.PasswordHash, opt => opt.Ignore())
-                .ForMember(dest => dest.PasswordSalt, opt => opt.Ignore())
-                .ForMember(dest => dest.Recipes, opt => opt.Ignore());
-            CreateMap<Entities.RefreshToken, Models.Identity.RefreshToken>();
+
+            CreateMap<Entities.Identity.User, Models.Identity.AuthRequest>();
+
+            CreateMap<Models.Identity.RegisterRequest, Entities.Identity.User>();
+
+            CreateMap<Models.Identity.UpdateUserRequest, Entities.Identity.User>()
+                .ForAllMembers(x => x.Condition(
+                    (src, dest, prop) =>
+                    {
+                        switch (prop)
+                        {
+                            // ignore null & empty string properties
+                            case null:
+                            case string arg when string.IsNullOrEmpty(arg):
+                                return false;
+                            default:
+                                // ignore null role
+                                return x.DestinationMember.Name != "Role" || src.Role != null;
+                        }
+                    }
+                ));
         }
     }
 }

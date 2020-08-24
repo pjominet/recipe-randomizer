@@ -10,5 +10,5 @@
     [RevokedByIp]     nvarchar(39)        null,
     [ReplacedByToken] datetime2           null,
     constraint [PK_RefreshToken] primary key clustered ([Id] asc),
-    constraint [FK_Recipe_Cost] foreign key ([UserId]) references [RR_Identity].[User] ([Id]) on delete cascade
+    constraint [FK_RefreshToken_User] foreign key ([UserId]) references [RR_Identity].[User] ([Id]) on delete cascade
 )

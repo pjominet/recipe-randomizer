@@ -17,6 +17,8 @@ namespace RecipeRandomizer.Data.Contexts
             {
                 entity.ToTable("Cost", "Nomenclature");
 
+                entity.Property(e => e.Id).ValueGeneratedNever();
+
                 entity.Property(c => c.Label)
                     .IsRequired()
                     .HasMaxLength(32);
@@ -25,6 +27,8 @@ namespace RecipeRandomizer.Data.Contexts
             modelBuilder.Entity<Difficulty>(entity =>
             {
                 entity.ToTable("Difficulty", "Nomenclature");
+
+                entity.Property(e => e.Id).ValueGeneratedNever();
 
                 entity.Property(d => d.Label)
                     .IsRequired()
@@ -35,11 +39,13 @@ namespace RecipeRandomizer.Data.Contexts
             {
                 entity.ToTable("Quantity", "Nomenclature");
 
+                entity.Property(e => e.Id).ValueGeneratedNever();
+
                 entity.Property(q => q.Label)
                     .IsRequired()
                     .HasMaxLength(32);
 
-                entity.Property(q => q.Description).HasMaxLength(32);
+                entity.Property(q => q.Description).HasMaxLength(64);
             });
 
             modelBuilder.Entity<Tag>(entity =>
@@ -60,6 +66,8 @@ namespace RecipeRandomizer.Data.Contexts
             modelBuilder.Entity<TagCategory>(entity =>
             {
                 entity.ToTable("TagCategory", "Nomenclature");
+
+                entity.Property(e => e.Id).ValueGeneratedNever();
 
                 entity.Property(tc => tc.Label)
                     .IsRequired()

@@ -2,12 +2,10 @@
 
 namespace RecipeRandomizer.Business.Models.Identity
 {
-    public class AuthRequest
+    public class ForgotPasswordRequest
     {
         [Required]
         [EmailAddress]
         public string Email { get; set; }
-        [Required]
-        public string Password { get; set; }
     }
 }

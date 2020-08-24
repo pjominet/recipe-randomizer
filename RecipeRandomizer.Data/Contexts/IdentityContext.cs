@@ -7,6 +7,7 @@ namespace RecipeRandomizer.Data.Contexts
     {
         public DbSet<User> Users { get; set; }
         public DbSet<RefreshToken> RefreshTokens { get; set; }
+        public DbSet<Role> Roles { get; set; }
 
         protected void OnModelCreatingIdentity(ModelBuilder modelBuilder)
         {
@@ -14,42 +15,30 @@ namespace RecipeRandomizer.Data.Contexts
             {
                 entity.ToTable("User", "RR_Identity");
 
-                entity.Property(u => u.FirstName).IsRequired();
+                entity.Property(e => e.Email).IsRequired();
 
-                entity.Property(u => u.LastName).IsRequired();
+                entity.Property(e => e.FirstName).IsRequired();
 
-                entity.Property(u => u.Email).IsRequired();
+                entity.Property(e => e.LastName).IsRequired();
 
-                entity.Property(u => u.PasswordHash)
-                    .HasColumnType("binary")
-                    .HasMaxLength(64)
-                    .IsRequired();
+                entity.Property(e => e.PasswordHash).IsRequired();
 
-                entity.Property(u => u.PasswordSalt)
-                    .HasColumnType("binary")
-                    .HasMaxLength(128)
-                    .IsRequired();
+                entity.HasOne(d => d.Role)
+                    .WithMany(p => p.Users)
+                    .HasForeignKey(d => d.RoleId)
+                    .OnDelete(DeleteBehavior.Restrict)
+                    .HasConstraintName("FK_User_Role");
             });
 
             modelBuilder.Entity<RefreshToken>(entity =>
             {
                 entity.ToTable("RefreshToken", "RR_Identity");
 
-                entity.Property(rt => rt.Token).IsRequired();
-
-                entity.Property(rt => rt.Expires)
-                    .IsRequired()
-                    .HasColumnType("datetime2");
-
-                entity.Property(rt => rt.Created)
-                    .IsRequired()
-                    .HasColumnType("datetime2");
+                entity.Property(e => e.Token).IsRequired();
 
                 entity.Property(rt => rt.CreatedByIp)
                     .HasMaxLength(39)
                     .IsRequired();
-
-                entity.Property(rt => rt.Revoked).HasColumnType("datetime2");
 
                 entity.Property(rt => rt.RevokedByIp).HasMaxLength(39);
 
@@ -58,6 +47,17 @@ namespace RecipeRandomizer.Data.Contexts
                     .HasForeignKey(rt => rt.UserId)
                     .OnDelete(DeleteBehavior.Cascade)
                     .HasConstraintName("FK_RefreshToken_User");
+            });
+
+            modelBuilder.Entity<Role>(entity =>
+            {
+                entity.ToTable("Role", "RR_Identity");
+
+                entity.Property(e => e.Id).ValueGeneratedNever();
+
+                entity.Property(d => d.Label)
+                    .IsRequired()
+                    .HasMaxLength(8);
             });
         }
     }

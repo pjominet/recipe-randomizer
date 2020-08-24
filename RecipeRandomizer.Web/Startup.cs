@@ -6,7 +6,6 @@ using AutoMapper;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.SpaServices.AngularCli;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -16,6 +15,7 @@ using Microsoft.OpenApi.Models;
 using RecipeRandomizer.Business.Interfaces;
 using RecipeRandomizer.Business.Services;
 using RecipeRandomizer.Data.Contexts;
+using RecipeRandomizer.Web.Utils;
 
 namespace RecipeRandomizer.Web
 {
@@ -60,33 +60,11 @@ namespace RecipeRandomizer.Web
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
             });
 
-            // configure jwt authentication
-            services.AddAuthentication(x =>
-                {
-                    x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-                    x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-                })
-                .AddJwtBearer(x =>
-                {
-                    x.RequireHttpsMetadata = false;
-                    x.SaveToken = true;
-                    x.TokenValidationParameters = new TokenValidationParameters
-                    {
-                        ValidateIssuerSigningKey = true,
-                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(Configuration.GetValue<string>("JWTSecret"))),
-                        ValidateIssuer = false,
-                        ValidateAudience = false,
-                        // set clock skew to zero so tokens expire exactly at token expiration time (instead of 5 minutes later)
-                        ClockSkew = TimeSpan.Zero
-                    };
-                });
-
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
             // configure API
             services.AddControllers()
-                // uses old newtonsoft json serializer as the new json serializer does not support ignoring reference loops yet
-                .AddNewtonsoftJson(options => { options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore; });
+                .AddJsonOptions(x => x.JsonSerializerOptions.IgnoreNullValues = true);
 
             // Register the Swagger API documentation generator
             services.AddSwaggerGen(gen =>
@@ -114,8 +92,8 @@ namespace RecipeRandomizer.Web
             app.Map("/api", builder =>
             {
                 builder.UseRouting();
-                builder.UseAuthentication();
-                builder.UseAuthorization();
+                builder.UseMiddleware<ErrorHandlerMiddleware>(); // global error handler
+                builder.UseMiddleware<JwtMiddleware>(); // custom jwt auth middleware
                 builder.UseEndpoints(endpoints => { endpoints.MapControllers(); });
             });
 
@@ -145,6 +123,7 @@ namespace RecipeRandomizer.Web
             services.AddTransient<ITagService, TagService>();
             services.AddTransient<IQuantityService, QuantityService>();
             services.AddTransient<IUserService, UserService>();
+            services.AddTransient<IEmailService, EmailService>();
         }
     }
 }

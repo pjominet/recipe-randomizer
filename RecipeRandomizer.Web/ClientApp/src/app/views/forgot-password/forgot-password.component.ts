@@ -1,20 +1,18 @@
-import {Component, OnInit} from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {ActivatedRoute, Router} from '@angular/router';
 import {AuthService} from '@app/services/auth.service';
-import {AuthRequest} from '@app/models/identity/authRequest';
+import {NgbActiveModal} from '@ng-bootstrap/ng-bootstrap';
 import {first} from 'rxjs/operators';
-import {NgbActiveModal, NgbModal} from '@ng-bootstrap/ng-bootstrap';
-import {ForgotPasswordComponent} from '@app/views/forgot-password/forgot-password.component';
 
 @Component({
-    selector: 'app-login',
-    templateUrl: './login.component.html',
-    styleUrls: ['./login.component.scss']
+  selector: 'app-forgot-password',
+  templateUrl: './forgot-password.component.html',
+  styleUrls: ['./forgot-password.component.scss']
 })
-export class LoginComponent implements OnInit {
+export class ForgotPasswordComponent implements OnInit {
 
-    public loginForm: FormGroup;
+    public forgotPasswordForm: FormGroup;
     public isLoading: boolean = false;
     public isSubmitted: boolean = false;
     public returnUrl: string;
@@ -24,18 +22,12 @@ export class LoginComponent implements OnInit {
                 private route: ActivatedRoute,
                 private router: Router,
                 private authenticationService: AuthService,
-                private dialogService: NgbModal,
                 public activeModal: NgbActiveModal) {
-        // redirect to home if already logged in
-        if (this.authenticationService.user) {
-            this.router.navigate(['/']);
-        }
     }
 
     public ngOnInit() {
-        this.loginForm = this.formBuilder.group({
-            email: ['', Validators.required],
-            password: ['', Validators.required]
+        this.forgotPasswordForm = this.formBuilder.group({
+            email: ['', Validators.required]
         });
 
         // get return url from route parameters or default to '/'
@@ -44,19 +36,19 @@ export class LoginComponent implements OnInit {
 
     // convenience getter for easy access to form fields
     get f() {
-        return this.loginForm.controls;
+        return this.forgotPasswordForm.controls;
     }
 
     public onSubmit() {
         this.isSubmitted = true;
 
         // stop here if form is invalid
-        if (this.loginForm.invalid) {
+        if (this.forgotPasswordForm.invalid) {
             return;
         }
 
         this.isLoading = true;
-        this.authenticationService.login(new AuthRequest(this.f.email.value, this.f.password.value))
+        this.authenticationService.resetPassword(this.f.email.value)
             .pipe(first())
             .subscribe({
                 next: () => {
@@ -67,10 +59,5 @@ export class LoginComponent implements OnInit {
                     this.isLoading = false;
                 }
             });
-    }
-
-    public openPasswordForgottenDialog(): void {
-        this.dialogService.dismissAll();
-        this.dialogService.open(ForgotPasswordComponent, {centered: true});
     }
 }

@@ -1,4 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Text.Json.Serialization;
+using RecipeRandomizer.Business.Models.Nomenclature;
 using Entities = RecipeRandomizer.Data.Entities.Identity;
 
 namespace RecipeRandomizer.Business.Models.Identity
@@ -9,22 +12,15 @@ namespace RecipeRandomizer.Business.Models.Identity
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public string Email { get; set; }
-        public string Password { get; set; }
+        public Role Role { get; set; }
+        public DateTime CreatedOn { get; set; }
+        public DateTime? UpdatedOn { get; set; }
+        public bool IsVerified { get; set; }
         public string JwtToken { get; set; }
 
-        // refresh token is returned in http only cookie
+        [JsonIgnore] // refresh token is returned in http only cookie
         public string RefreshToken { get; set; }
 
         public IList<Recipe> Recipes { get; set; }
-
-        public User(Entities.User user, string jwtToken, string refreshToken)
-        {
-            Id = user.Id;
-            FirstName = user.FirstName;
-            LastName = user.LastName;
-            Email = user.Email;
-            JwtToken = jwtToken;
-            RefreshToken = refreshToken;
-        }
     }
 }

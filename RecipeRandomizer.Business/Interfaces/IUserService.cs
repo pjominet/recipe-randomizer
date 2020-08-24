@@ -7,12 +7,16 @@ namespace RecipeRandomizer.Business.Interfaces
     {
         public User Authenticate(AuthRequest model, string ipAddress);
         public User RefreshToken(string token, string ipAddress);
-        public bool RevokeToken(string token, string ipAddress);
+        public void RevokeToken(string token, string ipAddress);
+        public void Register(RegisterRequest model, string origin);
+        public void VerifyEmail(ValidationRequest model);
+        public void ForgotPassword(ForgotPasswordRequest model, string origin);
+        public void ValidateResetToken(ValidationRequest model);
+        public void ResetPassword(ResetPasswordRequest model);
         public IEnumerable<User> GetUsers();
         public User GetUser(int id);
-        public IEnumerable<RefreshToken> GetUserRefreshTokens(int id);
-        int Create(User model, string password);
-        bool Update(User model, string password = null);
+        public IEnumerable<string> GetUserRefreshTokens(int id);
+        User Update(int id, UpdateUserRequest model);
         bool Delete(int id);
     }
 }

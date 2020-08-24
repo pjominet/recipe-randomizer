@@ -6,6 +6,9 @@ import {environment} from '@env/environment';
 import {map} from 'rxjs/operators';
 import {User} from '@app/models/identity/user';
 import {AuthRequest} from '@app/models/identity/authRequest';
+import {ResetPasswordRequest} from '@app/models/identity/resetPasswordRequest';
+import {ForgotPasswordRequest} from '@app/models/identity/forgotPasswordRequest';
+import {UpdateUserRequest} from '@app/models/identity/updateUserRequest';
 
 @Injectable({
     providedIn: 'root'
@@ -43,11 +46,19 @@ export class AuthService {
             }));
     }
 
+    public forgotPassword(forgotPasswordRequest: ForgotPasswordRequest): Observable<any> {
+        return this.http.post<any>(`${environment.apiUrl}/users/forgot-password`, forgotPasswordRequest).pipe(response => response);
+    }
+
+    public resetPassword(resetPasswordRequest: ResetPasswordRequest): Observable<any> {
+        return this.http.post<any>(`${environment.apiUrl}/users/reset-password`, resetPasswordRequest).pipe(response => response);
+    }
+
     public logout(): void {
         this.http.post<any>(`${environment.apiUrl}/users/revoke-token`, {}, {withCredentials: true}).subscribe();
         this.stopRefreshTokenTimer();
         this.userSubject.next(null);
-        this.router.navigate(['/login']);
+        this.router.navigate(['/']);
     }
 
     public refreshToken(): Observable<User> {
@@ -56,6 +67,29 @@ export class AuthService {
                 this.userSubject.next(user);
                 this.startRefreshTokenTimer();
                 return user;
+            }));
+    }
+
+    public updateUser(id: number, updateUserRequest: UpdateUserRequest) : Observable<User> {
+        return this.http.put<User>(`${environment.apiUrl}/users/${id}`, updateUserRequest)
+            .pipe(map(updatedUser => {
+                // update current user if the logged in user updated their own record
+                if (id == this.user.id) {
+                    // publish updated user to subscribers
+                    const user = {...this.user, ...updateUserRequest};
+                    this.userSubject.next(user);
+                }
+                return updatedUser;
+            }));
+    }
+
+    public deleteUser(id: number): void {
+        this.http.delete(`${environment.apiUrl}/users/${id}`)
+            .pipe(map(() => {
+                // auto logout if the logged in user deleted their own record
+                if (id == this.user.id) {
+                    this.logout();
+                }
             }));
     }
 

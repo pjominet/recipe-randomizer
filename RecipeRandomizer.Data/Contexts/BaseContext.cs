@@ -40,23 +40,7 @@ namespace RecipeRandomizer.Data.Contexts
                     .IsRequired()
                     .HasMaxLength(256);
 
-                entity.Property(r => r.NumberOfPeople).IsRequired();
-
                 entity.Property(r => r.Preparation).IsRequired();
-
-                entity.Property(r => r.CookTime).IsRequired();
-
-                entity.Property(r => r.PrepTime).IsRequired();
-
-                entity.Property(r => r.DateCreated)
-                    .HasColumnType("datetime2")
-                    .IsRequired();
-
-                entity.Property(r => r.LastUpdated)
-                    .HasColumnType("datetime2")
-                    .IsRequired();
-
-                entity.Property(r => r.DeletedOn).HasColumnType("datetime2");
 
                 entity.HasOne(r => r.Cost)
                     .WithMany(c => c.Recipes)
@@ -73,7 +57,6 @@ namespace RecipeRandomizer.Data.Contexts
                 entity.HasOne(r => r.User)
                     .WithMany(u => u.Recipes)
                     .HasForeignKey(r => r.UserId)
-                    .OnDelete(DeleteBehavior.Restrict)
                     .HasConstraintName("FK_Recipe_User");
             });
 

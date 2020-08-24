@@ -1,17 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
-using Microsoft.AspNetCore.Authorization;
+using System.Linq;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using RecipeRandomizer.Business.Interfaces;
 using RecipeRandomizer.Business.Models.Identity;
+using RecipeRandomizer.Web.Utils;
 
 namespace RecipeRandomizer.Web.Controllers
 {
-    [Authorize]
     [Route("users")]
     public class UserController : ApiController
     {
+        // returns the current authenticated user (null if not logged in)
+        private new User User => (User) HttpContext.Items["User"];
         private readonly IUserService _userService;
 
         public UserController(IUserService userService)
@@ -19,67 +21,33 @@ namespace RecipeRandomizer.Web.Controllers
             _userService = userService;
         }
 
-        [AllowAnonymous]
         [HttpPost("authenticate")]
         [Consumes("application/json")]
-        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(typeof(User), StatusCodes.Status200OK)]
-        public IActionResult Authenticate([FromBody] AuthRequest model)
+        public ActionResult<User> Authenticate([FromBody] AuthRequest model)
         {
             var user = _userService.Authenticate(model, IpAddress());
-
-            if (user == null)
-                return Unauthorized(new {message = "Username or password is incorrect"});
-
             SetTokenCookie(user.RefreshToken);
-
             return Ok(user);
         }
 
-        [AllowAnonymous]
-        [HttpPost("register")]
-        [Consumes("application/json")]
-        [ProducesResponseType(typeof(User), StatusCodes.Status201Created)]
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public IActionResult Register([FromBody] User user)
-        {
-            try
-            {
-                var id = _userService.Create(user, user.Password);
-                return id != -1
-                    ? CreatedAtAction(nameof(GetUser), new {id}, user)
-                    : (IActionResult) StatusCode(StatusCodes.Status500InternalServerError);
-            }
-            catch (ApplicationException ex)
-            {
-                return BadRequest(new {message = ex.Message});
-            }
-        }
-
-        [AllowAnonymous]
         [HttpPost("refresh-token")]
-        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(typeof(User), StatusCodes.Status200OK)]
-        public IActionResult RefreshToken()
+        public ActionResult<User> RefreshToken()
         {
             var refreshToken = Request.Cookies["refreshToken"];
             var user = _userService.RefreshToken(refreshToken, IpAddress());
-
-            if (user == null)
-                return Unauthorized(new {message = "Invalid token"});
-
             SetTokenCookie(user.RefreshToken);
-
             return Ok(user);
         }
 
+        [Authorize]
         [HttpPost("revoke-token")]
         [Consumes("application/json")]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(typeof(bool), StatusCodes.Status200OK)]
-        public IActionResult RevokeToken([FromBody] RevokeTokenRequest model)
+        public IActionResult RevokeToken([FromBody] ValidationRequest model)
         {
             // accept token from request body or cookie
             var token = model.Token ?? Request.Cookies["refreshToken"];
@@ -87,69 +55,112 @@ namespace RecipeRandomizer.Web.Controllers
             if (string.IsNullOrEmpty(token))
                 return BadRequest(new {message = "Token is required"});
 
-            var result = _userService.RevokeToken(token, IpAddress());
+            // users can revoke their own tokens and admins can revoke any tokens
+            if (!OwnsToken(User.Id, token) && User.Role != Role.Admin)
+                return Unauthorized(new {message = "Unauthorized"});
 
-            if (!result)
-                return NotFound(new {message = "Token not found"});
-
+            _userService.RevokeToken(token, IpAddress());
             return Ok(new {message = "Token revoked"});
         }
 
+        [HttpPost("register")]
+        [Consumes("application/json")]
+        [ProducesResponseType(typeof(object), StatusCodes.Status200OK)]
+        public IActionResult Register([FromBody] RegisterRequest model)
+        {
+            _userService.Register(model, Request.Headers["origin"]);
+            return Ok(new {message = "Registration successful, please check your email for verification instructions"});
+        }
+
+        [HttpPost("verify-email")]
+        [Consumes("application/json")]
+        [ProducesResponseType(typeof(object), StatusCodes.Status200OK)]
+        public IActionResult VerifyEmail([FromBody] ValidationRequest model)
+        {
+            _userService.VerifyEmail(model);
+            return Ok(new {message = "Verification successful, you can now login"});
+        }
+
+        [HttpPost("forgot-password")]
+        [Consumes("application/json")]
+        [ProducesResponseType(typeof(object), StatusCodes.Status200OK)]
+        public IActionResult ForgotPassword([FromBody] ForgotPasswordRequest model)
+        {
+            _userService.ForgotPassword(model, Request.Headers["origin"]);
+            return Ok(new {message = "Please check your email for password reset instructions"});
+        }
+
+        [HttpPost("validate-reset-token")]
+        [Consumes("application/json")]
+        [ProducesResponseType(typeof(object), StatusCodes.Status200OK)]
+        public IActionResult ValidateResetToken([FromBody] ValidationRequest model)
+        {
+            _userService.ValidateResetToken(model);
+            return Ok(new {message = "Token is valid"});
+        }
+
+        [HttpPost("reset-password")]
+        [Consumes("application/json")]
+        [ProducesResponseType(typeof(object), StatusCodes.Status200OK)]
+        public IActionResult ResetPassword([FromBody] ResetPasswordRequest model)
+        {
+            _userService.ResetPassword(model);
+            return Ok(new {message = "Password reset successful, you can now login"});
+        }
+
+        [Authorize(Role.Admin)]
         [HttpGet]
         [ProducesResponseType(typeof(List<User>), StatusCodes.Status200OK)]
-        public IActionResult GetUsers()
+        public ActionResult<IEnumerable<User>> GetUsers()
         {
             var users = _userService.GetUsers();
             return Ok(users);
         }
 
-        [HttpGet("{id}")]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [Authorize]
+        [HttpGet("{id:int}")]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(typeof(User), StatusCodes.Status200OK)]
-        public IActionResult GetUser([FromRoute] int id)
+        public ActionResult<User> GetUser([FromRoute] int id)
         {
-            var user = _userService.GetUser(id);
-            if (user == null)
-                return NotFound();
+            // users can get their own account and admins can get any account
+            if (id != User.Id && User.Role != Role.Admin)
+                return Unauthorized(new {message = "Unauthorized"});
 
+            var user = _userService.GetUser(id);
             return Ok(user);
         }
 
-        [HttpGet("{id}/refresh-tokens")]
-        [ProducesResponseType(typeof(List<RefreshToken>), StatusCodes.Status200OK)]
-        public IActionResult GetRefreshTokens(int id)
+        [Authorize]
+        [HttpPut("{id:int}")]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(typeof(User), StatusCodes.Status200OK)]
+        public ActionResult<User> Update([FromRoute] int id, [FromBody] UpdateUserRequest model)
         {
-            return Ok(_userService.GetUserRefreshTokens(id));
+            // users can update their own account and admins can update any account
+            if (id != User.Id && User.Role != Role.Admin)
+                return Unauthorized(new {message = "Unauthorized"});
+
+            // only admins can update role
+            if (User.Role != Role.Admin)
+                model.Role = null;
+
+            var user = _userService.Update(id, model);
+            return Ok(user);
         }
 
-        [HttpPut]
-        [ProducesResponseType(StatusCodes.Status204NoContent)]
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        [ProducesResponseType(typeof(User), StatusCodes.Status400BadRequest)]
-        public IActionResult Update([FromBody] User model)
-        {
-            try
-            {
-                var result = _userService.Update(model, model.Password);
-                return result
-                    ? NoContent()
-                    : StatusCode(StatusCodes.Status500InternalServerError);
-            }
-            catch (ApplicationException ex)
-            {
-                return BadRequest(new {message = ex.Message});
-            }
-        }
-
-        [HttpDelete("{id}")]
-        [ProducesResponseType(StatusCodes.Status204NoContent)]
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [Authorize]
+        [HttpDelete("{id:int}")]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(typeof(object), StatusCodes.Status200OK)]
         public IActionResult Delete(int id)
         {
-            var result = _userService.Delete(id);
-            return result
-                ? NoContent()
-                : StatusCode(StatusCodes.Status500InternalServerError);
+            // users can delete their own account and admins can delete any account
+            if (id != User.Id && User.Role != Role.Admin)
+                return Unauthorized(new {message = "Unauthorized"});
+
+            _userService.Delete(id);
+            return Ok(new {message = "Account deleted successfully"});
         }
 
         #region helpers
@@ -172,6 +183,13 @@ namespace RecipeRandomizer.Web.Controllers
             return HttpContext.Connection.RemoteIpAddress.MapToIPv4().ToString();
         }
 
+        private bool OwnsToken(int userId, string token)
+        {
+            var tokens = _userService.GetUserRefreshTokens(userId);
+            return tokens.FirstOrDefault(t => t == token) != null;
+        }
+
         #endregion
+
     }
 }
