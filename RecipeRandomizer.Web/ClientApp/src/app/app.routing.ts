@@ -4,10 +4,16 @@ import {AuthGuard} from '@app/helpers/auth.guard';
 
 /* Routable views */
 import {DashboardComponent} from '@app/views/dashboard/dashboard.component';
+import {HomeComponent} from '@app/views/home/home.component';
+import {NotFoundComponent} from '@app/views/not-found/not-found.component';
 
 const routes: Routes = [
-    {path: 'dashboard', component: DashboardComponent, canActivate: [AuthGuard]},
-    {path: '', redirectTo: '/', pathMatch: 'full'},
+    {path: '', component: HomeComponent},
+    {path: 'home', component: HomeComponent},
+    {path: '404', component: NotFoundComponent},
+    {
+        path: 'dashboard', component: DashboardComponent, canActivate: [AuthGuard], children: []
+    },
     {path: '**', redirectTo: '/404', pathMatch: 'full'}
 ];
 

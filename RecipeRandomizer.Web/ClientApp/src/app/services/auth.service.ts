@@ -29,13 +29,8 @@ export class AuthService {
         return this.userSubject.value;
     }
 
-    public register(registerRequest: RegisterRequest): Observable<User> {
-        return this.http.post<User>(`${environment.apiUrl}/users/register`, registerRequest)
-            .pipe(map(user => {
-                this.userSubject.next(user);
-                this.startRefreshTokenTimer();
-                return user;
-            }));
+    public register(registerRequest: RegisterRequest): Observable<any> {
+        return this.http.post<User>(`${environment.apiUrl}/users/register`, registerRequest).pipe(response => response);
     }
 
     public login(authRequest: AuthRequest): Observable<User> {

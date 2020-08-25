@@ -25,15 +25,18 @@ namespace RecipeRandomizer.Web.Utils
             }
             catch (Exception error)
             {
+#if DEBUG
+                // write exception stack trace to console in debug
+                await Console.Error.WriteLineAsync(error.ToString());
+#endif
+
                 var response = context.Response;
                 response.ContentType = "application/json";
 
                 response.StatusCode = error switch
                 {
-                    BadRequestException e =>
-                        (int) HttpStatusCode.BadRequest,
-                    KeyNotFoundException e =>
-                        (int) HttpStatusCode.NotFound,
+                    BadRequestException e => (int) HttpStatusCode.BadRequest,
+                    KeyNotFoundException e => (int) HttpStatusCode.NotFound,
                     _ => (int) HttpStatusCode.InternalServerError
                 };
 

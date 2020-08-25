@@ -25,6 +25,10 @@ import {SpinnerComponent} from './components/spinner/spinner.component';
 import {AlertComponent} from './components/alert/alert.component';
 import {ForgotPasswordComponent} from './views/forgot-password/forgot-password.component';
 import {NotFoundComponent} from './views/not-found/not-found.component';
+import {HomeComponent} from './views/home/home.component';
+import {ToastComponent} from '@app/components/toast/toast.component';
+import { RecipesComponent } from './views/recipes/recipes.component';
+import { RecipeComponent } from './views/recipes/recipe/recipe.component';
 
 @NgModule({
     declarations: [
@@ -38,6 +42,10 @@ import {NotFoundComponent} from './views/not-found/not-found.component';
         AlertComponent,
         ForgotPasswordComponent,
         NotFoundComponent,
+        HomeComponent,
+        ToastComponent,
+        RecipesComponent,
+        RecipeComponent
     ],
     imports: [
         BrowserModule,

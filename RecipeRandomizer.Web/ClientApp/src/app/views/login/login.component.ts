@@ -26,9 +26,9 @@ export class LoginComponent implements OnInit {
                 private authenticationService: AuthService,
                 private dialogService: NgbModal,
                 public activeModal: NgbActiveModal) {
-        // redirect to home if already logged in
+        // redirect to user dashboard if already logged in
         if (this.authenticationService.user) {
-            this.router.navigate(['/']);
+            this.router.navigate(['/dashboard']);
         }
     }
 
@@ -39,7 +39,7 @@ export class LoginComponent implements OnInit {
         });
 
         // get return url from route parameters or default to '/'
-        this.returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/';
+        this.returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/dashboard';
     }
 
     // convenience getter for easy access to form fields
@@ -60,6 +60,7 @@ export class LoginComponent implements OnInit {
             .pipe(first())
             .subscribe({
                 next: () => {
+                    this.activeModal.dismiss();
                     this.router.navigate([this.returnUrl]);
                 },
                 error: error => {

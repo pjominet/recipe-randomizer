@@ -2,29 +2,21 @@
 using MailKit.Net.Smtp;
 using MailKit.Security;
 using System.Threading.Tasks;
-using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Options;
 using MimeKit;
 using MimeKit.Text;
 using RecipeRandomizer.Business.Interfaces;
+using RecipeRandomizer.Business.Utils.Settings;
 
 namespace RecipeRandomizer.Business.Services
 {
     public class EmailService : IEmailService
     {
-        private readonly string _from;
-        private readonly string _smtpHost;
-        private readonly int _smtpPort;
-        private readonly string _smtpUser;
-        private readonly string _smtpKey;
+        private readonly EmailSettings _emailSettings;
 
-        public EmailService(IConfiguration configuration)
+        public EmailService(IOptions<EmailSettings> emailSettings)
         {
-            var emailSettings = configuration.GetSection("EmailSetting");
-            _from = emailSettings.GetValue<string>("From");
-            _smtpHost = emailSettings.GetValue<string>("SmtpHost");
-            _smtpPort = emailSettings.GetValue<int>("SmtpPort");
-            _smtpUser = emailSettings.GetValue<string>("SmtpUser");
-            _smtpKey = emailSettings.GetValue<string>("SmtpKey");
+            _emailSettings = emailSettings.Value;
         }
 
         public async Task SendEmailAsync(string to, string subject, string html, string from = null)
@@ -34,7 +26,7 @@ namespace RecipeRandomizer.Business.Services
                 // create message
                 var email = new MimeMessage
                 {
-                    Sender = MailboxAddress.Parse(from ?? _from)
+                    Sender = MailboxAddress.Parse(from ?? _emailSettings.From)
                 };
                 email.To.Add(MailboxAddress.Parse(to));
                 email.Subject = subject;
@@ -45,8 +37,8 @@ namespace RecipeRandomizer.Business.Services
 
                 // send email
                 using var smtp = new SmtpClient();
-                await smtp.ConnectAsync(_smtpHost, _smtpPort, SecureSocketOptions.StartTls);
-                await smtp.AuthenticateAsync(_smtpUser, _smtpKey);
+                await smtp.ConnectAsync(_emailSettings.SmtpHost, _emailSettings.SmtpPort, SecureSocketOptions.StartTls);
+                await smtp.AuthenticateAsync(_emailSettings.SmtpUser, _emailSettings.SmtpKey);
                 await smtp.SendAsync(email);
                 await smtp.DisconnectAsync(true);
             }

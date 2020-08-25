@@ -11,6 +11,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 using RecipeRandomizer.Business.Interfaces;
 using RecipeRandomizer.Business.Services;
+using RecipeRandomizer.Business.Utils.Settings;
 using RecipeRandomizer.Data.Contexts;
 using RecipeRandomizer.Web.Utils;
 
@@ -25,8 +26,8 @@ namespace RecipeRandomizer.Web
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
-            _version = Configuration.GetValue<string>("Version");
-            _appName = Configuration.GetValue<string>("AppName");
+            _version = Configuration.GetValue<string>("AppSettings:Version");
+            _appName = Configuration.GetValue<string>("AppSettings:AppName");
         }
 
         // This method gets called by the runtime. Use this method to add services to the container.
@@ -36,6 +37,10 @@ namespace RecipeRandomizer.Web
                 options => options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"),
                     sqlServerOptions => sqlServerOptions.CommandTimeout(60))
             );
+
+            // configure strongly typed settings
+            services.Configure<AppSettings>(Configuration.GetSection("AppSettings"));
+            services.Configure<EmailSettings>(Configuration.GetSection("EmailSettings"));
 
             InjectServices(services);
 

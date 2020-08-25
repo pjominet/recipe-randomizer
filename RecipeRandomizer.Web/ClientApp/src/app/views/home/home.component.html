@@ -1,0 +1,50 @@
+<div class="container vh-100 d-flex align-items-center">
+    <div class="card w-100 py-md-5">
+        <div class="card-body">
+            <h1 class="text-primary text-center mt-5 mb-3">Recipe Fortune Wheel</h1>
+
+            <section class="text-center mb-4" id="fortuneWheel">
+                <button type="submit" class="btn btn-lg btn-secondary" (click)="getRandomRecipe()" *ngIf="!isLoading; else spinner">
+                    Spin The Wheel
+                </button>
+                <ng-template #spinner>
+                    <app-spinner [withBackdrop]="false"></app-spinner>
+                </ng-template>
+            </section>
+
+            <section class="mb-5">
+                <p class="text-center">Select additional filters or leave empty to search the entire database</p>
+                <ng-select class="custom-ng-select"
+                           [items]="tagCategories"
+                           [multiple]="true"
+                           groupBy="tags"
+                           [selectableGroup]="true"
+                           [selectableGroupAsModel]="false"
+                           [closeOnSelect]="false"
+                           [(ngModel)]="selectedTags">
+                    <ng-template ng-optgroup-tmp let-tagCategory="item" let-item$="item$" let-index="index">
+                        <div class="custom-control custom-checkbox">
+                            <input type="checkbox" [ngModel]="item$.selected" class="custom-control-input" id="tag-group-{{index}}"/>
+                            <label class="custom-control-label">{{tagCategory.label | uppercase}}</label>
+                        </div>
+                    </ng-template>
+                    <ng-template ng-option-tmp let-tag="item" let-item$="item$" let-index="index">
+                        <div class="custom-control custom-checkbox">
+                            <input type="checkbox" [ngModel]="item$.selected" class="custom-control-input" id="tag-{{index}}"/>
+                            <label class="custom-control-label">{{tag.label}}</label>
+                        </div>
+                    </ng-template>
+                </ng-select>
+            </section>
+            <section class="mb-3">
+                <p class="text-center">
+                    Want to upload recipes yourself?
+                </p>
+                <div class="d-flex justify-content-center">
+                    <button class="btn btn-outline-info mr-1" (click)="openSignInDialog()">Sign-In</button>
+                    <button class="btn btn-outline-info ml-1" (click)="openSignUpDialog()">Sign-Up</button>
+                </div>
+            </section>
+        </div>
+    </div>
+</div>

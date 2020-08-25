@@ -6,6 +6,7 @@ import {first} from 'rxjs/operators';
 import {NgbActiveModal} from '@ng-bootstrap/ng-bootstrap';
 import {RegisterRequest} from '@app/models/identity/registerRequest';
 import {MustMatchValidator} from '@app/helpers/must-match.validator';
+import {ToastService} from '@app/components/toast/toast.service';
 
 @Component({
     selector: 'app-register',
@@ -23,7 +24,8 @@ export class RegisterComponent implements OnInit {
                 private route: ActivatedRoute,
                 private router: Router,
                 private authService: AuthService,
-                public activeModal: NgbActiveModal) {
+                public activeModal: NgbActiveModal,
+                private toastService: ToastService) {
     }
 
     ngOnInit() {
@@ -48,9 +50,8 @@ export class RegisterComponent implements OnInit {
         this.isSubmitted = true;
 
         // stop here if form is invalid
-        if (this.registerForm.invalid) {
+        if (this.registerForm.invalid)
             return;
-        }
 
         this.isLoading = true;
         this.authService.register(new RegisterRequest(
@@ -62,8 +63,9 @@ export class RegisterComponent implements OnInit {
             this.f.acceptTerms.value))
             .pipe(first())
             .subscribe(
-                () => {
-                    this.router.navigate(['/dashboard']);
+                response => {
+                    this.activeModal.dismiss()
+                    this.toastService.toastSuccess(response.message);
                 },
                 error => {
                     this.error = error;

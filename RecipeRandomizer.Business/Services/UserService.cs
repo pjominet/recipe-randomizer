@@ -7,11 +7,13 @@ using System.Security.Cryptography;
 using System.Text;
 using AutoMapper;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using RecipeRandomizer.Business.Interfaces;
 using RecipeRandomizer.Business.Models.Identity;
 using RecipeRandomizer.Business.Models.Nomenclature;
 using RecipeRandomizer.Business.Utils.Exceptions;
+using RecipeRandomizer.Business.Utils.Settings;
 using RecipeRandomizer.Data.Contexts;
 using RecipeRandomizer.Data.Repositories;
 using Entities = RecipeRandomizer.Data.Entities.Identity;
@@ -24,28 +26,35 @@ namespace RecipeRandomizer.Business.Services
 
         private readonly UserRepository _userRepository;
         private readonly IMapper _mapper;
-        private readonly string _jwtSecret;
+        private readonly AppSettings _appSettings;
         private readonly IEmailService _emailService;
 
-        public UserService(RRContext context, IMapper mapper, IConfiguration configuration, IEmailService emailService)
+        public UserService(RRContext context, IMapper mapper, IOptions<AppSettings> appSettings, IEmailService emailService)
         {
             _userRepository = new UserRepository(context);
             _mapper = mapper;
-            _jwtSecret = configuration.GetValue<string>("JWTSecret");
+            _appSettings = appSettings.Value;
             _emailService = emailService;
         }
 
         public User Authenticate(AuthRequest model, string ipAddress)
         {
-            var user = _userRepository.GetFirstOrDefault<Entities.User>(x => x.Email == model.Email);
+            string[] includes =
+            {
+                $"{nameof(Entities.User.Role)}",
+                $"{nameof(Entities.User.RefreshTokens)}"
+            };
+            var user = _userRepository.GetFirstOrDefault<Entities.User>(u => u.Email == model.Email, includes);
 
-            // return null if user not found
             if (user == null || !user.IsVerified || !BC.Verify(model.Password, user.PasswordHash))
                 throw new BadRequestException("Email or password is incorrect");
 
             // authentication successful so generate jwt and refresh tokens
             var jwtToken = GenerateJwtToken(user);
-            var refreshToken = GenerateRefreshToken(ipAddress);
+
+            // check if there is an active refresh token already and use that instead of generating a new one
+            var activeRefreshToken = user.RefreshTokens.SingleOrDefault(r => r.IsActive && r.ExpiresOn >= DateTime.UtcNow);
+            var refreshToken = activeRefreshToken ?? GenerateRefreshToken(ipAddress);
 
             // save refresh token
             user.RefreshTokens.Add(refreshToken);
@@ -98,9 +107,8 @@ namespace RecipeRandomizer.Business.Services
             if(!model.HasAcceptedTerms)
                 throw new BadRequestException("Terms and services have not been accepted");
 
-            // validate
-            var users = _userRepository.GetAll<Entities.User>(u => u.Email == model.Email).ToList();
-            if (users.Any())
+            // check if user already exists
+            if (_userRepository.Exists<Entities.User>(u => u.Email == model.Email))
             {
                 // send already registered error in email to prevent account multiplication
                 SendAlreadyRegisteredEmail(model.Email, origin);
@@ -110,8 +118,7 @@ namespace RecipeRandomizer.Business.Services
             var user = _mapper.Map<Entities.User>(model);
 
             // first registered account is an admin
-            var isFirstAccount = !users.Any();
-            user.RoleId = isFirstAccount ? (int) Role.Admin : (int) Role.User;
+            user.RoleId = !_userRepository.HasUsers() ? (int) Role.Admin : (int) Role.User;
 
             user.CreatedOn = DateTime.UtcNow;
             user.VerificationToken = GenerateRandomToken();
@@ -253,13 +260,13 @@ namespace RecipeRandomizer.Business.Services
         private string GenerateJwtToken(Entities.User user)
         {
             var tokenHandler = new JwtSecurityTokenHandler();
-            var key = Encoding.ASCII.GetBytes(_jwtSecret);
+            var key = Encoding.ASCII.GetBytes(_appSettings.JwtSecret);
             var tokenDescriptor = new SecurityTokenDescriptor
             {
                 Subject = new ClaimsIdentity(new[]
                 {
                     new Claim("id", user.Id.ToString()),
-                    new Claim("role", user.Role.ToString())
+                    new Claim("role", user.Role.Label)
                 }),
                 Expires = DateTime.UtcNow.AddMinutes(15),
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
@@ -293,7 +300,7 @@ namespace RecipeRandomizer.Business.Services
             string message;
             if (!string.IsNullOrWhiteSpace(origin))
             {
-                var verifyUrl = $"{origin}/users/verify-email?token={user.VerificationToken}";
+                var verifyUrl = $"{origin}/verify-email?token={user.VerificationToken}";
                 message = $@"<p>Please click the below link to verify your email address:</p>
                              <p><a href=""{verifyUrl}"">{verifyUrl}</a></p>";
             }
@@ -301,8 +308,8 @@ namespace RecipeRandomizer.Business.Services
 
             _emailService.SendEmailAsync(
                 user.Email,
-                "Recipe Wheel Sign-up - Verify Email",
-                $@"<p>Thanks for registering!</p>{message}<p>This is an automated message, do not reply to this email address!</p>"
+                "Recipe Wheel Sign-up: Verify Email",
+                $@"<p>Thank you for registering with <strong>Recipe Wheel</strong>!</p>{message}<p>This is an automated message, do not reply to this email address!</p>"
             );
         }
 
@@ -311,13 +318,13 @@ namespace RecipeRandomizer.Business.Services
             string message;
             if (!string.IsNullOrWhiteSpace(origin))
             {
-                message = $@"<p>If you can't remember your password, please visit the <a href=""{origin}/users/forgot-password"">forgot password</a> page.</p>";
+                message = $@"<p>If you can't remember your password, please visit the <a href=""{origin}/forgot-password"">forgot password</a> page.</p>";
             }
             else throw new ApplicationException("Origin url must be provided to generate the verification link!");
 
             _emailService.SendEmailAsync(
                 email,
-                "Recipe Wheel Sign-up - Email Already Registered",
+                "Recipe Wheel Sign-up: Email Already Registered",
                 $@"<p>Your email <strong>{email}</strong> is already registered.</p>{message}<p>This is an automated message, do not reply to this email address!</p>"
             );
         }
@@ -327,7 +334,7 @@ namespace RecipeRandomizer.Business.Services
             string message;
             if (!string.IsNullOrEmpty(origin))
             {
-                var resetUrl = $"{origin}/account/reset-password?token={user.ResetToken}";
+                var resetUrl = $"{origin}/reset-password?token={user.ResetToken}";
                 message = $@"<p>Please click the below link to reset your password, the link will be valid for 24 hours:</p>
                              <p><a href=""{resetUrl}"">{resetUrl}</a></p>";
             }
