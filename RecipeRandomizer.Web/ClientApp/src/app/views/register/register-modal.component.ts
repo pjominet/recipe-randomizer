@@ -7,7 +7,7 @@ import {RegisterComponent} from './register.component';
 
 @Component({
     selector: 'app-modal-container',
-    template: '<!-- Recipe details will be rendered here -->'
+    template: '<!-- Register view will be rendered here -->'
 })
 export class RegisterModalComponent implements OnInit, OnDestroy {
 

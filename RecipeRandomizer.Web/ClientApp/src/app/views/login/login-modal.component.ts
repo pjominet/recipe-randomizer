@@ -24,16 +24,24 @@ export class LoginModalComponent implements OnInit, OnDestroy {
             // create the actual modal
             this.modalRef = this.modalService.open(LoginComponent, {centered: true});
 
-            // go back to parent page after the modal is closed
+            // go back to parent page after the modal is closed/dismissed
             this.modalRef.result.then(
-                result => {
+                result => { // on close
                     if (result === 'forgot-password-redirect') {
                         this.router.navigateByUrl('/forgot-password');
+                    } else if (result === 'login-success') {
+                        this.router.navigateByUrl('/dashboard');
                     } else {
                         this.router.navigate(['..'], {relativeTo: this.route});
                     }
-                }, reason => {
-                    this.router.navigate(['..'], {relativeTo: this.route});
+                }, reason => { // on dismiss
+                    if (reason === 'forgot-password-redirect') {
+                        this.router.navigateByUrl('/forgot-password');
+                    } else if (reason === 'login-success') {
+                        this.router.navigateByUrl('/dashboard');
+                    } else {
+                        this.router.navigate(['..'], {relativeTo: this.route});
+                    }
                 });
         });
 

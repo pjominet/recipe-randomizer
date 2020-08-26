@@ -7,7 +7,7 @@ import {ForgotPasswordComponent} from './forgot-password.component';
 
 @Component({
     selector: 'app-modal-container',
-    template: '<!-- Recipe details will be rendered here -->'
+    template: '<!-- Forgot password view will be rendered here -->'
 })
 export class ForgotPasswordModalComponent implements OnInit, OnDestroy {
 

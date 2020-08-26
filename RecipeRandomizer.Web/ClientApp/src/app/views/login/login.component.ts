@@ -16,7 +16,6 @@ export class LoginComponent implements OnInit {
     public loginForm: FormGroup;
     public isLoading: boolean = false;
     public isSubmitted: boolean = false;
-    public returnUrl: string;
     public error: string = '';
 
     constructor(private formBuilder: FormBuilder,
@@ -35,9 +34,6 @@ export class LoginComponent implements OnInit {
             email: ['', [Validators.required, Validators.email]],
             password: ['', Validators.required]
         });
-
-        // get return url from route parameters or default to '/'
-        this.returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/dashboard';
     }
 
     // convenience getter for easy access to form fields
@@ -58,8 +54,7 @@ export class LoginComponent implements OnInit {
             .pipe(first())
             .subscribe({
                 next: () => {
-                    this.activeModal.dismiss();
-                    this.router.navigate([this.returnUrl]);
+                    this.activeModal.dismiss('login-success');
                 },
                 error: error => {
                     this.error = error;
@@ -69,6 +64,6 @@ export class LoginComponent implements OnInit {
     }
 
     public gotoForgotPassword(): void {
-        this.activeModal.close('forgot-password-redirect');
+        this.activeModal.dismiss('forgot-password-redirect');
     }
 }
