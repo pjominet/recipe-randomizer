@@ -5,7 +5,6 @@ import {AuthService} from '@app/services/auth.service';
 import {AuthRequest} from '@app/models/identity/authRequest';
 import {first} from 'rxjs/operators';
 import {NgbActiveModal, NgbModal} from '@ng-bootstrap/ng-bootstrap';
-import {ForgotPasswordComponent} from '@app/views/forgot-password/forgot-password.component';
 
 @Component({
     selector: 'app-login',
@@ -24,7 +23,6 @@ export class LoginComponent implements OnInit {
                 private route: ActivatedRoute,
                 private router: Router,
                 private authenticationService: AuthService,
-                private dialogService: NgbModal,
                 public activeModal: NgbActiveModal) {
         // redirect to user dashboard if already logged in
         if (this.authenticationService.user) {
@@ -70,8 +68,7 @@ export class LoginComponent implements OnInit {
             });
     }
 
-    public openPasswordForgottenDialog(): void {
-        this.dialogService.dismissAll();
-        this.dialogService.open(ForgotPasswordComponent, {centered: true});
+    public gotoForgotPassword(): void {
+        this.activeModal.close('forgot-password-redirect');
     }
 }

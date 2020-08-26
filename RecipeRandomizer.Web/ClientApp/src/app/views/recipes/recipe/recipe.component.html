@@ -1,0 +1,16 @@
+<div class="card" *ngIf="recipe">
+    <h4 class="card-header text-center">{{recipe.name}}</h4>
+    <div class="card-body">
+        <ul>
+            <li *ngFor="let ingredient of recipe.ingredients">
+                {{ingredient.name}}&nbsp;{{ingredient.quantity}}&nbsp;{{ingredient.quantityUnit.label}}
+            </li>
+        </ul>
+
+        <div class="d-flex justify-content-center">
+            <button class="btn btn-outline-primary" (click)="activeModal.close()">
+                Close
+            </button>
+        </div>
+    </div>
+</div>

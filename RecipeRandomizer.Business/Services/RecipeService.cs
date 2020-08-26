@@ -14,34 +14,33 @@ namespace RecipeRandomizer.Business.Services
     {
         private readonly RecipeRepository _recipeRepository;
         private readonly IMapper _mapper;
-        private readonly string[] _baseIncludes;
 
         public RecipeService(RRContext context, IMapper mapper)
         {
             _recipeRepository = new RecipeRepository(context);
             _mapper = mapper;
-            _baseIncludes = new []
-            {
-                $"{nameof(Entities.Recipe.Cost)}",
-                $"{nameof(Entities.Recipe.Difficulty)}",
-                $"{nameof(Entities.Recipe.Ingredients)}.{nameof(Entities.Ingredient.Quantity)}",
-                $"{nameof(Entities.Recipe.RecipeTagAssociations)}"
-            };
         }
 
         public IEnumerable<Recipe> GetRecipes()
         {
-            return _mapper.Map<IEnumerable<Recipe>>(_recipeRepository.GetAll<Entities.Recipe>(r => !r.IsDeleted, _baseIncludes));
+            return _mapper.Map<IEnumerable<Recipe>>(_recipeRepository.GetRecipes());
         }
 
         public IEnumerable<Recipe> GetDeletedRecipes()
         {
-            return _mapper.Map<IEnumerable<Recipe>>(_recipeRepository.GetAll<Entities.Recipe>(r => r.IsDeleted, _baseIncludes));
+            return _mapper.Map<IEnumerable<Recipe>>(_recipeRepository.GetRecipes(true));
         }
 
         public Recipe GetRecipe(int id)
         {
-            return _mapper.Map<Recipe>(_recipeRepository.GetFirstOrDefault<Entities.Recipe>(r => r.Id == id && !r.IsDeleted, _baseIncludes));
+            string[] includes =
+            {
+                $"{nameof(Entities.Recipe.Cost)}",
+                $"{nameof(Entities.Recipe.Difficulty)}",
+                $"{nameof(Entities.Recipe.Ingredients)}.{nameof(Entities.Ingredient.QuantityUnit)}",
+                $"{nameof(Entities.Recipe.RecipeTagAssociations)}"
+            };
+            return _mapper.Map<Recipe>(_recipeRepository.GetFirstOrDefault<Entities.Recipe>(r => r.Id == id, includes));
         }
 
         public Recipe GetRandomRecipe(IEnumerable<int> tagIds)
@@ -56,7 +55,14 @@ namespace RecipeRandomizer.Business.Services
 
         public IEnumerable<Recipe> GetRecipesFromUser(int userId)
         {
-            return _mapper.Map<IEnumerable<Recipe>>(_recipeRepository.GetAll<Entities.Recipe>(r => r.UserId == userId, _baseIncludes));
+            string[] includes =
+            {
+                $"{nameof(Entities.Recipe.Cost)}",
+                $"{nameof(Entities.Recipe.Difficulty)}",
+                $"{nameof(Entities.Recipe.Ingredients)}.{nameof(Entities.Ingredient.QuantityUnit)}",
+                $"{nameof(Entities.Recipe.RecipeTagAssociations)}"
+            };
+            return _mapper.Map<IEnumerable<Recipe>>(_recipeRepository.GetAll<Entities.Recipe>(r => r.UserId == userId, includes));
         }
 
         public IEnumerable<Recipe> GetRecipesFromUserAndTags(int userId, IEnumerable<int> tagIds)

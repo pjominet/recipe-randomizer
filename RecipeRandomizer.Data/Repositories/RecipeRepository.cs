@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Migrations.Operations;
 using RecipeRandomizer.Data.Contexts;
 using RecipeRandomizer.Data.Entities;
 
@@ -10,6 +11,18 @@ namespace RecipeRandomizer.Data.Repositories
     public class RecipeRepository : BaseRepository<RRContext>
     {
         public RecipeRepository(RRContext context) : base(context) { }
+
+        public IEnumerable<Recipe> GetRecipes(bool deleted = false)
+        {
+            return Context.Recipes
+                .Include(r => r.Cost)
+                .Include(r => r.Difficulty)
+                .Include(r => r.Ingredients)
+                .ThenInclude(i => i.QuantityUnit)
+                .Include(r => r.RecipeTagAssociations)
+                .AsEnumerable()
+                .Where(r => r.IsDeleted == deleted);
+        }
 
         public Recipe GetRandomRecipe(IList<int> tagIds)
         {
@@ -27,9 +40,9 @@ namespace RecipeRandomizer.Data.Repositories
                 .Include(r => r.Cost)
                 .Include(r => r.Difficulty)
                 .Include(r => r.Ingredients)
-                .ThenInclude(i => i.Quantity)
+                .ThenInclude(i => i.QuantityUnit)
                 .Include(r => r.RecipeTagAssociations)
-                .FirstOrDefault();
+                .FirstOrDefault(r => !r.IsDeleted);
         }
 
         public IEnumerable<Recipe> GetRecipesFromTags(IEnumerable<int> tagIds)
@@ -40,9 +53,10 @@ namespace RecipeRandomizer.Data.Repositories
                 .Include(r => r.Cost)
                 .Include(r => r.Difficulty)
                 .Include(r => r.Ingredients)
-                .ThenInclude(i => i.Quantity)
+                .ThenInclude(i => i.QuantityUnit)
                 .Include(r => r.RecipeTagAssociations)
-                .ToList();
+                .AsEnumerable()
+                .Where(r => !r.IsDeleted);
         }
 
         public void HardDeleteRecipe(int id)

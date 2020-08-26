@@ -1,0 +1,18 @@
+<section class="container vh-100 bg-white">
+    <h1 class="text-primary text-center pt-5 mb-2">Recipe Fortune Wheel</h1>
+    <h2 class="h3 text-secondary text-center">Recipe Browser</h2>
+    <div class="mt-5">
+        <ul class="list-group list-group-flush" *ngIf="recipes.length > 0; else noRecipes">
+            <li class="list-group-item" *ngFor="let recipe of recipes">
+                <a [routerLink]="[recipe.id]">{{recipe.name}}</a>:<span class="ml-5 text-muted">{{recipe.description}}</span>
+            </li>
+        </ul>
+        <ng-template #noRecipes>
+            <p class="text-center text-muted">
+                There are no recipes yet :(
+            </p>
+        </ng-template>
+    </div>
+</section>
+
+<router-outlet></router-outlet>

@@ -2,9 +2,9 @@
 
 namespace RecipeRandomizer.Data.Entities.Nomenclature
 {
-    public class Quantity
+    public class QuantityUnit
     {
-        public Quantity()
+        public QuantityUnit()
         {
             Ingredients = new HashSet<Ingredient>();
         }

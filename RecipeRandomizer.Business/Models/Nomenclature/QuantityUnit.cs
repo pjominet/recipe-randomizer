@@ -2,7 +2,7 @@
 
 namespace RecipeRandomizer.Business.Models.Nomenclature
 {
-    public class Quantity
+    public class QuantityUnit
     {
         public int Id { get; set; }
         public string Label { get; set; }

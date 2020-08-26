@@ -19,9 +19,9 @@ namespace RecipeRandomizer.Data.Contexts
                     .IsRequired()
                     .HasMaxLength(32);
 
-                entity.HasOne(i => i.Quantity)
+                entity.HasOne(i => i.QuantityUnit)
                     .WithMany(q => q.Ingredients)
-                    .HasForeignKey(i => i.QuantityId)
+                    .HasForeignKey(i => i.QuantityUnitId)
                     .OnDelete(DeleteBehavior.Restrict)
                     .HasConstraintName("FK_Ingredient_Quantity");
 

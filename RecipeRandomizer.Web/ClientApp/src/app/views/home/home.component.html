@@ -35,16 +35,23 @@
                         </div>
                     </ng-template>
                 </ng-select>
+                <div class="text-center mt-2">
+                    <a routerLink="/recipes">
+                        Browse all recipes
+                    </a>
+                </div>
             </section>
             <section class="mb-3">
                 <p class="text-center">
                     Want to upload recipes yourself?
                 </p>
                 <div class="d-flex justify-content-center">
-                    <button class="btn btn-outline-info mr-1" (click)="openSignInDialog()">Sign-In</button>
-                    <button class="btn btn-outline-info ml-1" (click)="openSignUpDialog()">Sign-Up</button>
+                    <a class="btn btn-outline-info mr-1" routerLink="/sign-in">Sign-In</a>
+                    <a class="btn btn-outline-info ml-1" routerLink="/sign-up">Sign-Up</a>
                 </div>
             </section>
         </div>
     </div>
 </div>
+
+<router-outlet></router-outlet>

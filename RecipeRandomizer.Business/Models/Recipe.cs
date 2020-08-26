@@ -18,8 +18,8 @@ namespace RecipeRandomizer.Business.Models
         public int PrepTime { get; set; }
         public int CookTime { get; set; }
         public string Preparation { get; set; }
-        public DateTime DateCreated { get; set; }
-        public DateTime LastUpdated { get; set; }
+        public DateTime CreatedOn { get; set; }
+        public DateTime LastUpdatedOn { get; set; }
         public DateTime? DeletedOn { get; set; }
         public bool IsDeleted { get; set; }
 

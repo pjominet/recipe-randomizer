@@ -7,7 +7,7 @@ namespace RecipeRandomizer.Data.Contexts
     {
         public virtual DbSet<Cost> Costs { get; set; }
         public virtual DbSet<Difficulty> Difficulties { get; set; }
-        public virtual DbSet<Quantity> Quantities { get; set; }
+        public virtual DbSet<QuantityUnit> Quantities { get; set; }
         public virtual DbSet<Tag> Tags { get; set; }
         public virtual DbSet<TagCategory> TagCategories { get; set; }
 
@@ -35,7 +35,7 @@ namespace RecipeRandomizer.Data.Contexts
                     .HasMaxLength(32);
             });
 
-            modelBuilder.Entity<Quantity>(entity =>
+            modelBuilder.Entity<QuantityUnit>(entity =>
             {
                 entity.ToTable("Quantity", "Nomenclature");
 

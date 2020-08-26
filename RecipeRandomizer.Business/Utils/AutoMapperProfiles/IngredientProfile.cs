@@ -10,7 +10,7 @@ namespace RecipeRandomizer.Business.Utils.AutoMapperProfiles
             CreateMap<Entities.Ingredient, Models.Ingredient>();
             CreateMap<Models.Ingredient, Entities.Ingredient>()
                 .ForMember(dest => dest.Id, opt => opt.Ignore())
-                .ForMember(dest => dest.Quantity, opt => opt.Ignore())
+                .ForMember(dest => dest.QuantityUnit, opt => opt.Ignore())
                 .ForMember(dest => dest.Recipe, opt => opt.Ignore());
         }
     }
