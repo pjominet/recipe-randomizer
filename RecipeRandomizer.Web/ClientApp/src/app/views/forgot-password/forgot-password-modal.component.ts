@@ -27,9 +27,17 @@ export class ForgotPasswordModalComponent implements OnInit, OnDestroy {
             // go back to parent page after the modal is closed
             this.modalRef.result.then(
                 result => {
-                    this.router.navigate(['..'], {relativeTo: this.route});
+                    if (result === 'cancel') {
+                        this.router.navigateByUrl('/sign-in');
+                    } else {
+                        this.router.navigate(['..'], {relativeTo: this.route});
+                    }
                 }, reason => {
-                    this.router.navigate(['..'], {relativeTo: this.route});
+                    if (reason === 'cancel') {
+                        this.router.navigateByUrl('/sign-in');
+                    } else {
+                        this.router.navigate(['..'], {relativeTo: this.route});
+                    }
                 });
         });
 
