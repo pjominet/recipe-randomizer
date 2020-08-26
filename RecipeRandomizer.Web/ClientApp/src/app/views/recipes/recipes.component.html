@@ -4,7 +4,17 @@
     <div class="mt-5">
         <ul class="list-group list-group-flush" *ngIf="recipes.length > 0; else noRecipes">
             <li class="list-group-item" *ngFor="let recipe of recipes">
-                <a [routerLink]="[recipe.id]">{{recipe.name}}</a>:<span class="ml-5 text-muted">{{recipe.description}}</span>
+                <a class="row text-decoration-none" [routerLink]="[recipe.id]">
+                    <div class="col-12 col-md-4">
+                        {{recipe.name}}
+                    </div>
+                    <div class="col-12 col-md-4">
+                        {{recipe.description}}
+                    </div>
+                    <div class="col-12 col-md-4">
+                        <span class="badge badge-lg badge-secondary mx-1 rounded" *ngFor="let tag of recipe.tags">{{tag.label}}</span>
+                    </div>
+                </a>
             </li>
         </ul>
         <ng-template #noRecipes>

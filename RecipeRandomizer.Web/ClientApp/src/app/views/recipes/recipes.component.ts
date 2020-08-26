@@ -18,6 +18,7 @@ export class RecipesComponent implements OnInit {
         this.recipeService.getRecipes().subscribe(
             recipes => {
                 this.recipes = recipes;
+                console.log(recipes);
             }, error => {
                 console.log(error);
             }

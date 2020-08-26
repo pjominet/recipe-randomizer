@@ -20,6 +20,7 @@ namespace RecipeRandomizer.Data.Repositories
                 .Include(r => r.Ingredients)
                 .ThenInclude(i => i.QuantityUnit)
                 .Include(r => r.RecipeTagAssociations)
+                .ThenInclude(rta => rta.Tag)
                 .AsEnumerable()
                 .Where(r => r.IsDeleted == deleted);
         }
@@ -42,6 +43,7 @@ namespace RecipeRandomizer.Data.Repositories
                 .Include(r => r.Ingredients)
                 .ThenInclude(i => i.QuantityUnit)
                 .Include(r => r.RecipeTagAssociations)
+                .ThenInclude(rta => rta.Tag)
                 .FirstOrDefault(r => !r.IsDeleted);
         }
 
@@ -55,6 +57,7 @@ namespace RecipeRandomizer.Data.Repositories
                 .Include(r => r.Ingredients)
                 .ThenInclude(i => i.QuantityUnit)
                 .Include(r => r.RecipeTagAssociations)
+                .ThenInclude(rta => rta.Tag)
                 .AsEnumerable()
                 .Where(r => !r.IsDeleted);
         }

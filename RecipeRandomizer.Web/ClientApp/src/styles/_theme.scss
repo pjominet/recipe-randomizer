@@ -33,6 +33,15 @@ $input-focus-border-color: lighten($primary, 15%);
         darken($bg-color, 10%), darken($bg-color, 12.5%));
 }
 
+.badge {
+    font-weight: normal !important;
+    font-size: 85% !important;
+
+    &-lg {
+        font-size: 100% !important;
+    }
+}
+
 // ng-select variable override
 $ng-select-highlight: $secondary;
 $ng-select-primary-text: $white;
