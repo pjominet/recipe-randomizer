@@ -1,4 +1,4 @@
-﻿export class ForgotPasswordRequest {
+﻿export class VerificationRequest {
     email: string;
 
     constructor(email: string) {

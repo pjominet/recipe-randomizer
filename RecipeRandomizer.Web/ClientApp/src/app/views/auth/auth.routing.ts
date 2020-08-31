@@ -6,6 +6,7 @@ import {LoginComponent} from './auth-layout/login/login.component';
 import {RegisterComponent} from './auth-layout/register/register.component';
 import {VerifyEmailComponent} from './auth-layout/verify-email/verify-email.component';
 import {ForgotPasswordComponent} from './auth-layout/forgot-password/forgot-password.component';
+import {ResetPasswordComponent} from './auth-layout/reset-password/reset-password.component';
 
 const routes: Routes = [
     {
@@ -14,7 +15,8 @@ const routes: Routes = [
             {path: 'login', component: LoginComponent},
             {path: 'register', component: RegisterComponent},
             {path: 'verify-email', component: VerifyEmailComponent},
-            {path: 'forgot-password', component: ForgotPasswordComponent}
+            {path: 'forgot-password', component: ForgotPasswordComponent},
+            {path: 'reset-password', component: ResetPasswordComponent}
         ]
     }
 ];

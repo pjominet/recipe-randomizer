@@ -19,7 +19,7 @@ using BC = BCrypt.Net.BCrypt;
 
 namespace RecipeRandomizer.Business.Services
 {
-    public class UserService : IUserService
+    public class AuthService : IAuthService
     {
 
         private readonly UserRepository _userRepository;
@@ -27,7 +27,7 @@ namespace RecipeRandomizer.Business.Services
         private readonly AppSettings _appSettings;
         private readonly IEmailService _emailService;
 
-        public UserService(RRContext context, IMapper mapper, IOptions<AppSettings> appSettings, IEmailService emailService)
+        public AuthService(RRContext context, IMapper mapper, IOptions<AppSettings> appSettings, IEmailService emailService)
         {
             _userRepository = new UserRepository(context);
             _mapper = mapper;
@@ -35,16 +35,16 @@ namespace RecipeRandomizer.Business.Services
             _emailService = emailService;
         }
 
-        public User Authenticate(AuthRequest model, string ipAddress)
+        public User Authenticate(AuthRequest request, string ipAddress)
         {
             string[] includes =
             {
                 $"{nameof(Entities.User.Role)}",
                 $"{nameof(Entities.User.RefreshTokens)}"
             };
-            var user = _userRepository.GetFirstOrDefault<Entities.User>(u => u.Email == model.Email, includes);
+            var user = _userRepository.GetFirstOrDefault<Entities.User>(u => u.Email == request.Email, includes);
 
-            if (user == null || !BC.Verify(model.Password, user.PasswordHash))
+            if (user == null || !BC.Verify(request.Password, user.PasswordHash))
                 throw new BadRequestException("Email or password is incorrect");
 
             if(!user.IsVerified)
@@ -84,9 +84,7 @@ namespace RecipeRandomizer.Business.Services
             if(!_userRepository.SaveChanges())
                 throw new ApplicationException("Database error: Changes could not be saved correctly");
 
-            // generate new jwt
             var jwtToken = GenerateJwtToken(user);
-
             var authenticatedUser = _mapper.Map<User>(user);
             authenticatedUser.JwtToken = jwtToken;
             authenticatedUser.RefreshToken = refreshToken.Token;
@@ -106,40 +104,38 @@ namespace RecipeRandomizer.Business.Services
                 throw new ApplicationException("Database error: Changes could not be saved correctly");
         }
 
-        public void Register(RegisterRequest model, string origin)
+        public void Register(RegisterRequest request, string origin)
         {
-            if (!model.HasAcceptedTerms)
+            if (!request.HasAcceptedTerms)
                 throw new BadRequestException("Terms and services have not been accepted");
 
             // check if user already exists
-            if (_userRepository.Exists<Entities.User>(u => u.Email == model.Email))
+            if (_userRepository.Exists<Entities.User>(u => u.Email == request.Email))
             {
                 // send already registered error in email to prevent account multiplication
-                SendAlreadyRegisteredEmail(model.Email, origin);
+                SendAlreadyRegisteredEmail(request.Email, origin);
                 return;
             }
 
-            var user = _mapper.Map<Entities.User>(model);
+            var user = _mapper.Map<Entities.User>(request);
 
             // first registered account is an admin
             user.RoleId = !_userRepository.HasUsers() ? (int) Role.Admin : (int) Role.User;
 
             user.CreatedOn = DateTime.UtcNow;
             user.VerificationToken = GenerateRandomToken();
-            user.PasswordHash = BC.HashPassword(model.Password);
+            user.PasswordHash = BC.HashPassword(request.Password);
 
-            // save user
             _userRepository.Insert(user);
             if(!_userRepository.SaveChanges())
                 throw new ApplicationException("Database error: Changes could not be saved correctly");
 
-            // send email
             SendVerificationEmail(user, origin);
         }
 
-        public void VerifyEmail(ValidationRequest model)
+        public void VerifyEmail(ValidationRequest request)
         {
-            var user = _userRepository.GetFirstOrDefault<Entities.User>(u => u.VerificationToken == model.Token);
+            var user = _userRepository.GetFirstOrDefault<Entities.User>(u => u.VerificationToken == request.Token);
 
             if (user == null) throw new BadRequestException("Verification failed");
 
@@ -151,9 +147,26 @@ namespace RecipeRandomizer.Business.Services
                 throw new ApplicationException("Database error: Changes could not be saved correctly");
         }
 
-        public void ForgotPassword(ForgotPasswordRequest model, string origin)
+        public void ResendEmailVerificationCode(VerificationRequest request, string origin)
         {
-            var user = _userRepository.GetFirstOrDefault<Entities.User>(u => u.Email == model.Email);
+            var user = _userRepository.GetFirstOrDefault<Entities.User>(u => u.Email == request.Email);
+
+            if(user == null)
+                throw new BadRequestException("No user matches the given email address");
+
+            // generate new verification token
+            user.VerificationToken = GenerateRandomToken();
+
+            _userRepository.Update(user);
+            if(!_userRepository.SaveChanges())
+                throw new ApplicationException("Database error: Changes could not be saved correctly");
+
+            SendVerificationEmail(user, origin);
+        }
+
+        public void ForgotPassword(VerificationRequest request, string origin)
+        {
+            var user = _userRepository.GetFirstOrDefault<Entities.User>(u => u.Email == request.Email);
 
             // always return ok response to prevent email spamming
             if (user == null)
@@ -171,27 +184,27 @@ namespace RecipeRandomizer.Business.Services
             SendPasswordResetEmail(user, origin);
         }
 
-        public void ValidateResetToken(ValidationRequest model)
+        public void ValidateResetToken(ValidationRequest request)
         {
             var user = _userRepository.GetFirstOrDefault<Entities.User>(u =>
-                u.ResetToken == model.Token &&
+                u.ResetToken == request.Token &&
                 u.ResetTokenExpiresOn > DateTime.UtcNow);
 
             if (user == null)
                 throw new BadRequestException("Invalid token");
         }
 
-        public void ResetPassword(ResetPasswordRequest model)
+        public void ResetPassword(ResetPasswordRequest request)
         {
             var user = _userRepository.GetFirstOrDefault<Entities.User>(u =>
-                u.ResetToken == model.Token &&
+                u.ResetToken == request.Token &&
                 u.ResetTokenExpiresOn > DateTime.UtcNow);
 
             if (user == null)
                 throw new BadRequestException("Invalid token");
 
             // update password and remove reset token
-            user.PasswordHash = BC.HashPassword(model.Password);
+            user.PasswordHash = BC.HashPassword(request.Password);
             user.PasswordResetOn = DateTime.UtcNow;
             user.ResetToken = null;
             user.ResetTokenExpiresOn = null;
@@ -216,7 +229,7 @@ namespace RecipeRandomizer.Business.Services
             return _userRepository.GetFirstOrDefault<Entities.User>(u => u.Id == id, $"{nameof(Entities.User.RefreshTokens)}").RefreshTokens.Select(rt => rt.Token);
         }
 
-        public User Update(int id, UpdateUserRequest model)
+        public User Update(int id, UpdateUserRequest request)
         {
             var user = _userRepository.GetFirstOrDefault<Entities.User>(u => u.Id == id);
 
@@ -224,14 +237,14 @@ namespace RecipeRandomizer.Business.Services
                 throw new BadRequestException("User not found");
 
             // validate
-            if (user.Email != model.Email && _userRepository.Exists<Entities.User>(u => u.Email == user.Email))
-                throw new BadRequestException($"Email '{model.Email}' is already taken");
+            if (user.Email != request.Email && _userRepository.Exists<Entities.User>(u => u.Email == user.Email))
+                throw new BadRequestException($"Email '{request.Email}' is already taken");
 
             // hash password if it was entered
-            if (!string.IsNullOrEmpty(model.Password))
-                user.PasswordHash = BC.HashPassword(model.Password);
+            if (!string.IsNullOrEmpty(request.Password))
+                user.PasswordHash = BC.HashPassword(request.Password);
 
-            _mapper.Map(model, user);
+            _mapper.Map(request, user);
             user.UpdatedOn = DateTime.UtcNow;
             _userRepository.Update(user);
             if(!_userRepository.SaveChanges())

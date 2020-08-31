@@ -22,3 +22,13 @@ body {
         box-shadow: none;
     }
 }
+
+.w {
+    &-33 {
+        width: 33% !important;
+    }
+
+    &-66 {
+        width: 66% !important;
+    }
+}

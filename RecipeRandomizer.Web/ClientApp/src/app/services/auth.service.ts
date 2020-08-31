@@ -7,12 +7,12 @@ import {finalize, map} from 'rxjs/operators';
 import {User} from '@app/models/identity/user';
 import {AuthRequest} from '@app/models/identity/authRequest';
 import {ResetPasswordRequest} from '@app/models/identity/resetPasswordRequest';
-import {ForgotPasswordRequest} from '@app/models/identity/forgotPasswordRequest';
+import {VerificationRequest} from '@app/models/identity/verificationRequest';
 import {UpdateUserRequest} from '@app/models/identity/updateUserRequest';
 import {RegisterRequest} from '@app/models/identity/registerRequest';
 import {ValidationRequest} from '@app/models/identity/validationRequest';
 
-const apiUrl = `${environment.apiUrl}/users`;
+const apiUrl = `${environment.apiUrl}/auth`;
 
 @Injectable({
     providedIn: 'root'
@@ -65,12 +65,16 @@ export class AuthService {
         return this.http.post(`${apiUrl}/verify-email`, validationRequest);
     }
 
+    public resendEmailVerificationCode(verificationRequest: VerificationRequest): Observable<any> {
+        return this.http.post(`${apiUrl}/resend-email-verification`, verificationRequest);
+    }
+
     public validateResetToken(validationRequest: ValidationRequest): Observable<any> {
         return this.http.post(`${apiUrl}/validate-reset-token`, validationRequest);
     }
 
-    public forgotPassword(forgotPasswordRequest: ForgotPasswordRequest): Observable<any> {
-        return this.http.post<any>(`${apiUrl}/forgot-password`, forgotPasswordRequest);
+    public forgotPassword(verificationRequest: VerificationRequest): Observable<any> {
+        return this.http.post<any>(`${apiUrl}/forgot-password`, verificationRequest);
     }
 
     public resetPassword(resetPasswordRequest: ResetPasswordRequest): Observable<any> {

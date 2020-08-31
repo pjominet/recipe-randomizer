@@ -24,12 +24,14 @@
                            [(ngModel)]="selectedTags">
                     <ng-template ng-optgroup-tmp let-tagCategory="item" let-item$="item$" let-index="index">
                         <div class="custom-control custom-checkbox">
+                            <label for="tag-group-{{index}}" class="sr-only"></label>
                             <input type="checkbox" [ngModel]="item$.selected" class="custom-control-input" id="tag-group-{{index}}"/>
                             <label class="custom-control-label">{{tagCategory.label | uppercase}}</label>
                         </div>
                     </ng-template>
                     <ng-template ng-option-tmp let-tag="item" let-item$="item$" let-index="index">
                         <div class="custom-control custom-checkbox">
+                            <label for="tag-{{index}}" class="sr-only"></label>
                             <input type="checkbox" [ngModel]="item$.selected" class="custom-control-input" id="tag-{{index}}"/>
                             <label class="custom-control-label">{{tag.label}}</label>
                         </div>

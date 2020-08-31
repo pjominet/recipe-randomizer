@@ -1,11 +1,31 @@
 <div class="card">
-    <h3 class="card-header">Verifying Email</h3>
+    <h3 class="card-header text-center">Verifying Email</h3>
     <div class="card-body">
         <div *ngIf="currentStatus == emailStatus.Verifying">
             Verification in process<span class="spinner-border spinner-border-sm ml-2"></span>
         </div>
         <div *ngIf="currentStatus == emailStatus.Failed">
-            Verification failed!
+            <p>Verification failed!</p>
+            <form [formGroup]="resendCodeForm" (ngSubmit)="onSubmit()" class="mb-3">
+                <div class="form-row">
+                    <div class="form-group col-12">
+                        <label for="emailInput" class="sr-only">Email</label>
+                        <input type="email" formControlName="email" class="form-control mr-2 w-100" [ngClass]="{ 'is-invalid': isSubmitted && f.email.errors }"
+                               id="emailInput" placeholder="Email"/>
+                        <div *ngIf="isSubmitted && f.email.errors" class="invalid-feedback">
+                            <div *ngIf="f.email.errors.required">Email is required</div>
+                            <div *ngIf="f.email.errors.email">Current input is no valid email address</div>
+                        </div>
+                    </div>
+                    <div class="form-group col-12 d-flex justify-content-center">
+                        <button [disabled]="isLoading" class="btn btn-primary mr-1">
+                            <span *ngIf="isLoading" class="spinner-border spinner-border-sm mr-1"></span>
+                            Resent verification code
+                        </button>
+                        <a class="btn btn-outline-dark ml-1" routerLink="../login">Cancel</a>
+                    </div>
+                </div>
+            </form>
         </div>
     </div>
 </div>

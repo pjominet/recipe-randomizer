@@ -3,7 +3,7 @@ import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {ActivatedRoute, Router} from '@angular/router';
 import {finalize, first} from 'rxjs/operators';
 import {AuthService} from '@app/services/auth.service';
-import {ForgotPasswordRequest} from '@app/models/identity/forgotPasswordRequest';
+import {VerificationRequest} from '../../../../models/identity/verificationRequest';
 import {AlertService} from '@app/components/alert/alert.service';
 
 @Component({
@@ -47,7 +47,7 @@ export class ForgotPasswordComponent implements OnInit {
         }
 
         this.isLoading = true;
-        this.authService.forgotPassword(new ForgotPasswordRequest(this.f.email.value))
+        this.authService.forgotPassword(new VerificationRequest(this.f.email.value))
             .pipe(first())
             .pipe(finalize(() => this.isLoading = false))
             .subscribe({

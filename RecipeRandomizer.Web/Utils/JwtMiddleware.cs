@@ -21,17 +21,17 @@ namespace RecipeRandomizer.Web.Utils
             _jwtSecret = configuration.GetValue<string>("JWTSecret");
         }
 
-        public async Task Invoke(HttpContext httpContext, IUserService userService)
+        public async Task Invoke(HttpContext httpContext, IAuthService authService)
         {
             var token = httpContext.Request.Headers["Authorization"].FirstOrDefault()?.Split(" ").Last();
 
             if (token != null)
-                AttachUserToContext(httpContext, userService, token);
+                AttachUserToContext(httpContext, authService, token);
 
             await _next(httpContext);
         }
 
-        private void AttachUserToContext(HttpContext httpContext, IUserService userService, string token)
+        private void AttachUserToContext(HttpContext httpContext, IAuthService authService, string token)
         {
             try
             {
@@ -51,7 +51,7 @@ namespace RecipeRandomizer.Web.Utils
                 var userId = int.Parse(jwtToken.Claims.First(c => c.Type == "id").Value);
 
                 // attach current user to context on successful jwt validation
-                httpContext.Items["User"] = userService.GetUser(userId);
+                httpContext.Items["User"] = authService.GetUser(userId);
             }
             catch
             {
