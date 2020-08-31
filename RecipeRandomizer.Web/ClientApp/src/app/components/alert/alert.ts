@@ -3,6 +3,7 @@
     type: AlertType;
     message: string;
     autoClose: boolean;
+    autoCloseTimeOut: number;
     keepAfterRouteChange: boolean;
     fade: boolean;
 

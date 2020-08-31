@@ -6,7 +6,8 @@ import {AlertService} from '@app/components/alert/alert.service';
 
 @Component({
     selector: 'app-alert',
-    templateUrl: './alert.component.html'
+    templateUrl: './alert.component.html',
+    styleUrls: ['./alert.component.scss']
 })
 export class AlertComponent implements OnInit {
 
@@ -40,7 +41,7 @@ export class AlertComponent implements OnInit {
 
                 // auto close alert if required
                 if (alert.autoClose) {
-                    setTimeout(() => this.removeAlert(alert), 3000);
+                    setTimeout(() => this.removeAlert(alert), alert.autoCloseTimeOut);
                 }
             });
 

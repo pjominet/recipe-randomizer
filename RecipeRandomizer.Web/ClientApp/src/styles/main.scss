@@ -14,13 +14,23 @@ body {
     background-image: url("../assets/img/artwork-bg-overlay.png");
 }
 
-.btn-no-outline {
-    border: none !important;
-
-    &:focus, .focus {
-        outline: none !important;
-        box-shadow: none;
+.btn {
+    &-circle {
+        border-radius: 45px;
     }
+
+    &-no-outline {
+        border: none !important;
+
+        &:focus, .focus {
+            outline: none !important;
+            box-shadow: none;
+        }
+    }
+}
+
+.card {
+    border: none;
 }
 
 .w {

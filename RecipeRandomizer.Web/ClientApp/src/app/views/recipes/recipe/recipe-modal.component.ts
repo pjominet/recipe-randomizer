@@ -22,7 +22,7 @@ export class RecipeModalComponent implements OnInit, OnDestroy {
     ngOnInit(): void {
         this.route.params.pipe(takeUntil(this.modalSubject)).subscribe(params => {
             // create the actual modal
-            this.modalRef = this.modalService.open(RecipeComponent, {size: 'lg', scrollable: true});
+            this.modalRef = this.modalService.open(RecipeComponent, {size: 'lg', scrollable: true, backdrop: 'static'});
             this.modalRef.componentInstance.id = params.rid;
 
             // go back to parent page after the modal is closed

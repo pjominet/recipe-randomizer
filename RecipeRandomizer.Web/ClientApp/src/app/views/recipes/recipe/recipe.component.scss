@@ -1,0 +1,34 @@
+﻿@import 'variables';
+@import 'mixins';
+
+.img-container {
+    height: 300px;
+    background-color: rgba($primary, .2);
+    position: relative;
+    overflow: hidden;
+
+    > img {
+        width: 100%;
+    }
+
+    > h4 {
+        position: absolute;
+        left: 2rem;
+        bottom: 1rem;
+        background-color: rgba($primary, .85);
+        color: white;
+        padding: .5rem .75rem;
+        @include border-radius-by-corner(0, 7px, 7px, 0);
+    }
+
+    > button {
+        position: absolute;
+        top: .5rem;
+        right: .5rem;
+    }
+}
+
+#recipeDescription {
+    font-style: italic;
+    font-size: large;
+}

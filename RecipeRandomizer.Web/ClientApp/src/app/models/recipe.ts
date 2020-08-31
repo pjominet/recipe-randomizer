@@ -15,6 +15,7 @@ export class Recipe {
     difficulty: Difficulty;
     prepTime: number;
     cookTime: number;
+    preparation: string;
     createdOn: Date;
     lastUpdatedOn: Date;
     deletedOn: Date;

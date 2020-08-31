@@ -33,6 +33,7 @@ export class AlertService {
     public alert(alert: Alert) {
         alert.id = alert.id || this.defaultId;
         alert.autoClose = (alert.autoClose === undefined ? true : alert.autoClose);
+        alert.autoCloseTimeOut = (alert.autoCloseTimeOut === undefined ? 3000 : alert.autoCloseTimeOut);
         this.subject.next(alert);
     }
 
