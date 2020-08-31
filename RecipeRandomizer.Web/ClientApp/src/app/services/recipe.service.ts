@@ -13,13 +13,13 @@ export class RecipeService {
     constructor(private http: HttpClient) {
     }
 
-    public getRandomRecipe(tagIds: number[] = []): Observable<Recipe> {
+    public getRandomRecipe(tagIds: number[] = []): Observable<number> {
         let url = `${environment.apiUrl}/recipes/random`;
         if (tagIds.length > 0) {
             url += this.generateTagQueryParams(tagIds);
         }
 
-        return this.http.get<Recipe>(url).pipe(map(response => response));
+        return this.http.get<number>(url).pipe(map(response => response));
     }
 
     public getRecipes(tagIds: number[] = [], userId?: number): Observable<Recipe[]> {

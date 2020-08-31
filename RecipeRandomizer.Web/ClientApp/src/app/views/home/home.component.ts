@@ -1,10 +1,11 @@
 import {Component, OnInit} from '@angular/core';
 import {TagCategory} from '@app/models/nomenclature/tagCategory';
 import {Tag} from '@app/models/nomenclature/tag';
-import {Recipe} from '@app/models/recipe';
 import {RecipeService} from '@app/services/recipe.service';
 import {TagService} from '@app/services/tag.service';
 import {AuthService} from '@app/services/auth.service';
+import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
+import {RecipeComponent} from '@app/views/recipes/recipe/recipe.component';
 
 @Component({
     selector: 'app-home',
@@ -15,7 +16,6 @@ export class HomeComponent implements OnInit {
 
     public tagCategories: TagCategory[] = [];
     public selectedTags: Tag[] = [];
-    public recipe: Recipe;
 
     public isLoading: boolean = false;
 
@@ -25,7 +25,8 @@ export class HomeComponent implements OnInit {
 
     constructor(private recipeService: RecipeService,
                 private tagService: TagService,
-                private authService: AuthService) {
+                private authService: AuthService,
+                private modalService: NgbModal) {
     }
 
     public ngOnInit(): void {
@@ -36,16 +37,25 @@ export class HomeComponent implements OnInit {
 
     public getRandomRecipe(): void {
         this.isLoading = true;
-        this.recipeService.getRandomRecipe(this.selectedTags.map(t => t.id)).subscribe(recipe => {
-            this.recipe = recipe;
-            this.loadTimeOut();
+        this.recipeService.getRandomRecipe(this.selectedTags.map(t => t.id)).subscribe(recipeId => {
+            this.loadTimeOut(() => {
+                let modalRef = this.modalService.open(RecipeComponent, {size: 'lg', scrollable: true});
+                modalRef.componentInstance.id = recipeId;
+            });
         }, error => {
             console.log(error);
             this.loadTimeOut();
         });
     }
 
-    private loadTimeOut(): void {
-        setTimeout(() => this.isLoading = false, 1000);
+    public logout(): void {
+        this.authService.logout();
+    }
+
+    private loadTimeOut(callback?: Function): void {
+        setTimeout(() => {
+            this.isLoading = false
+            callback();
+        }, 1000);
     }
 }

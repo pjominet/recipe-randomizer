@@ -54,9 +54,9 @@ namespace RecipeRandomizer.Web.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public IActionResult GetRandomRecipe([FromQuery(Name = "tag")] int[] tagIds)
         {
-            var recipe = _recipeService.GetRandomRecipe(tagIds);
-            return recipe != null
-                ? Ok(recipe)
+            var recipeId = _recipeService.GetRandomRecipe(tagIds);
+            return recipeId.HasValue
+                ? Ok(recipeId.Value)
                 : (IActionResult) NotFound();
         }
 

@@ -43,9 +43,9 @@ namespace RecipeRandomizer.Business.Services
             return _mapper.Map<Recipe>(_recipeRepository.GetFirstOrDefault<Entities.Recipe>(r => r.Id == id, includes));
         }
 
-        public Recipe GetRandomRecipe(IEnumerable<int> tagIds)
+        public int? GetRandomRecipe(IEnumerable<int> tagIds)
         {
-            return _mapper.Map<Recipe>(_recipeRepository.GetRandomRecipe(tagIds.ToList()));
+            return _recipeRepository.GetRandomRecipe(tagIds.ToList());
         }
 
         public IEnumerable<Recipe> GetRecipesFromTags(IEnumerable<int> tagIds)

@@ -21,7 +21,7 @@ export class RecipeComponent implements OnInit {
                 public activeModal: NgbActiveModal) {
     }
 
-    ngOnInit(): void {
+    public ngOnInit(): void {
         this.recipeService.getRecipe(this.id).subscribe(
             recipe => {
                 this.recipe = recipe;

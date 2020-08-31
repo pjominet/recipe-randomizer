@@ -25,7 +25,7 @@ namespace RecipeRandomizer.Data.Repositories
                 .Where(r => r.IsDeleted == deleted);
         }
 
-        public Recipe GetRandomRecipe(IList<int> tagIds)
+        public int? GetRandomRecipe(IList<int> tagIds)
         {
             var total = Context.Recipes.Count();
             var rnd = new Random();
@@ -44,7 +44,8 @@ namespace RecipeRandomizer.Data.Repositories
                 .ThenInclude(i => i.QuantityUnit)
                 .Include(r => r.RecipeTagAssociations)
                 .ThenInclude(rta => rta.Tag)
-                .FirstOrDefault(r => !r.IsDeleted);
+                .AsEnumerable()
+                .FirstOrDefault(r => !r.IsDeleted)?.Id;
         }
 
         public IEnumerable<Recipe> GetRecipesFromTags(IEnumerable<int> tagIds)
