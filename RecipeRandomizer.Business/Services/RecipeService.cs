@@ -50,7 +50,7 @@ namespace RecipeRandomizer.Business.Services
 
         public IEnumerable<Recipe> GetRecipesFromTags(IEnumerable<int> tagIds)
         {
-            return _mapper.Map<IEnumerable<Recipe>>(_recipeRepository.GetRecipesFromTags(tagIds));
+            return _mapper.Map<IEnumerable<Recipe>>(_recipeRepository.GetRecipesFromTags(tagIds.ToList()));
         }
 
         public IEnumerable<Recipe> GetRecipesFromUser(int userId)
@@ -67,7 +67,7 @@ namespace RecipeRandomizer.Business.Services
 
         public IEnumerable<Recipe> GetRecipesFromUserAndTags(int userId, IEnumerable<int> tagIds)
         {
-            return _mapper.Map<IEnumerable<Recipe>>(_recipeRepository.GetRecipesFromTags(tagIds).Where(r => r.UserId == userId));
+            return _mapper.Map<IEnumerable<Recipe>>(_recipeRepository.GetRecipesFromTags(tagIds.ToList()).Where(r => r.UserId == userId));
         }
 
         public int CreateRecipe(Recipe recipe)

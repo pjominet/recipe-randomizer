@@ -35,17 +35,17 @@
                   (2, 2, 1, N'Sugar', 100),
                   (3, 3, 1, N'Meat', 150),
                   (4, 4, 1, N'Chocolate', 200)
-    ) as source ([Id], [QuantityId], [RecipeId], [Name], [Quantity])
+    ) as source ([Id], [QuantityUnitId], [RecipeId], [Name], [Quantity])
     on (target.[Id] = source.[Id])
     when matched then
         update
-        set [QuantityId] = source.[QuantityId],
-            [RecipeId]   = source.[RecipeId],
-            [Name]       = source.[Name],
-            [Quantity]   = source.[Quantity]
+        set [QuantityUnitId] = source.[QuantityUnitId],
+            [RecipeId]       = source.[RecipeId],
+            [Name]           = source.[Name],
+            [Quantity]       = source.[Quantity]
     when not matched then
-        insert ([Id], [QuantityId], [RecipeId], [Name], [Quantity])
-        values (source.[Id], source.[QuantityId], source.[RecipeId], source.[Name], source.[Quantity])
+        insert ([Id], [QuantityUnitId], [RecipeId], [Name], [Quantity])
+        values (source.[Id], source.[QuantityUnitId], source.[RecipeId], source.[Name], source.[Quantity])
     when not matched by source then
         delete;
     set identity_insert [RecipeRandomizer].[Ingredient] off

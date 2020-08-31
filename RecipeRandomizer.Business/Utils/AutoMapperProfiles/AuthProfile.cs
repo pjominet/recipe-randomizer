@@ -3,9 +3,9 @@ using Entities = RecipeRandomizer.Data.Entities;
 
 namespace RecipeRandomizer.Business.Utils.AutoMapperProfiles
 {
-    public class UserProfile : Profile
+    public class AuthProfile : Profile
     {
-        public UserProfile()
+        public AuthProfile()
         {
             CreateMap<Entities.Identity.User, Models.Identity.User>()
                 .ForMember(dest => dest.RefreshToken, opt => opt.Ignore())

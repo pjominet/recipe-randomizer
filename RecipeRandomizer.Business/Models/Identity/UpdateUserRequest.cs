@@ -9,8 +9,7 @@ namespace RecipeRandomizer.Business.Models.Identity
         private int? _role;
         private string _email;
 
-        public string FirstName { get; set; }
-        public string LastName { get; set; }
+        public string UserName { get; set; }
 
         [EnumDataType(typeof(Role))]
         public int? Role

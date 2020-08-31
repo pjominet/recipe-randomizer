@@ -1,6 +1,33 @@
 <section class="container vh-100 bg-white">
     <h1 class="text-primary text-center pt-5 mb-2">Recipe Fortune Wheel</h1>
     <h2 class="h3 text-secondary text-center">Recipe Browser</h2>
+
+    <label>Add filters</label>
+    <ng-select class="custom-ng-select"
+               [items]="tagCategories"
+               [multiple]="true"
+               groupBy="tags"
+               [selectableGroup]="true"
+               [selectableGroupAsModel]="false"
+               [closeOnSelect]="false"
+               [(ngModel)]="selectedTags"
+               (change)="applyFilters()">
+        <ng-template ng-optgroup-tmp let-tagCategory="item" let-item$="item$" let-index="index">
+            <div class="custom-control custom-checkbox">
+                <label for="tag-group-{{index}}" class="sr-only"></label>
+                <input type="checkbox" [ngModel]="item$.selected" class="custom-control-input" id="tag-group-{{index}}"/>
+                <label class="custom-control-label">{{tagCategory.label | uppercase}}</label>
+            </div>
+        </ng-template>
+        <ng-template ng-option-tmp let-tag="item" let-item$="item$" let-index="index">
+            <div class="custom-control custom-checkbox">
+                <label for="tag-{{index}}" class="sr-only"></label>
+                <input type="checkbox" [ngModel]="item$.selected" class="custom-control-input" id="tag-{{index}}"/>
+                <label class="custom-control-label">{{tag.label}}</label>
+            </div>
+        </ng-template>
+    </ng-select>
+
     <div class="mt-5">
         <ul class="list-group list-group-flush" *ngIf="recipes.length > 0; else noRecipes">
             <li class="list-group-item" *ngFor="let recipe of recipes">

@@ -36,31 +36,35 @@ namespace RecipeRandomizer.Data.Repositories
                     .Where(rta => tagIds.Contains(rta.TagId))
                     .Select(rta => rta.Recipe);
 
+            if (!recipes.Any())
+                return null;
+
             return recipes
+                .Where(r => r.DeletedOn == null)
                 .Skip(rnd.Next(0, total))
-                .Include(r => r.Cost)
-                .Include(r => r.Difficulty)
                 .Include(r => r.Ingredients)
                 .ThenInclude(i => i.QuantityUnit)
                 .Include(r => r.RecipeTagAssociations)
                 .ThenInclude(rta => rta.Tag)
-                .AsEnumerable()
-                .FirstOrDefault(r => !r.IsDeleted)?.Id;
+                .FirstOrDefault()?.Id;
         }
 
-        public IEnumerable<Recipe> GetRecipesFromTags(IEnumerable<int> tagIds)
+        public IEnumerable<Recipe> GetRecipesFromTags(IList<int> tagIds)
         {
-            return Context.RecipeTagAssociations
+            var recipes = Context.RecipeTagAssociations
                 .Where(rta => tagIds.Contains(rta.TagId))
                 .Select(rta => rta.Recipe)
-                .Include(r => r.Cost)
-                .Include(r => r.Difficulty)
-                .Include(r => r.Ingredients)
-                .ThenInclude(i => i.QuantityUnit)
-                .Include(r => r.RecipeTagAssociations)
-                .ThenInclude(rta => rta.Tag)
-                .AsEnumerable()
-                .Where(r => !r.IsDeleted);
+                .Where(r => r.DeletedOn == null);
+
+            if (!recipes.Any())
+                return null;
+
+            foreach (var recipe in recipes.ToList())
+            {
+                recipe.Ingredients = Context.Ingredients.Where(i => i.RecipeId == recipe.Id).Include(i => i.QuantityUnit).ToList();
+                recipe.RecipeTagAssociations = Context.RecipeTagAssociations.Where(rta => rta.RecipeId == recipe.Id).Include(rta => rta.Tag).ToList();
+            }
+            return recipes;
         }
 
         public void HardDeleteRecipe(int id)
