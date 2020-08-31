@@ -84,6 +84,7 @@
     <Build Include="Security\RecipeRandomizer.sql" />
     <Build Include="Security\Nomenclature.sql" />
     <Content Include="PostDeployScript.sql" />
-    <Content Include="PurgeScript.sql" />    
+    <Content Include="PurgeScript.sql" />
+    <Content Include="TestSeedScript.sql" />    
   </ItemGroup>
 </Project>
