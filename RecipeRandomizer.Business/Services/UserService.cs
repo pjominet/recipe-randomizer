@@ -104,7 +104,7 @@ namespace RecipeRandomizer.Business.Services
 
         public void Register(RegisterRequest model, string origin)
         {
-            if(!model.HasAcceptedTerms)
+            if (!model.HasAcceptedTerms)
                 throw new BadRequestException("Terms and services have not been accepted");
 
             // check if user already exists
@@ -246,13 +246,18 @@ namespace RecipeRandomizer.Business.Services
 
         private (Entities.RefreshToken, Entities.User) GetRefreshToken(string token)
         {
-            var user = _userRepository.GetFirstOrDefault<Entities.User>(u => u.RefreshTokens.Any(t => t.Token == token));
+            var refreshToken = _userRepository.GetFirstOrDefault<Entities.RefreshToken>(rt => rt.Token == token);
+            string[] includes =
+            {
+                $"{nameof(Entities.User.Role)}",
+                $"{nameof(Entities.User.RefreshTokens)}"
+            };
+            var user = _userRepository.GetFirstOrDefault<Entities.User>(u => u.Id == refreshToken.UserId, includes);
             if (user == null)
-                throw new BadRequestException("Invalid token");
+                throw new BadRequestException("Invalid token: Token does not match any known user.");
 
-            var refreshToken = user.RefreshTokens.Single(rt => rt.Token == token);
             if (!refreshToken.IsActive)
-                throw new BadRequestException("Invalid token");
+                throw new BadRequestException("Invalid token: Token is not active anymore.");
 
             return (refreshToken, user);
         }
