@@ -13,15 +13,15 @@ export class AlertComponent implements OnInit {
     @Input() id: string = 'default-alert';
     @Input() fade: boolean = true;
 
-    alerts: Alert[] = [];
-    alertSubscription: Subscription;
-    routeSubscription: Subscription;
+    public alerts: Alert[] = [];
+    private alertSubscription: Subscription;
+    private routeSubscription: Subscription;
 
     constructor(private router: Router,
                 private alertService: AlertService) {
     }
 
-    public ngOnInit() {
+    public ngOnInit(): void {
         // subscribe to new alert notifications
         this.alertSubscription = this.alertService.onAlert(this.id)
             .subscribe(alert => {
@@ -52,13 +52,13 @@ export class AlertComponent implements OnInit {
         });
     }
 
-    public ngOnDestroy() {
+    public ngOnDestroy(): void {
         // unsubscribe to avoid memory leaks
         this.alertSubscription.unsubscribe();
         this.routeSubscription.unsubscribe();
     }
 
-    public removeAlert(alert: Alert) {
+    public removeAlert(alert: Alert): void {
         // check if already removed to prevent error on auto close
         if (!this.alerts.includes(alert)) {
             return;
@@ -78,12 +78,10 @@ export class AlertComponent implements OnInit {
         }
     }
 
-    public cssClass(alert: Alert) {
-        if (!alert) {
+    public getAlertColor(type: AlertType): string {
+        if (!type) {
             return;
         }
-
-        const classes: string[] = [];
 
         const alertTypeClass = {
             [AlertType.Success]: 'alert-success',
@@ -92,12 +90,6 @@ export class AlertComponent implements OnInit {
             [AlertType.Warning]: 'alert-warning'
         };
 
-        classes.push(alertTypeClass[alert.type]);
-
-        if (alert.fade) {
-            classes.push('fade');
-        }
-
-        return classes.join(' ');
+        return alertTypeClass[type];
     }
 }

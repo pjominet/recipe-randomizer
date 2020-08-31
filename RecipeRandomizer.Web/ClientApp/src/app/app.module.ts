@@ -13,21 +13,12 @@ import {ErrorInterceptor} from '@app/helpers/error.interceptor';
 import {AuthService} from '@app/services/auth.service';
 
 // components
-import {NavbarComponent} from '@app/components/navbar/navbar.component';
-import {TopbarComponent} from '@app/components/topbar/topbar.component';
 import {SpinnerComponent} from '@app/components/spinner/spinner.component';
 import {AlertComponent} from '@app/components/alert/alert.component';
 import {ToastComponent} from '@app/components/toast/toast.component';
 
 // views
 import {AppComponent} from '@app/app.component';
-import {LoginComponent} from '@app/views/login/login.component';
-import {LoginModalComponent} from '@app/views/login/login-modal.component';
-import {RegisterComponent} from '@app/views/register/register.component';
-import {RegisterModalComponent} from '@app/views/register/register-modal.component';
-import {DashboardComponent} from '@app/views/dashboard/dashboard.component';
-import {ForgotPasswordComponent} from '@app/views/forgot-password/forgot-password.component';
-import {ForgotPasswordModalComponent} from '@app/views/forgot-password/forgot-password-modal.component';
 import {NotFoundComponent} from '@app/views/not-found/not-found.component';
 import {HomeComponent} from '@app/views/home/home.component';
 import {RecipesComponent} from '@app/views/recipes/recipes.component';
@@ -37,17 +28,8 @@ import {RecipeModalComponent} from '@app/views/recipes/recipe/recipe-modal.compo
 @NgModule({
     declarations: [
         AppComponent,
-        NavbarComponent,
-        TopbarComponent,
-        LoginComponent,
-        LoginModalComponent,
-        RegisterComponent,
-        RegisterModalComponent,
-        DashboardComponent,
         SpinnerComponent,
         AlertComponent,
-        ForgotPasswordComponent,
-        ForgotPasswordModalComponent,
         NotFoundComponent,
         HomeComponent,
         ToastComponent,
@@ -65,9 +47,6 @@ import {RecipeModalComponent} from '@app/views/recipes/recipe/recipe-modal.compo
         ReactiveFormsModule
     ],
     entryComponents: [
-        LoginComponent,
-        RegisterComponent,
-        ForgotPasswordComponent,
         RecipeComponent
     ],
     providers: [

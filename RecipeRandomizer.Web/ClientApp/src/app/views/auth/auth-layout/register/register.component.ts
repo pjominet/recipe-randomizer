@@ -3,35 +3,36 @@ import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {ActivatedRoute, Router} from '@angular/router';
 import {AuthService} from '@app/services/auth.service';
 import {first} from 'rxjs/operators';
-import {NgbActiveModal} from '@ng-bootstrap/ng-bootstrap';
 import {RegisterRequest} from '@app/models/identity/registerRequest';
 import {MustMatchValidator} from '@app/helpers/must-match.validator';
-import {ToastService} from '@app/components/toast/toast.service';
+import {AlertService} from '@app/components/alert/alert.service';
 
 @Component({
     selector: 'app-register',
     templateUrl: './register.component.html',
-    styleUrls: ['./register.component.scss']
+    styleUrls: []
 })
 export class RegisterComponent implements OnInit {
 
     public registerForm: FormGroup;
     public isLoading: boolean = false;
     public isSubmitted: boolean = false;
-    public error: string = '';
 
     constructor(private formBuilder: FormBuilder,
                 private route: ActivatedRoute,
                 private router: Router,
                 private authService: AuthService,
-                public activeModal: NgbActiveModal,
-                private toastService: ToastService) {
+                private alertService: AlertService) {
     }
 
-    ngOnInit() {
+    // convenience getter for easy access to form fields
+    get f() {
+        return this.registerForm.controls;
+    }
+
+    public ngOnInit(): void {
         this.registerForm = this.formBuilder.group({
-            firstName: ['', Validators.required],
-            lastName: ['', Validators.required],
+            userName: ['', Validators.required],
             email: ['', [Validators.required, Validators.email]],
             password: ['', [Validators.required, Validators.minLength(6)]],
             confirmPassword: ['', Validators.required],
@@ -41,36 +42,34 @@ export class RegisterComponent implements OnInit {
         });
     }
 
-    // convenience getter for easy access to form fields
-    get f() {
-        return this.registerForm.controls;
-    }
-
-    onSubmit() {
+    public onSubmit(): void {
         this.isSubmitted = true;
 
+        // reset alerts on submit
+        this.alertService.clear();
+
         // stop here if form is invalid
-        if (this.registerForm.invalid)
+        if (this.registerForm.invalid) {
             return;
+        }
 
         this.isLoading = true;
         this.authService.register(new RegisterRequest(
-            this.f.firstName.value,
-            this.f.lastName.value,
+            this.f.userName.value,
             this.f.email.value,
             this.f.password.value,
             this.f.confirmPassword.value,
             this.f.acceptTerms.value))
             .pipe(first())
-            .subscribe(
-                response => {
-                    this.activeModal.dismiss()
-                    this.toastService.toastSuccess(response.message);
+            .subscribe({
+                next: () => {
+                    this.alertService.success('Registration successful, please check your email for verification instructions', {keepAfterRouteChange: true});
+                    this.router.navigate(['../login'], {relativeTo: this.route});
                 },
-                error => {
-                    this.error = error;
+                error: error => {
+                    this.alertService.error(error);
                     this.isLoading = false;
-                });
+                }
+            });
     }
-
 }

@@ -36,9 +36,7 @@
                     </ng-template>
                 </ng-select>
                 <div class="text-center mt-2">
-                    <a routerLink="/recipes">
-                        Browse all recipes
-                    </a>
+                    <a routerLink="/recipes">Browse all recipes</a>
                 </div>
             </section>
             <section class="mb-3">
@@ -46,12 +44,15 @@
                     Want to upload recipes yourself?
                 </p>
                 <div class="d-flex justify-content-center">
-                    <a class="btn btn-outline-info mr-1" routerLink="/sign-in">Sign-In</a>
-                    <a class="btn btn-outline-info ml-1" routerLink="/sign-up">Sign-Up</a>
+                    <ng-container *ngIf="!isLoggedIn; else gotoDashboard">
+                        <a class="btn btn-outline-info mr-1" routerLink="/auth/login">Sign-In</a>
+                        <a class="btn btn-outline-info ml-1" routerLink="/auth/register">Sign-Up</a>
+                    </ng-container>
+                    <ng-template #gotoDashboard>
+                        <a class="btn btn-outline-info mr-1" routerLink="/dashboard">My Dashboard</a>
+                    </ng-template>
                 </div>
             </section>
         </div>
     </div>
 </div>
-
-<router-outlet></router-outlet>

@@ -17,9 +17,7 @@ namespace RecipeRandomizer.Data.Contexts
 
                 entity.Property(e => e.Email).IsRequired();
 
-                entity.Property(e => e.FirstName).IsRequired();
-
-                entity.Property(e => e.LastName).IsRequired();
+                entity.Property(e => e.UserName).IsRequired();
 
                 entity.Property(e => e.PasswordHash).IsRequired();
 

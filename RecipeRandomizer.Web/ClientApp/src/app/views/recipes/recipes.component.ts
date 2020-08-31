@@ -5,7 +5,7 @@ import {Recipe} from '@app/models/recipe';
 @Component({
     selector: 'app-recipes',
     templateUrl: './recipes.component.html',
-    styleUrls: ['./recipes.component.scss']
+    styleUrls: []
 })
 export class RecipesComponent implements OnInit {
 
@@ -18,7 +18,6 @@ export class RecipesComponent implements OnInit {
         this.recipeService.getRecipes().subscribe(
             recipes => {
                 this.recipes = recipes;
-                console.log(recipes);
             }, error => {
                 console.log(error);
             }

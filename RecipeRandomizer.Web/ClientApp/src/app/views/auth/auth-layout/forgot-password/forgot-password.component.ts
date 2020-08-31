@@ -1,38 +1,27 @@
 import { Component, OnInit } from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {ActivatedRoute, Router} from '@angular/router';
+import {finalize, first} from 'rxjs/operators';
 import {AuthService} from '@app/services/auth.service';
-import {NgbActiveModal} from '@ng-bootstrap/ng-bootstrap';
-import {first} from 'rxjs/operators';
 import {ForgotPasswordRequest} from '@app/models/identity/forgotPasswordRequest';
+import {AlertService} from '@app/components/alert/alert.service';
 
 @Component({
   selector: 'app-forgot-password',
   templateUrl: './forgot-password.component.html',
-  styleUrls: ['./forgot-password.component.scss']
+  styleUrls: []
 })
 export class ForgotPasswordComponent implements OnInit {
 
     public forgotPasswordForm: FormGroup;
     public isLoading: boolean = false;
     public isSubmitted: boolean = false;
-    public returnUrl: string;
-    public error: string = '';
 
     constructor(private formBuilder: FormBuilder,
                 private route: ActivatedRoute,
                 private router: Router,
-                private authenticationService: AuthService,
-                public activeModal: NgbActiveModal) {
-    }
-
-    public ngOnInit() {
-        this.forgotPasswordForm = this.formBuilder.group({
-            email: ['', [Validators.required, Validators.email]]
-        });
-
-        // get return url from route parameters or default to '/'
-        this.returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/';
+                private authService: AuthService,
+                private alertService: AlertService) {
     }
 
     // convenience getter for easy access to form fields
@@ -40,8 +29,17 @@ export class ForgotPasswordComponent implements OnInit {
         return this.forgotPasswordForm.controls;
     }
 
+    public ngOnInit() {
+        this.forgotPasswordForm = this.formBuilder.group({
+            email: ['', [Validators.required, Validators.email]]
+        });
+    }
+
     public onSubmit() {
         this.isSubmitted = true;
+
+        // reset alerts on submit
+        this.alertService.clear();
 
         // stop here if form is invalid
         if (this.forgotPasswordForm.invalid) {
@@ -49,16 +47,12 @@ export class ForgotPasswordComponent implements OnInit {
         }
 
         this.isLoading = true;
-        this.authenticationService.forgotPassword(new ForgotPasswordRequest(this.f.email.value))
+        this.authService.forgotPassword(new ForgotPasswordRequest(this.f.email.value))
             .pipe(first())
+            .pipe(finalize(() => this.isLoading = false))
             .subscribe({
-                next: () => {
-                    this.router.navigate([this.returnUrl]);
-                },
-                error: error => {
-                    this.error = error;
-                    this.isLoading = false;
-                }
+                next: () => this.alertService.success('Please check your email for password reset instructions'),
+                error: error => this.alertService.error(error)
             });
     }
 }

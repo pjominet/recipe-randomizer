@@ -8,7 +8,7 @@ import {Difficulty} from '@app/models/nomenclature/difficulty';
 @Component({
     selector: 'app-recipe',
     templateUrl: './recipe.component.html',
-    styleUrls: ['./recipe.component.scss']
+    styleUrls: []
 })
 export class RecipeComponent implements OnInit {
 

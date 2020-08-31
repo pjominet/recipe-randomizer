@@ -2,8 +2,7 @@
 (
     [Id]                  int identity (1, 1) not null,
     [RoleId]              int                 not null,
-    [FirstName]           nvarchar(max)       not null,
-    [LastName]            nvarchar(max)       not null,
+    [UserName]            nvarchar(max)       not null,
     [Email]               nvarchar(max)       not null,
     [PasswordHash]        nvarchar(max)       not null,
     [HasAcceptedTerms]    bit                 not null default 0,

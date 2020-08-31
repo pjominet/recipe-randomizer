@@ -1,0 +1,11 @@
+<div class="card">
+    <h3 class="card-header">Verifying Email</h3>
+    <div class="card-body">
+        <div *ngIf="currentStatus == emailStatus.Verifying">
+            Verification in process<span class="spinner-border spinner-border-sm ml-2"></span>
+        </div>
+        <div *ngIf="currentStatus == emailStatus.Failed">
+            Verification failed!
+        </div>
+    </div>
+</div>

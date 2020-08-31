@@ -3,13 +3,16 @@ import {BehaviorSubject, Observable} from 'rxjs';
 import {Router} from '@angular/router';
 import {HttpClient} from '@angular/common/http';
 import {environment} from '@env/environment';
-import {map} from 'rxjs/operators';
+import {finalize, map} from 'rxjs/operators';
 import {User} from '@app/models/identity/user';
 import {AuthRequest} from '@app/models/identity/authRequest';
 import {ResetPasswordRequest} from '@app/models/identity/resetPasswordRequest';
 import {ForgotPasswordRequest} from '@app/models/identity/forgotPasswordRequest';
 import {UpdateUserRequest} from '@app/models/identity/updateUserRequest';
 import {RegisterRequest} from '@app/models/identity/registerRequest';
+import {ValidationRequest} from '@app/models/identity/validationRequest';
+
+const apiUrl = `${environment.apiUrl}/users`;
 
 @Injectable({
     providedIn: 'root'
@@ -30,45 +33,53 @@ export class AuthService {
     }
 
     public register(registerRequest: RegisterRequest): Observable<any> {
-        return this.http.post<User>(`${environment.apiUrl}/users/register`, registerRequest).pipe(response => response);
+        return this.http.post<any>(`${apiUrl}/register`, registerRequest);
     }
 
     public login(authRequest: AuthRequest): Observable<User> {
-        return this.http.post<User>(`${environment.apiUrl}/users/authenticate`, authRequest, {withCredentials: true})
-            .pipe(map(user => {
+        return this.http.post<User>(`${apiUrl}/authenticate`, authRequest, {withCredentials: true})
+            .pipe(map((user: User) => {
                 this.userSubject.next(user);
                 this.startRefreshTokenTimer();
                 return user;
             }));
     }
 
-    public forgotPassword(forgotPasswordRequest: ForgotPasswordRequest): Observable<any> {
-        return this.http.post<any>(`${environment.apiUrl}/users/forgot-password`, forgotPasswordRequest).pipe(response => response);
-    }
-
-    public resetPassword(resetPasswordRequest: ResetPasswordRequest): Observable<any> {
-        return this.http.post<any>(`${environment.apiUrl}/users/reset-password`, resetPasswordRequest).pipe(response => response);
+    public refreshToken(): Observable<User> {
+        return this.http.post<User>(`${apiUrl}/refresh-token`, {}, {withCredentials: true})
+            .pipe(map((user: User) => {
+                this.userSubject.next(user);
+                this.startRefreshTokenTimer();
+                return user;
+            }));
     }
 
     public logout(): void {
-        this.http.post<any>(`${environment.apiUrl}/users/revoke-token`, {}, {withCredentials: true}).subscribe();
+        this.http.post<any>(`${apiUrl}/revoke-token`, {}, {withCredentials: true}).subscribe();
         this.stopRefreshTokenTimer();
         this.userSubject.next(null);
         this.router.navigate(['/']);
     }
 
-    public refreshToken(): Observable<User> {
-        return this.http.post<User>(`${environment.apiUrl}/users/refresh-token`, {}, {withCredentials: true})
-            .pipe(map((user) => {
-                this.userSubject.next(user);
-                this.startRefreshTokenTimer();
-                return user;
-            }));
+    public verifyEmail(validationRequest: ValidationRequest): Observable<any> {
+        return this.http.post(`${apiUrl}/verify-email`, validationRequest);
     }
 
-    public updateUser(id: number, updateUserRequest: UpdateUserRequest) : Observable<User> {
-        return this.http.put<User>(`${environment.apiUrl}/users/${id}`, updateUserRequest)
-            .pipe(map(updatedUser => {
+    public validateResetToken(validationRequest: ValidationRequest): Observable<any> {
+        return this.http.post(`${apiUrl}/validate-reset-token`, validationRequest);
+    }
+
+    public forgotPassword(forgotPasswordRequest: ForgotPasswordRequest): Observable<any> {
+        return this.http.post<any>(`${apiUrl}/forgot-password`, forgotPasswordRequest);
+    }
+
+    public resetPassword(resetPasswordRequest: ResetPasswordRequest): Observable<any> {
+        return this.http.post<any>(`${apiUrl}/reset-password`, resetPasswordRequest);
+    }
+
+    public updateUser(id: number, updateUserRequest: UpdateUserRequest): Observable<User> {
+        return this.http.put<User>(`${apiUrl}/${id}`, updateUserRequest)
+            .pipe(map((updatedUser: User) => {
                 // update current user if the logged in user updated their own record
                 if (id == this.user.id) {
                     // publish updated user to subscribers
@@ -80,10 +91,10 @@ export class AuthService {
     }
 
     public deleteUser(id: number): void {
-        this.http.delete(`${environment.apiUrl}/users/${id}`)
-            .pipe(map(() => {
+        this.http.delete(`${apiUrl}/${id}`)
+            .pipe(finalize(() => {
                 // auto logout if the logged in user deleted their own record
-                if (id == this.user.id) {
+                if (id === this.user.id) {
                     this.logout();
                 }
             }));

@@ -4,6 +4,7 @@ import {Tag} from '@app/models/nomenclature/tag';
 import {Recipe} from '@app/models/recipe';
 import {RecipeService} from '@app/services/recipe.service';
 import {TagService} from '@app/services/tag.service';
+import {AuthService} from '@app/services/auth.service';
 
 @Component({
     selector: 'app-home',
@@ -18,8 +19,13 @@ export class HomeComponent implements OnInit {
 
     public isLoading: boolean = false;
 
+    get isLoggedIn(): boolean {
+        return this.authService.user !== null;
+    }
+
     constructor(private recipeService: RecipeService,
-                private tagService: TagService) {
+                private tagService: TagService,
+                private authService: AuthService) {
     }
 
     public ngOnInit(): void {
