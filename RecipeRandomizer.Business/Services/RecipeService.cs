@@ -73,6 +73,7 @@ namespace RecipeRandomizer.Business.Services
         public int CreateRecipe(Recipe recipe)
         {
             var newRecipe = _mapper.Map<Entities.Recipe>(recipe);
+            newRecipe.CreatedOn = DateTime.UtcNow;
             _recipeRepository.Insert(newRecipe);
             return _recipeRepository.SaveChanges() ? newRecipe.Id : -1;
         }
@@ -81,6 +82,7 @@ namespace RecipeRandomizer.Business.Services
         {
             var existingRecipe = _recipeRepository.GetFirstOrDefault<Entities.Recipe>(r => r.Id == recipe.Id);
             _mapper.Map(recipe, existingRecipe);
+            existingRecipe.LastUpdatedOn = DateTime.UtcNow;
             _recipeRepository.Update(existingRecipe);
             return _recipeRepository.SaveChanges();
         }

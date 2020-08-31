@@ -6,12 +6,10 @@ using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
 using AutoMapper;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using RecipeRandomizer.Business.Interfaces;
 using RecipeRandomizer.Business.Models.Identity;
-using RecipeRandomizer.Business.Models.Nomenclature;
 using RecipeRandomizer.Business.Utils.Exceptions;
 using RecipeRandomizer.Business.Utils.Settings;
 using RecipeRandomizer.Data.Contexts;
@@ -46,8 +44,11 @@ namespace RecipeRandomizer.Business.Services
             };
             var user = _userRepository.GetFirstOrDefault<Entities.User>(u => u.Email == model.Email, includes);
 
-            if (user == null || !user.IsVerified || !BC.Verify(model.Password, user.PasswordHash))
+            if (user == null || !BC.Verify(model.Password, user.PasswordHash))
                 throw new BadRequestException("Email or password is incorrect");
+
+            if(!user.IsVerified)
+                throw new BadRequestException("Email has not been verified");
 
             // authentication successful so generate jwt and refresh tokens
             var jwtToken = GenerateJwtToken(user);
@@ -59,7 +60,8 @@ namespace RecipeRandomizer.Business.Services
             // save refresh token
             user.RefreshTokens.Add(refreshToken);
             _userRepository.Update(user);
-            _userRepository.SaveChanges();
+            if(!_userRepository.SaveChanges())
+                throw new ApplicationException("Database error: Changes could not be saved correctly");
 
             var authenticatedUser = _mapper.Map<User>(user);
             authenticatedUser.JwtToken = jwtToken;
@@ -79,7 +81,8 @@ namespace RecipeRandomizer.Business.Services
             refreshToken.ReplacedByToken = newRefreshToken.Token;
             user.RefreshTokens.Add(newRefreshToken);
             _userRepository.Update(user);
-            _userRepository.SaveChanges();
+            if(!_userRepository.SaveChanges())
+                throw new ApplicationException("Database error: Changes could not be saved correctly");
 
             // generate new jwt
             var jwtToken = GenerateJwtToken(user);
@@ -99,7 +102,8 @@ namespace RecipeRandomizer.Business.Services
             refreshToken.RevokedOn = DateTime.UtcNow;
             refreshToken.RevokedByIp = ipAddress;
             _userRepository.Update(user);
-            _userRepository.SaveChanges();
+            if(!_userRepository.SaveChanges())
+                throw new ApplicationException("Database error: Changes could not be saved correctly");
         }
 
         public void Register(RegisterRequest model, string origin)
@@ -126,7 +130,8 @@ namespace RecipeRandomizer.Business.Services
 
             // save user
             _userRepository.Insert(user);
-            _userRepository.SaveChanges();
+            if(!_userRepository.SaveChanges())
+                throw new ApplicationException("Database error: Changes could not be saved correctly");
 
             // send email
             SendVerificationEmail(user, origin);
@@ -142,7 +147,8 @@ namespace RecipeRandomizer.Business.Services
             user.VerificationToken = null;
 
             _userRepository.Update(user);
-            _userRepository.SaveChanges();
+            if(!_userRepository.SaveChanges())
+                throw new ApplicationException("Database error: Changes could not be saved correctly");
         }
 
         public void ForgotPassword(ForgotPasswordRequest model, string origin)
@@ -158,7 +164,8 @@ namespace RecipeRandomizer.Business.Services
             user.ResetTokenExpiresOn = DateTime.UtcNow.AddHours(24);
 
             _userRepository.Update(user);
-            _userRepository.SaveChanges();
+            if(!_userRepository.SaveChanges())
+                throw new ApplicationException("Database error: Changes could not be saved correctly");
 
             // send email
             SendPasswordResetEmail(user, origin);
@@ -190,7 +197,8 @@ namespace RecipeRandomizer.Business.Services
             user.ResetTokenExpiresOn = null;
 
             _userRepository.Update(user);
-            _userRepository.SaveChanges();
+            if(!_userRepository.SaveChanges())
+                throw new ApplicationException("Database error: Changes could not be saved correctly");
         }
 
         public IEnumerable<User> GetUsers()
@@ -226,7 +234,8 @@ namespace RecipeRandomizer.Business.Services
             _mapper.Map(model, user);
             user.UpdatedOn = DateTime.UtcNow;
             _userRepository.Update(user);
-            _userRepository.SaveChanges();
+            if(!_userRepository.SaveChanges())
+                throw new ApplicationException("Database error: Changes could not be saved correctly");
 
             return _mapper.Map<User>(user);
         }
@@ -247,6 +256,9 @@ namespace RecipeRandomizer.Business.Services
         private (Entities.RefreshToken, Entities.User) GetRefreshToken(string token)
         {
             var refreshToken = _userRepository.GetFirstOrDefault<Entities.RefreshToken>(rt => rt.Token == token);
+            if (refreshToken == null)
+                throw new ApplicationException("No refresh-token found");
+
             string[] includes =
             {
                 $"{nameof(Entities.User.Role)}",
@@ -305,7 +317,7 @@ namespace RecipeRandomizer.Business.Services
             string message;
             if (!string.IsNullOrWhiteSpace(origin))
             {
-                var verifyUrl = $"{origin}/verify-email?token={user.VerificationToken}";
+                var verifyUrl = $"{origin}/auth/verify-email?token={user.VerificationToken}";
                 message = $@"<p>Please click the below link to verify your email address:</p>
                              <p><a href=""{verifyUrl}"">{verifyUrl}</a></p>";
             }
@@ -339,7 +351,7 @@ namespace RecipeRandomizer.Business.Services
             string message;
             if (!string.IsNullOrEmpty(origin))
             {
-                var resetUrl = $"{origin}/reset-password?token={user.ResetToken}";
+                var resetUrl = $"{origin}/auth/reset-password?token={user.ResetToken}";
                 message = $@"<p>Please click the below link to reset your password, the link will be valid for 24 hours:</p>
                              <p><a href=""{resetUrl}"">{resetUrl}</a></p>";
             }

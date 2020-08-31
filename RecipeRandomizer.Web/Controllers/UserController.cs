@@ -32,10 +32,13 @@ namespace RecipeRandomizer.Web.Controllers
         }
 
         [HttpPost("refresh-token")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(typeof(User), StatusCodes.Status200OK)]
         public ActionResult<User> RefreshToken()
         {
             var refreshToken = Request.Cookies["refreshToken"];
+            if (refreshToken == null)
+                return NoContent();
             var user = _userService.RefreshToken(refreshToken, IpAddress());
             SetTokenCookie(user.RefreshToken);
             return Ok(user);

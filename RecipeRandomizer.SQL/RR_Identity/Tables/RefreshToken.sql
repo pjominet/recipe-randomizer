@@ -8,7 +8,7 @@
     [CreatedByIp]     nvarchar(39)        not null,
     [RevokedOn]       datetime2           null,
     [RevokedByIp]     nvarchar(39)        null,
-    [ReplacedByToken] datetime2           null,
+    [ReplacedByToken] nvarchar(max)       null,
     constraint [PK_RefreshToken] primary key clustered ([Id] asc),
     constraint [FK_RefreshToken_User] foreign key ([UserId]) references [RR_Identity].[User] ([Id]) on delete cascade
 )
