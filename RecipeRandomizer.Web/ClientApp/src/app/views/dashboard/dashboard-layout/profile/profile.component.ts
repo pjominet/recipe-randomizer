@@ -25,14 +25,32 @@ export class ProfileComponent implements OnInit {
     }
 
     // convenience getter for easy access to form fields
-    get f() {
+    public get f() {
         return this.editForm.controls;
     }
 
+    public get createdRecipeCount(): number {
+        return this.user.recipes?.filter(r => !r.isDeleted).length ?? 0;
+    }
+
+    public get deletedRecipeCount(): number {
+        return this.user.recipes?.filter(r => r.isDeleted).length ?? 0;
+    }
+
+    public get likedRecipeCount(): number {
+        return this.user.likedRecipes?.length ?? 0;
+    }
+
     public ngOnInit(): void {
-        this.recipeService.getRecipes([], this.user.id).subscribe((recipes) => {
-            this.user.recipes = recipes;
-        });
+        this.recipeService.getRecipes([], this.user.id).subscribe(
+            recipes => {
+                this.user.recipes = recipes;
+            });
+
+        this.recipeService.getLikedRecipes(this.user.id).subscribe(
+            recipes => {
+                this.user.likedRecipes = recipes;
+            });
 
         this.editForm = this.formBuilder.group({
             username: [this.user.userName, Validators.required],

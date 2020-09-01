@@ -1,6 +1,7 @@
 ﻿import {NgModule} from '@angular/core';
 import {ReactiveFormsModule} from '@angular/forms';
 import {CommonModule} from '@angular/common';
+import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
 
 import {DashboardRoutingModule} from './dashboard.routing';
 
@@ -20,7 +21,8 @@ import {ChangePasswordModal} from './change-password/change-password-modal';
     imports: [
         CommonModule,
         ReactiveFormsModule,
-        DashboardRoutingModule
+        DashboardRoutingModule,
+        NgbModule
     ],
     declarations: [
         DashboardLayoutComponent,

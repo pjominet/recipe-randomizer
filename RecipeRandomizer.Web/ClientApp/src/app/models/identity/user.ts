@@ -12,6 +12,7 @@ export class User {
     jwtToken?: string;
 
     recipes: Recipe[];
+    likedRecipes: Recipe[];
 }
 
 export enum Role {

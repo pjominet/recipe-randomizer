@@ -38,6 +38,12 @@ export class RecipeService {
         return this.http.get<Recipe[]>(url).pipe(map(response => response));
     }
 
+    public getLikedRecipes(userId: number): Observable<Recipe[]> {
+        let url = `${environment.apiUrl}/recipes/liked/${userId}`;
+
+        return this.http.get<Recipe[]>(url).pipe(map(response => response));
+    }
+
     public getRecipe(id: number): Observable<Recipe> {
         let url = `${environment.apiUrl}/recipes/${id}`;
 
