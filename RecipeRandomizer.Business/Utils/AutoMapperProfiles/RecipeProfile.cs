@@ -12,7 +12,8 @@ namespace RecipeRandomizer.Business.Utils.AutoMapperProfiles
                 .ForMember(dest => dest.Tags, opt =>
                     opt.MapFrom(src => src.RecipeTagAssociations.Select(rta => rta.Tag)))
                 .ForMember(dest => dest.Cost, opt => opt.MapFrom(src => src.CostId))
-                .ForMember(dest => dest.Difficulty, opt => opt.MapFrom(src => src.DifficultyId));
+                .ForMember(dest => dest.Difficulty, opt => opt.MapFrom(src => src.DifficultyId))
+                .ForMember(dest => dest.Likes, opt => opt.MapFrom(src => src.RecipeLikes.Count));
             CreateMap<Models.Recipe, Entities.Recipe>()
                 .ForMember(dest => dest.Id, opt => opt.Ignore())
                 .ForMember(dest => dest.Ingredients, opt => opt.Ignore())
@@ -21,6 +22,7 @@ namespace RecipeRandomizer.Business.Utils.AutoMapperProfiles
                 .ForMember(dest => dest.Difficulty, opt => opt.Ignore())
                 .ForMember(dest => dest.DifficultyId, opt => opt.MapFrom(src => (int) src.Difficulty))
                 .ForMember(dest => dest.RecipeTagAssociations, opt => opt.Ignore())
+                .ForMember(dest => dest.RecipeLikes, opt => opt.Ignore())
                 .ForMember(dest => dest.User, opt => opt.Ignore())
                 .ForMember(dest => dest.IsDeleted, opt => opt.Ignore());
         }

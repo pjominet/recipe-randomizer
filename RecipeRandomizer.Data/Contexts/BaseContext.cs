@@ -7,6 +7,7 @@ namespace RecipeRandomizer.Data.Contexts
     {
         public virtual DbSet<Ingredient> Ingredients { get; set; }
         public virtual DbSet<Recipe> Recipes { get; set; }
+        public virtual DbSet<RecipeLike> RecipeLikes { get; set; }
         public virtual DbSet<RecipeTagAssociation> RecipeTagAssociations { get; set; }
 
         protected void OnModelCreatingBase(ModelBuilder modelBuilder)
@@ -60,21 +61,40 @@ namespace RecipeRandomizer.Data.Contexts
                     .HasConstraintName("FK_Recipe_User");
             });
 
+            modelBuilder.Entity<RecipeLike>(entity =>
+            {
+                entity.HasKey(rta => new {rta.RecipeId, rta.UserId});
+
+                entity.ToTable("RecipeLike", "RecipeRandomizer");
+
+                entity.HasOne(rl => rl.Recipe)
+                    .WithMany(r => r.RecipeLikes)
+                    .HasForeignKey(rl => rl.RecipeId)
+                    .OnDelete(DeleteBehavior.Restrict)
+                    .HasConstraintName("FK_RecipeLike_Recipe");
+
+                entity.HasOne(rl => rl.User)
+                    .WithMany(u => u.RecipeLikes)
+                    .HasForeignKey(rl => rl.UserId)
+                    .OnDelete(DeleteBehavior.Restrict)
+                    .HasConstraintName("FK_RecipeLike_User");
+            });
+
             modelBuilder.Entity<RecipeTagAssociation>(entity =>
             {
                 entity.HasKey(rta => new {rta.RecipeId, rta.TagId});
 
                 entity.ToTable("RecipeTag", "RecipeRandomizer");
 
-                entity.HasOne(d => d.Recipe)
-                    .WithMany(p => p.RecipeTagAssociations)
-                    .HasForeignKey(d => d.RecipeId)
+                entity.HasOne(rta => rta.Recipe)
+                    .WithMany(r => r.RecipeTagAssociations)
+                    .HasForeignKey(rta => rta.RecipeId)
                     .OnDelete(DeleteBehavior.Restrict)
                     .HasConstraintName("FK_RecipeTag_Recipe");
 
-                entity.HasOne(d => d.Tag)
-                    .WithMany(p => p.RecipeTagAssociations)
-                    .HasForeignKey(d => d.TagId)
+                entity.HasOne(rta => rta.Tag)
+                    .WithMany(t => t.RecipeTagAssociations)
+                    .HasForeignKey(rta => rta.TagId)
                     .OnDelete(DeleteBehavior.Restrict)
                     .HasConstraintName("FK_RecipeTag_Tag");
             });

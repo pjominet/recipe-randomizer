@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 
 namespace RecipeRandomizer.Data.Entities.Identity
@@ -9,6 +10,7 @@ namespace RecipeRandomizer.Data.Entities.Identity
         {
             RefreshTokens = new HashSet<RefreshToken>();
             Recipes = new HashSet<Recipe>();
+            RecipeLikes = new HashSet<RecipeLike>();
         }
 
         public int Id { get; set; }
@@ -31,5 +33,6 @@ namespace RecipeRandomizer.Data.Entities.Identity
         public virtual Role Role { get; set; }
         public virtual ICollection<RefreshToken> RefreshTokens { get; set; }
         public virtual ICollection<Recipe> Recipes { get; set; }
+        public virtual ICollection<RecipeLike> RecipeLikes { get; set; }
     }
 }

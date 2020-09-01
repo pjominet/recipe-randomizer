@@ -20,5 +20,6 @@ namespace RecipeRandomizer.Business.Models.Identity
         public string RefreshToken { get; set; }
 
         public IList<Recipe> Recipes { get; set; }
+        public IList<Recipe> LikedRecipes { get; set; }
     }
 }

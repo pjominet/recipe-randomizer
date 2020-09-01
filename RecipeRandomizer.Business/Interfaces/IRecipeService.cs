@@ -10,8 +10,8 @@ namespace RecipeRandomizer.Business.Interfaces
         public Recipe GetRecipe(int id);
         public int? GetRandomRecipe(IEnumerable<int> tagIds);
         public IEnumerable<Recipe> GetRecipesFromTags(IEnumerable<int> tagIds);
-        public IEnumerable<Recipe> GetRecipesFromUser(int userId);
-        public IEnumerable<Recipe> GetRecipesFromUserAndTags(int userId, IEnumerable<int> tagIds);
+        public IEnumerable<Recipe> GetRecipesForUser(int userId);
+        public IEnumerable<Recipe> GetLikedRecipesForUser(int userId);
         public int CreateRecipe(Recipe recipe);
         public bool UpdateRecipe(Recipe recipe);
         public bool DeleteRecipe(int id, bool hard = false);

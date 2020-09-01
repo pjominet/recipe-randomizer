@@ -24,9 +24,7 @@ namespace RecipeRandomizer.Web.Controllers
             if (tagIds.Any() && !userId.HasValue)
                 return Ok(_recipeService.GetRecipesFromTags(tagIds));
             if (!tagIds.Any() && userId.HasValue)
-                return Ok(_recipeService.GetRecipesFromUser(userId.Value));
-            if (tagIds.Any() && userId.HasValue)
-                return Ok(_recipeService.GetRecipesFromUserAndTags(userId.Value, tagIds));
+                return Ok(_recipeService.GetRecipesForUser(userId.Value));
 
             return Ok(_recipeService.GetRecipes());
         }

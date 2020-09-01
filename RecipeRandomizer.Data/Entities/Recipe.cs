@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using RecipeRandomizer.Data.Entities.Identity;
 using RecipeRandomizer.Data.Entities.Nomenclature;
@@ -11,6 +12,7 @@ namespace RecipeRandomizer.Data.Entities
         {
             Ingredients = new HashSet<Ingredient>();
             RecipeTagAssociations = new HashSet<RecipeTagAssociation>();
+            RecipeLikes = new HashSet<RecipeLike>();
         }
 
         public int Id { get; set; }
@@ -31,6 +33,7 @@ namespace RecipeRandomizer.Data.Entities
 
         public virtual ICollection<Ingredient> Ingredients { get; set; }
         public virtual ICollection<RecipeTagAssociation> RecipeTagAssociations { get; set; }
+        public virtual ICollection<RecipeLike> RecipeLikes { get; set; }
         public virtual Cost Cost { get; set; }
         public virtual Difficulty Difficulty { get; set; }
         public virtual User User { get; set; }

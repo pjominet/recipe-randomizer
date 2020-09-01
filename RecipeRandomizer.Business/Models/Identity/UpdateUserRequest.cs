@@ -10,6 +10,7 @@ namespace RecipeRandomizer.Business.Models.Identity
         private string _email;
 
         public string UserName { get; set; }
+        public string ProfileImageUri { get; set; }
 
         [EnumDataType(typeof(Role))]
         public int? Role

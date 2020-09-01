@@ -38,7 +38,7 @@ namespace RecipeRandomizer.Business.Services
                 $"{nameof(Entities.Recipe.Cost)}",
                 $"{nameof(Entities.Recipe.Difficulty)}",
                 $"{nameof(Entities.Recipe.Ingredients)}.{nameof(Entities.Ingredient.QuantityUnit)}",
-                $"{nameof(Entities.Recipe.RecipeTagAssociations)}"
+                $"{nameof(Entities.Recipe.RecipeTagAssociations)}.{nameof(Entities.RecipeTagAssociation.Tag)}"
             };
             return _mapper.Map<Recipe>(_recipeRepository.GetFirstOrDefault<Entities.Recipe>(r => r.Id == id, includes));
         }
@@ -53,21 +53,21 @@ namespace RecipeRandomizer.Business.Services
             return _mapper.Map<IEnumerable<Recipe>>(_recipeRepository.GetRecipesFromTags(tagIds.ToList()));
         }
 
-        public IEnumerable<Recipe> GetRecipesFromUser(int userId)
+        public IEnumerable<Recipe> GetRecipesForUser(int userId)
         {
             string[] includes =
             {
                 $"{nameof(Entities.Recipe.Cost)}",
                 $"{nameof(Entities.Recipe.Difficulty)}",
                 $"{nameof(Entities.Recipe.Ingredients)}.{nameof(Entities.Ingredient.QuantityUnit)}",
-                $"{nameof(Entities.Recipe.RecipeTagAssociations)}"
+                $"{nameof(Entities.Recipe.RecipeTagAssociations)}.{nameof(Entities.RecipeTagAssociation.Tag)}"
             };
             return _mapper.Map<IEnumerable<Recipe>>(_recipeRepository.GetAll<Entities.Recipe>(r => r.UserId == userId, includes));
         }
 
-        public IEnumerable<Recipe> GetRecipesFromUserAndTags(int userId, IEnumerable<int> tagIds)
+        public IEnumerable<Recipe> GetLikedRecipesForUser(int userId)
         {
-            return _mapper.Map<IEnumerable<Recipe>>(_recipeRepository.GetRecipesFromTags(tagIds.ToList()).Where(r => r.UserId == userId));
+            return _mapper.Map<IEnumerable<Recipe>>(_recipeRepository.GetLikedRecipesForUser(userId));
         }
 
         public int CreateRecipe(Recipe recipe)

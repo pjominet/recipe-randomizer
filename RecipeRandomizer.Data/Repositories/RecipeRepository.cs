@@ -67,6 +67,21 @@ namespace RecipeRandomizer.Data.Repositories
             return recipes;
         }
 
+        public IEnumerable<Recipe> GetLikedRecipesForUser(int userId)
+        {
+            return Context.RecipeLikes
+                .Where(rta => rta.UserId == userId)
+                .Select(rta => rta.Recipe)
+                .Where(r => r.DeletedOn == null)
+                .Include(r => r.Cost)
+                .Include(r => r.Difficulty)
+                .Include(r => r.Ingredients)
+                .ThenInclude(i => i.QuantityUnit)
+                .Include(r => r.RecipeTagAssociations)
+                .ThenInclude(rta => rta.Tag)
+                .AsEnumerable();
+        }
+
         public void HardDeleteRecipe(int id)
         {
             foreach (var tagAssociation in Context.RecipeTagAssociations.Where(rta => rta.RecipeId == id))

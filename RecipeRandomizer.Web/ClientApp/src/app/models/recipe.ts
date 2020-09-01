@@ -24,4 +24,5 @@ export class Recipe {
     ingredients: Ingredient[];
     tags: Tag[]
     user: User;
+    likes: number;
 }
