@@ -6,14 +6,14 @@ import {AuthGuard} from '@app/helpers/auth.guard';
 import {HomeComponent} from '@app/views/home/home.component';
 import {NotFoundComponent} from '@app/views/not-found/not-found.component';
 import {RecipesComponent} from '@app/views/recipes/recipes.component';
-import {RecipeModalComponent} from '@app/views/recipes/recipe/recipe-modal.component';
+import {RecipeModal} from '@app/views/recipes/recipe/recipe-modal';
 
 const routes: Routes = [
     {path: '', component: HomeComponent},
     {
         path: 'recipes', component: RecipesComponent, children: [
-            {path: ':rid', component: RecipeModalComponent},
-        ]
+            {path: ':rid', component: RecipeModal}
+        ], data: {showBackButton: true}
     },
     {path: 'auth', loadChildren: () => import('@app/views/auth/auth.module').then(x => x.AuthModule)},
     {path: 'dashboard', loadChildren: () => import('@app/views/dashboard/dashboard.module').then(x => x.DashboardModule), canActivate: [AuthGuard]},

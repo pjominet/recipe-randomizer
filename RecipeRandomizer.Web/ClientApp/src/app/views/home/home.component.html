@@ -3,57 +3,18 @@
         <div class="card-body">
             <h1 class="text-primary text-center mt-5 mb-3">Recipe Fortune Wheel</h1>
 
-            <section class="text-center mb-4" id="fortuneWheel">
-                <button type="submit" class="btn btn-lg btn-secondary" (click)="getRandomRecipe()" *ngIf="!isLoading; else spinner">
-                    Spin The Wheel
-                </button>
-                <ng-template #spinner>
-                    <app-spinner [withBackdrop]="false"></app-spinner>
-                </ng-template>
-            </section>
+            <app-random-recipe></app-random-recipe>
 
-            <section class="mb-5">
-                <p class="text-center">Select additional filters or leave empty to search the entire database</p>
-                <ng-select class="custom-ng-select"
-                           [items]="tagCategories"
-                           [multiple]="true"
-                           groupBy="tags"
-                           [selectableGroup]="true"
-                           [selectableGroupAsModel]="false"
-                           [closeOnSelect]="false"
-                           [(ngModel)]="selectedTags">
-                    <ng-template ng-optgroup-tmp let-tagCategory="item" let-item$="item$" let-index="index">
-                        <div class="custom-control custom-checkbox">
-                            <label for="tag-group-{{index}}" class="sr-only"></label>
-                            <input type="checkbox" [ngModel]="item$.selected" class="custom-control-input" id="tag-group-{{index}}"/>
-                            <label class="custom-control-label">{{tagCategory.label | uppercase}}</label>
-                        </div>
-                    </ng-template>
-                    <ng-template ng-option-tmp let-tag="item" let-item$="item$" let-index="index">
-                        <div class="custom-control custom-checkbox">
-                            <label for="tag-{{index}}" class="sr-only"></label>
-                            <input type="checkbox" [ngModel]="item$.selected" class="custom-control-input" id="tag-{{index}}"/>
-                            <label class="custom-control-label">{{tag.label}}</label>
-                        </div>
-                    </ng-template>
-                </ng-select>
-                <div class="text-center mt-2">
-                    <a routerLink="/recipes">Browse all recipes</a>
-                </div>
+            <section class="text-center mt-2 mb-5">
+                <a routerLink="/recipes">Browse all recipes</a>
             </section>
             <section class="mb-3">
                 <p class="text-center">
                     Want to upload recipes yourself?
                 </p>
                 <div class="d-flex justify-content-center">
-                    <ng-container *ngIf="!isLoggedIn; else gotoDashboard">
-                        <a class="btn btn-outline-info mr-1" routerLink="/auth/login">Sign-In</a>
-                        <a class="btn btn-outline-info ml-1" routerLink="/auth/register">Sign-Up</a>
-                    </ng-container>
-                    <ng-template #gotoDashboard>
-                        <a class="btn btn-outline-info mr-1" routerLink="/dashboard">My Dashboard</a>
-                        <button class="btn btn-outline-danger" (click)="logout()">Logout</button>
-                    </ng-template>
+                    <a class="btn btn-outline-info mr-1" routerLink="/auth/login">Sign-In</a>
+                    <a class="btn btn-outline-info ml-1" routerLink="/auth/register">Sign-Up</a>
                 </div>
             </section>
         </div>

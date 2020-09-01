@@ -117,7 +117,16 @@ namespace RecipeRandomizer.Web.Controllers
         public IActionResult ResetPassword([FromBody] ResetPasswordRequest request)
         {
             _authService.ResetPassword(request);
-            return Ok(new {message = "Password reset successful, you can now login"});
+            return Ok(new {message = "Password reset successful, you can now login again"});
+        }
+
+        [HttpPost("reset-password")]
+        [Consumes("application/json")]
+        [ProducesResponseType(typeof(object), StatusCodes.Status200OK)]
+        public IActionResult ResetPassword([FromBody] ChangePasswordRequest request)
+        {
+            _authService.ChangePassword(request);
+            return Ok(new {message = "Password change successful"});
         }
 
         [Authorize(Role.Admin)]

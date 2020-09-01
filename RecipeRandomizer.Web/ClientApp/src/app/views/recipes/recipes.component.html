@@ -1,6 +1,5 @@
 <section class="container vh-100 bg-white">
-    <h1 class="text-primary text-center pt-5 mb-2">Recipe Fortune Wheel</h1>
-    <h2 class="h3 text-secondary text-center">Recipe Browser</h2>
+    <h2 class="text-secondary text-center pt-4 mb-3">Recipe Browser</h2>
 
     <label>Add filters</label>
     <ng-select class="custom-ng-select"
@@ -49,8 +48,8 @@
                 There are no recipes yet :(
             </p>
         </ng-template>
-        <div class="d-flex justify-content-center mt-5">
-            <a class="btn btn-outline-primary" routerLink="/">Back</a>
+        <div class="d-flex justify-content-center mt-5" *ngIf="showBackButton">
+            <a class="btn btn-outline-primary" routerLink="/">Back Home</a>
         </div>
     </div>
 </section>

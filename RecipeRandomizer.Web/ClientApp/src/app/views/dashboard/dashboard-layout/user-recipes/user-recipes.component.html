@@ -1,0 +1,27 @@
+<section class="container mt-4">
+    <ul class="list-group list-group-flush" *ngIf="recipes.length > 0; else noRecipes">
+        <li class="list-group-item" *ngFor="let recipe of recipes">
+            <a class="row text-decoration-none" [routerLink]="[recipe.id]">
+                <div class="col-12 col-md-4">
+                    {{recipe.name}}
+                </div>
+                <div class="col-12 col-md-4">
+                    {{recipe.description}}
+                </div>
+                <div class="col-12 col-md-4">
+                    <span class="badge badge-lg badge-secondary mx-1 rounded" *ngFor="let tag of recipe.tags">{{tag.label}}</span>
+                </div>
+            </a>
+        </li>
+    </ul>
+    <ng-template #noRecipes>
+        <p class="text-center text-muted">
+            You do not have any recipes yet :(
+        </p>
+    </ng-template>
+    <div class="d-flex justify-content-center mt-4">
+        <a class="btn btn-secondary" routerLink="../recipe-editor">
+            <i class="fas fa-plus mr-2"></i>New Recipe
+        </a>
+    </div>
+</section>

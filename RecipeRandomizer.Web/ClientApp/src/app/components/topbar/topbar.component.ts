@@ -1,5 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {AuthService} from '@app/services/auth.service';
+import {User} from '../../models/identity/user';
 
 @Component({
     selector: 'app-topbar',
@@ -8,7 +9,10 @@ import {AuthService} from '@app/services/auth.service';
 })
 export class TopbarComponent implements OnInit {
 
+    public user: User;
+
     constructor(private authService: AuthService) {
+        this.user = this.authService.user;
     }
 
     ngOnInit(): void {

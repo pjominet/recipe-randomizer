@@ -1,6 +1,7 @@
 // Amiet theme colors
 $dark: #2E2E2E;
 $light: #cfd8dc;
+$lighter: #f7f7f7;
 $primary: #052767;
 $secondary: #ff5722;
 $danger: #CC0000;
@@ -15,3 +16,7 @@ $bp-md: 768px !default;
 $bp-lg: 992px !default;
 $bp-xl: 1200px !default;
 $bp-xxl: 1900px !default;
+
+// custom vars
+$topbar-height: 4rem;
+$navbar-width: 250px;

@@ -14,6 +14,7 @@ namespace RecipeRandomizer.Business.Interfaces
         public void ForgotPassword(VerificationRequest request, string origin);
         public void ValidateResetToken(ValidationRequest request);
         public void ResetPassword(ResetPasswordRequest request);
+        public void ChangePassword(ChangePasswordRequest request);
         public IEnumerable<User> GetUsers();
         public User GetUser(int id);
         public IEnumerable<string> GetUserRefreshTokens(int id);

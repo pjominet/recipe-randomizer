@@ -4,6 +4,7 @@ import {Recipe} from '@app/models/recipe';
 import {TagCategory} from '@app/models/nomenclature/tagCategory';
 import {Tag} from '@app/models/nomenclature/tag';
 import {TagService} from '@app/services/tag.service';
+import {ActivatedRoute} from '@angular/router';
 
 @Component({
     selector: 'app-recipes',
@@ -17,8 +18,13 @@ export class RecipesComponent implements OnInit {
     public tagCategories: TagCategory[] = [];
     public selectedTags: Tag[] = [];
 
+    public get showBackButton(): boolean {
+        return this.route.snapshot.data.showBackButton;
+    }
+
     constructor(private recipeService: RecipeService,
-                private tagService: TagService,) {
+                private tagService: TagService,
+                private route: ActivatedRoute) {
     }
 
     public ngOnInit(): void {

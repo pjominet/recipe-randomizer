@@ -1,6 +1,13 @@
 <section class="topbar">
     <div class="container d-flex justify-content-end h-100 align-items-center">
-        <a class="btn btn-info mr-1" routerLink="/">Home</a>
-        <button class="btn btn-danger" (click)="logout()">Logout</button>
+        <nav class="nav">
+            <strong class="nav-link">Hello&nbsp;{{user.userName}}!</strong>
+            <a class="nav-link btn btn-outline-dark btn-no-outline mx-1" routerLink="profile">
+                <i class="fas fa-user-cog"></i>
+            </a>
+            <button class="nav-link btn btn-sm btn-outline-dark btn-no-outline mx-1" (click)="logout()">
+                <i class="fas fa-sign-out-alt"></i>
+            </button>
+        </nav>
     </div>
 </section>

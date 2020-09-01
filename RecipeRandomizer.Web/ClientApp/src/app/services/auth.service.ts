@@ -11,6 +11,7 @@ import {VerificationRequest} from '@app/models/identity/verificationRequest';
 import {UpdateUserRequest} from '@app/models/identity/updateUserRequest';
 import {RegisterRequest} from '@app/models/identity/registerRequest';
 import {ValidationRequest} from '@app/models/identity/validationRequest';
+import {ChangePasswordRequest} from '@app/models/identity/changePasswordRequest';
 
 const apiUrl = `${environment.apiUrl}/auth`;
 
@@ -79,6 +80,10 @@ export class AuthService {
 
     public resetPassword(resetPasswordRequest: ResetPasswordRequest): Observable<any> {
         return this.http.post<any>(`${apiUrl}/reset-password`, resetPasswordRequest);
+    }
+
+    public changePassword(changePasswordRequest: ChangePasswordRequest): Observable<any> {
+        return this.http.post<any>(`${apiUrl}/change-password`, changePasswordRequest);
     }
 
     public updateUser(id: number, updateUserRequest: UpdateUserRequest): Observable<User> {

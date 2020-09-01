@@ -4,6 +4,7 @@ export class User {
     id: number;
     userName: string;
     email: string;
+    profileImageUri: string;
     role: Role;
     createdOn: Date;
     updatedOn: Date;

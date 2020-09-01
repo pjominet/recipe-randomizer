@@ -1,0 +1,29 @@
+@import 'variables';
+
+.nav {
+    &-header {
+        height: $topbar-height;
+    }
+
+    &-body {
+        margin-left: 1rem;
+
+        a.nav-link {
+            color: $light;
+            line-height: 2;
+            font-size: larger;
+
+            &:hover {
+                color: darken($light, 20%);
+            }
+
+            &-active {
+                color: darken($light, 25%);
+            }
+        }
+    }
+
+    &-spacer {
+        height: 1.5em;
+    }
+}

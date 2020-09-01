@@ -6,6 +6,7 @@
     [Email]               nvarchar(max)       not null,
     [PasswordHash]        nvarchar(max)       not null,
     [HasAcceptedTerms]    bit                 not null default 0,
+    [profileImageUri]     nvarchar(max)       null,
     [VerificationToken]   nvarchar(max)       null,
     [VerifiedOn]          datetime2           null,
     [ResetToken]          nvarchar(max)       null,

@@ -23,7 +23,8 @@ import {NotFoundComponent} from '@app/views/not-found/not-found.component';
 import {HomeComponent} from '@app/views/home/home.component';
 import {RecipesComponent} from '@app/views/recipes/recipes.component';
 import {RecipeComponent} from '@app/views/recipes/recipe/recipe.component';
-import {RecipeModalComponent} from '@app/views/recipes/recipe/recipe-modal.component';
+import {RecipeModal} from '@app/views/recipes/recipe/recipe-modal';
+import {RandomRecipeComponent} from './views/recipes/random-recipe/random-recipe.component';
 
 @NgModule({
     declarations: [
@@ -35,7 +36,8 @@ import {RecipeModalComponent} from '@app/views/recipes/recipe/recipe-modal.compo
         ToastComponent,
         RecipesComponent,
         RecipeComponent,
-        RecipeModalComponent
+        RecipeModal,
+        RandomRecipeComponent
     ],
     imports: [
         BrowserModule,

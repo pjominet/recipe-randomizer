@@ -17,6 +17,7 @@ namespace RecipeRandomizer.Data.Entities.Identity
         public string Email { get; set; }
         public string PasswordHash { get; set; }
         public bool HasAcceptedTerms { get; set; }
+        public string ProfileImageUri { get; set; }
         public string VerificationToken { get; set; }
         public DateTime? VerifiedOn { get; set; }
         public bool IsVerified => VerifiedOn.HasValue || PasswordResetOn.HasValue;

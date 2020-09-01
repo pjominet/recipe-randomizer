@@ -15,6 +15,16 @@ body {
 }
 
 .btn {
+    @include custom-box-shadow(3px, 3px, 10px, -2px, lighten($dark, 30%));
+
+    &[class*='-outline-'] {
+        @include box-shadow-none();
+    }
+
+    &:hover:not(:disabled) {
+        @include box-shadow-none();
+    }
+
     &-circle {
         border-radius: 45px;
     }
@@ -24,13 +34,13 @@ body {
 
         &:focus, .focus {
             outline: none !important;
-            box-shadow: none;
+            @include box-shadow-none();
         }
     }
 }
 
-.card {
-    border: none;
+.card-shadowed {
+    @include custom-box-shadow(3px, 3px, 10px, -2px, lighten($dark, 30%));
 }
 
 .w {

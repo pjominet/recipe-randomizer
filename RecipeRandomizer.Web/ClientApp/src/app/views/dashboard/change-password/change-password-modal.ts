@@ -1,15 +1,14 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
+﻿import {Component, OnDestroy, OnInit} from '@angular/core';
 import {NgbModal, NgbModalRef} from '@ng-bootstrap/ng-bootstrap';
 import {ActivatedRoute, NavigationStart, Router} from '@angular/router';
 import {Subject} from 'rxjs';
 import {filter, takeUntil} from 'rxjs/operators';
-import {RecipeComponent} from './recipe.component';
+import {ChangePasswordComponent} from './change-password.component';
 
 @Component({
-    selector: 'app-modal-container',
-    template: '<!-- Recipe view will be rendered here -->'
+    template: '<!-- Change password view will be rendered here -->'
 })
-export class RecipeModalComponent implements OnInit, OnDestroy {
+export class ChangePasswordModal implements OnInit, OnDestroy {
 
     private modalSubject = new Subject<any>();
     private modalRef: NgbModalRef = null;
@@ -22,8 +21,7 @@ export class RecipeModalComponent implements OnInit, OnDestroy {
     ngOnInit(): void {
         this.route.params.pipe(takeUntil(this.modalSubject)).subscribe(params => {
             // create the actual modal
-            this.modalRef = this.modalService.open(RecipeComponent, {size: 'lg', scrollable: true, backdrop: 'static'});
-            this.modalRef.componentInstance.id = params.rid;
+            this.modalRef = this.modalService.open(ChangePasswordComponent, {centered: true, backdrop: 'static'});
 
             // go back to parent page after the modal is closed
             this.modalRef.result.then(

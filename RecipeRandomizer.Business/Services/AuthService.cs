@@ -87,7 +87,7 @@ namespace RecipeRandomizer.Business.Services
             var jwtToken = GenerateJwtToken(user);
             var authenticatedUser = _mapper.Map<User>(user);
             authenticatedUser.JwtToken = jwtToken;
-            authenticatedUser.RefreshToken = refreshToken.Token;
+            authenticatedUser.RefreshToken = newRefreshToken.Token;
 
             return authenticatedUser;
         }
@@ -208,6 +208,25 @@ namespace RecipeRandomizer.Business.Services
             user.PasswordResetOn = DateTime.UtcNow;
             user.ResetToken = null;
             user.ResetTokenExpiresOn = null;
+
+            _userRepository.Update(user);
+            if(!_userRepository.SaveChanges())
+                throw new ApplicationException("Database error: Changes could not be saved correctly");
+        }
+
+        public void ChangePassword(ChangePasswordRequest request)
+        {
+            var user = _userRepository.GetFirstOrDefault<Entities.User>(u => u.Id == request.Id);
+
+            if (user == null)
+                throw new BadRequestException("User could not be found");
+
+            if(!BC.Verify(request.Password, user.PasswordHash))
+                throw new BadRequestException("Current password is not correct");
+
+            // update password
+            user.PasswordHash = BC.HashPassword(request.NewPassword);
+            user.PasswordResetOn = DateTime.UtcNow;
 
             _userRepository.Update(user);
             if(!_userRepository.SaveChanges())

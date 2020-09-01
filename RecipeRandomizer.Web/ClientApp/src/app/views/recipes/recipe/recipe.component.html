@@ -1,5 +1,4 @@
-<div class="card" *ngIf="recipe">
-
+<div class="card border-0" *ngIf="recipe">
     <div class="img-container">
         <img src="{{recipe.imageUri ? recipe.imageUri : 'assets/img/recipe_placeholder.jpg'}}" alt="recipe preview image">
         <h4>{{recipe.name}}</h4>
