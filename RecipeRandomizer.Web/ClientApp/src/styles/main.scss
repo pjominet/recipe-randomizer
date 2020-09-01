@@ -17,7 +17,7 @@ body {
 .btn {
     @include custom-box-shadow(3px, 3px, 10px, -2px, lighten($dark, 30%));
 
-    &[class*='-outline-'] {
+    &[class*='-outline-'], &-link {
         @include box-shadow-none();
     }
 
