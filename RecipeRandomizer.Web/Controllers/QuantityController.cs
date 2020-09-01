@@ -14,11 +14,11 @@ namespace RecipeRandomizer.Web.Controllers
             _quantityService = quantityService;
         }
 
-        [HttpGet]
+        [HttpGet("units")]
         [ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
-        public IActionResult GetQuantities()
+        public IActionResult GetQuantityUnits()
         {
-            return Ok(_quantityService.GetQuantities());
+            return Ok(_quantityService.GetQuantityUnits());
         }
     }
 }

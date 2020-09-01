@@ -5,6 +5,6 @@ namespace RecipeRandomizer.Business.Interfaces
 {
     public interface IQuantityService
     {
-        public IEnumerable<QuantityUnit> GetQuantities();
+        public IEnumerable<QuantityUnit> GetQuantityUnits();
     }
 }

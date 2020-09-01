@@ -1,1 +1,158 @@
-<p>recipe-editor works!</p>
+<section class="card card-shadowed mt-4 mb-3">
+    <div class="card-body" *ngIf="recipeForm">
+        <form [formGroup]="recipeForm" (ngSubmit)="onSubmit()">
+            <h3>Recipe Information</h3>
+            <div class="row">
+                <div class=" col-12 form-group">
+                    <label for="nameInput">Name</label>
+                    <input type="text" formControlName="name" id="nameInput" class="form-control" [ngClass]="{ 'is-invalid': isSubmitted && f.name.errors }">
+                    <div *ngIf="isSubmitted && f.name.errors" class="invalid-feedback">
+                        <div *ngIf="f.name.errors.required">Name is required</div>
+                    </div>
+                </div>
+
+                <div class="col-4 form-group">
+                    <label for="numberOfPeopleInput">Number of people</label>
+                    <input type="number" formControlName="numberOfPeople" id="numberOfPeopleInput" class="form-control"
+                           [ngClass]="{ 'is-invalid': isSubmitted && f.numberOfPeople.errors }">
+                    <div *ngIf="isSubmitted && f.numberOfPeople.errors" class="invalid-feedback">
+                        <div *ngIf="f.numberOfPeople.errors.required">Number of people is required</div>
+                    </div>
+                </div>
+
+                <div class="col-4 form-group">
+                    <label for="costSelect">Cost</label>
+                    <select formControlName="cost" class="form-control" id="costSelect">
+                        <option *ngFor="let cost of costs | enumList" [value]="cost.key">
+                            {{cost.value}}
+                        </option>
+                    </select>
+                </div>
+
+                <div class="col-4 form-group">
+                    <label for="difficultySelect">Difficulty</label>
+                    <select formControlName="difficulty" class="form-control" id="difficultySelect">
+                        <option *ngFor="let difficulties of difficulties | enumList" [value]="difficulties.key">
+                            {{difficulties.value}}
+                        </option>
+                    </select>
+                </div>
+
+                <div class="col-6 form-group">
+                    <label for="prepTimeInput">Preparation time</label>
+                    <div class="input-group">
+                        <input type="number" formControlName="prepTime" class="form-control" id="prepTimeInput" [ngClass]="{ 'is-invalid': isSubmitted && f.prepTime.errors }">
+                        <div class="input-group-append">
+                            <span class="input-group-text">min</span>
+                        </div>
+                    </div>
+                    <div *ngIf="isSubmitted && f.prepTime.errors" class="invalid-feedback">
+                        <div *ngIf="f.prepTime.errors.required">Preparation time is required</div>
+                    </div>
+                </div>
+
+                <div class="col-6 form-group">
+                    <label for="cookTimeInput">Cooking time</label>
+                    <div class="input-group">
+                        <input type="number" formControlName="cookTime" class="form-control" id="cookTimeInput" [ngClass]="{ 'is-invalid': isSubmitted && f.cookTime.errors }">
+                        <div class="input-group-append">
+                            <span class="input-group-text">min</span>
+                        </div>
+                    </div>
+                    <div *ngIf="isSubmitted && f.cookTime.errors" class="invalid-feedback">
+                        <div *ngIf="f.cookTime.errors.required">Cooking time is required</div>
+                    </div>
+                </div>
+
+                <div class="col-12 col-md-6 form-group">
+                    <label for="descriptionText">Description</label>
+                    <textarea formControlName="description" class="form-control" id="descriptionText" rows="7" [ngClass]="{ 'is-invalid': isSubmitted && f.description.errors }"></textarea>
+                    <div *ngIf="isSubmitted && f.description.errors" class="invalid-feedback">
+                        <div *ngIf="f.description.errors.required">Name is required</div>
+                    </div>
+                </div>
+
+                <div class="col-12 col-md-6 form-group">
+                    <label for="preparationText">Preparation</label>
+                    <textarea formControlName="preparation" class="form-control" id="preparationText" rows="7" [ngClass]="{ 'is-invalid': isSubmitted && f.preparation.errors }"></textarea>
+                    <div *ngIf="isSubmitted && f.preparation.errors" class="invalid-feedback">
+                        <div *ngIf="f.preparation.errors.required">Name is required</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <h3>Ingredients</h3>
+                <div formArrayName="ingredients" *ngFor="let ingredient of ic; index as i">
+                    <div [formGroup]="ingredient">
+                        <div class="row">
+                            <div class="form-group col-5">
+                                <label for="ingredientNameInput">Ingredient name</label>
+                                <input type="text" formControlName="name" id="ingredientNameInput" class="form-control" [ngClass]="{ 'is-invalid': isSubmitted && ingredient.errors }">
+                                <div *ngIf="isSubmitted && ingredient.errors" class="invalid-feedback">
+                                    <div *ngIf="ingredient.errors.required">Ingredient name is required</div>
+                                </div>
+                            </div>
+                            <div class="form-group col-3">
+                                <label for="quantityInput">Quantity</label>
+                                <input type="number" formControlName="quantity" id="quantityInput" class="form-control" [ngClass]="{ 'is-invalid': isSubmitted && ingredient.errors }">
+                                <div *ngIf="isSubmitted && ingredient.errors" class="invalid-feedback">
+                                    <div *ngIf="ingredient.errors.required">Quantity is required</div>
+                                </div>
+                            </div>
+                            <div class="form-group col-3">
+                                <label for="quantityUnitSelect">Unit</label>
+                                <select formControlName="quantityUnit" class="form-control" id="quantityUnitSelect">
+                                    <option *ngFor="let quantityUnit of quantityUnits" [value]="quantityUnit.id">
+                                        {{quantityUnit.label}}&nbsp;({{quantityUnit.description}})
+                                    </option>
+                                </select>
+                            </div>
+                            <div class="form-group no-label col-1" *ngIf="i > 0">
+                                <button type="button" class="btn btn-outline-danger btn-no-outline" (click)="onIngredientRemove(i)">
+                                    <i class="fas fa-times"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <button type="button" class="btn btn-outline-primary" (click)="onIngredientAdd()">
+                    <i class="fas fa-plus mr-2"></i>ingredient
+                </button>
+            </div>
+
+            <h3>Tagging</h3>
+            <div class="form-group">
+                <label>Add descriptive tags</label>
+                <ng-select class="custom-ng-select"
+                           [items]="tagCategories"
+                           [multiple]="true"
+                           groupBy="tags"
+                           [selectableGroup]="true"
+                           [selectableGroupAsModel]="false"
+                           [closeOnSelect]="false"
+                           formControlName="tags">
+                    <ng-template ng-optgroup-tmp let-tagCategory="item" let-item$="item$" let-index="index">
+                        <div class="custom-control custom-checkbox">
+                            <label for="tag-group-{{index}}" class="sr-only"></label>
+                            <input type="checkbox" [checked]="item$.selected" class="custom-control-input" id="tag-group-{{index}}"/>
+                            <label class="custom-control-label">{{tagCategory.label | uppercase}}</label>
+                        </div>
+                    </ng-template>
+                    <ng-template ng-option-tmp let-tag="item" let-item$="item$" let-index="index">
+                        <div class="custom-control custom-checkbox">
+                            <label for="tag-{{index}}" class="sr-only"></label>
+                            <input type="checkbox" [checked]="item$.selected" class="custom-control-input" id="tag-{{index}}"/>
+                            <label class="custom-control-label">{{tag.label}}</label>
+                        </div>
+                    </ng-template>
+                </ng-select>
+            </div>
+
+            <div class="d-flex justify-content-between mt-3">
+                <button type="button" class="btn btn-warning" [disabled]="recipeForm.pristine" (click)="resetFrom()">Reset</button>
+                <button type="submit" class="btn btn-success" [disabled]="recipeForm.pristine">Save recipe</button>
+            </div>
+        </form>
+    </div>
+</section>

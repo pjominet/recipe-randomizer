@@ -4,6 +4,7 @@
     background-color: $lighter;
     border-bottom: 1px solid $light;
     height: $topbar-height;
+    z-index: 10;
 }
 
 @media (min-width: 768px) {

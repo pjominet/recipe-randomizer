@@ -59,3 +59,9 @@ body {
     overflow: hidden;
     text-overflow: ellipsis;
 }
+
+.form-group {
+    .no-label {
+        margin-top: 2rem;
+    }
+}

@@ -1,9 +1,14 @@
 ﻿import {NgModule} from '@angular/core';
-import {ReactiveFormsModule} from '@angular/forms';
+import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {CommonModule} from '@angular/common';
 import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
+import {NgSelectModule} from '@ng-select/ng-select';
 
 import {DashboardRoutingModule} from './dashboard.routing';
+
+// helpers
+import {UnsavedChangesGuard} from '@app/helpers/unsaved-changes.guard';
+import {EnumListPipe} from '@app/helpers/enumlist.pipe';
 
 // components
 import {NavbarComponent} from '@app/components/navbar/navbar.component';
@@ -21,8 +26,10 @@ import {ChangePasswordModal} from './change-password/change-password-modal';
     imports: [
         CommonModule,
         ReactiveFormsModule,
+        FormsModule,
         DashboardRoutingModule,
-        NgbModule
+        NgbModule,
+        NgSelectModule,
     ],
     declarations: [
         DashboardLayoutComponent,
@@ -32,11 +39,15 @@ import {ChangePasswordModal} from './change-password/change-password-modal';
         UserRecipesComponent,
         RecipeEditorComponent,
         ChangePasswordComponent,
-        ChangePasswordModal
+        ChangePasswordModal,
+        EnumListPipe
     ],
     entryComponents: [
         ChangePasswordComponent
     ],
+    providers: [
+        UnsavedChangesGuard
+    ]
 })
 export class DashboardModule {
 }

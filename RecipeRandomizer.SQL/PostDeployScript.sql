@@ -37,7 +37,8 @@ begin transaction
                   (6, N'pinch', N'~350mg'),
                   (7, N'tablespoon', N'~25ml'),
                   (8, N'teaspoon', N'~5ml'),
-                  (9, N'cup', N'~235ml')
+                  (9, N'cup', N'~235ml'),
+                  (10, N'piece', N'e.g. egg')
     ) as source ([Id], [Label], [Description])
     on (target.[Id] = source.[Id])
     when matched then
