@@ -58,7 +58,7 @@ namespace RecipeRandomizer.Web.Controllers
                 return BadRequest(new {message = "Token is required"});
 
             // users can revoke their own tokens and admins can revoke any tokens
-            if (!OwnsToken(User.Id, token) && User.Role != Role.Admin)
+            if (!OwnsToken(User?.Id, token) && User?.Role != Role.Admin)
                 return Unauthorized(new {message = "Unauthorized"});
 
             _authService.RevokeToken(token, IpAddress());
@@ -148,9 +148,12 @@ namespace RecipeRandomizer.Web.Controllers
             return HttpContext.Connection.RemoteIpAddress.MapToIPv4().ToString();
         }
 
-        private bool OwnsToken(int userId, string token)
+        private bool OwnsToken(int? userId, string token)
         {
-            var tokens = _authService.GetUserRefreshTokens(userId);
+            if (!userId.HasValue)
+                return false;
+
+            var tokens = _authService.GetUserRefreshTokens(userId.Value);
             return tokens.FirstOrDefault(t => t == token) != null;
         }
 

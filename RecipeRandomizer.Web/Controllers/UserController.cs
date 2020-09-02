@@ -35,7 +35,7 @@ namespace RecipeRandomizer.Web.Controllers
         public ActionResult<User> GetUser([FromRoute] int id)
         {
             // users can get their own account and admins can get any account
-            if (id != User.Id && User.Role != Role.Admin)
+            if (id != User?.Id && User?.Role != Role.Admin)
                 return Unauthorized(new {message = "Unauthorized"});
 
             var user = _userService.GetUser(id);
@@ -49,7 +49,7 @@ namespace RecipeRandomizer.Web.Controllers
         public ActionResult<User> Update([FromRoute] int id, [FromBody] User user)
         {
             // users can update their own account and admins can update any account
-            if (id != User.Id && User.Role != Role.Admin)
+            if (id != User?.Id && User?.Role != Role.Admin)
                 return Unauthorized(new {message = "Unauthorized"});
 
             var updatedUser = _userService.Update(id, user);
@@ -62,10 +62,10 @@ namespace RecipeRandomizer.Web.Controllers
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public IActionResult UploadRecipeImage([FromForm(Name = "file")] IFormFile image, [FromForm(Name = "id")] int? userId)
+        public IActionResult UploadUserAvatar([FromForm(Name = "file")] IFormFile image, [FromForm(Name = "id")] int? userId)
         {
             if (image == null || !userId.HasValue)
-                return StatusCode(StatusCodes.Status400BadRequest);
+                return BadRequest("Missing information in form-data");
 
             var stream = image.OpenReadStream();
             var result = _userService.UploadUserAvatar(stream, userId.Value);
@@ -82,7 +82,7 @@ namespace RecipeRandomizer.Web.Controllers
         public IActionResult Delete(int id)
         {
             // users can delete their own account and admins can delete any account
-            if (id != User.Id && User.Role != Role.Admin)
+            if (id != User?.Id && User?.Role != Role.Admin)
                 return Unauthorized(new {message = "Unauthorized"});
 
             return _userService.Delete(id)
