@@ -17,6 +17,7 @@ namespace RecipeRandomizer.Data.Repositories
             return Context.Recipes
                 .Include(r => r.Cost)
                 .Include(r => r.Difficulty)
+                .Include(r => r.User)
                 .Include(r => r.Ingredients)
                 .ThenInclude(i => i.QuantityUnit)
                 .Include(r => r.RecipeTagAssociations)
@@ -42,6 +43,7 @@ namespace RecipeRandomizer.Data.Repositories
             return recipes
                 .Where(r => r.DeletedOn == null)
                 .Skip(rnd.Next(0, total))
+                .Include(r => r.User)
                 .Include(r => r.Ingredients)
                 .ThenInclude(i => i.QuantityUnit)
                 .Include(r => r.RecipeTagAssociations)
@@ -63,6 +65,7 @@ namespace RecipeRandomizer.Data.Repositories
             {
                 recipe.Ingredients = Context.Ingredients.Where(i => i.RecipeId == recipe.Id).Include(i => i.QuantityUnit).ToList();
                 recipe.RecipeTagAssociations = Context.RecipeTagAssociations.Where(rta => rta.RecipeId == recipe.Id).Include(rta => rta.Tag).ToList();
+                recipe.User = Context.Users.Single(u => u.Id == recipe.UserId);
             }
             return recipes;
         }
@@ -81,6 +84,7 @@ namespace RecipeRandomizer.Data.Repositories
             {
                 recipe.Ingredients = Context.Ingredients.Where(i => i.RecipeId == recipe.Id).Include(i => i.QuantityUnit).ToList();
                 recipe.RecipeTagAssociations = Context.RecipeTagAssociations.Where(rta => rta.RecipeId == recipe.Id).Include(rta => rta.Tag).ToList();
+                recipe.User = Context.Users.Single(u => u.Id == recipe.UserId);
             }
             return recipes;
         }

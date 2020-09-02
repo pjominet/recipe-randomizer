@@ -5,6 +5,7 @@ import {HTTP_INTERCEPTORS, HttpClientModule} from '@angular/common/http';
 import {AppRouting} from '@app/app.routing';
 import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
 import {NgSelectModule} from '@ng-select/ng-select';
+import {ScrollingModule} from '@angular/cdk/scrolling';
 
 // helpers
 import {appInitializer} from '@app/helpers/app.initializer';
@@ -46,7 +47,8 @@ import {RandomRecipeComponent} from './views/recipes/random-recipe/random-recipe
         AppRouting,
         NgbModule,
         NgSelectModule,
-        ReactiveFormsModule
+        ReactiveFormsModule,
+        ScrollingModule
     ],
     entryComponents: [
         RecipeComponent

@@ -25,7 +25,7 @@ namespace RecipeRandomizer.Business.Models
 
         public IList<Ingredient> Ingredients { get; set; }
         public IList<Tag> Tags { get; set; }
-        public User User { get; set; }
+        public string CreatedBy { get; set; }
         public int Likes { get; set; }
     }
 }

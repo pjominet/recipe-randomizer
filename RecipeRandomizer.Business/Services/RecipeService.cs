@@ -38,6 +38,7 @@ namespace RecipeRandomizer.Business.Services
             {
                 $"{nameof(Entities.Recipe.Cost)}",
                 $"{nameof(Entities.Recipe.Difficulty)}",
+                $"{nameof(Entities.Recipe.User)}",
                 $"{nameof(Entities.Recipe.Ingredients)}.{nameof(Entities.Ingredient.QuantityUnit)}",
                 $"{nameof(Entities.Recipe.RecipeTagAssociations)}.{nameof(Entities.RecipeTagAssociation.Tag)}"
             };

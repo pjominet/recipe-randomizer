@@ -80,10 +80,6 @@ export class AlertComponent implements OnInit {
     }
 
     public getAlertColor(type: AlertType): string {
-        if (!type) {
-            return;
-        }
-
         const alertTypeClass = {
             [AlertType.Success]: 'alert-success',
             [AlertType.Error]: 'alert-danger',

@@ -20,8 +20,8 @@
                             <i class="fas fa-eye-slash"></i>
                         </button>
                     </th>
-                    <td>{{recipe.name}}</td>
-                    <td>{{recipe.description}}</td>
+                    <td class="truncate">{{recipe.name}}</td>
+                    <td class="truncate">{{recipe.description}}</td>
                     <td>{{recipe.createdOn | date: 'dd MMM y, H:mm'}}</td>
                     <td>{{recipe.updatedOn || '---'}}</td>
                     <td>
@@ -65,8 +65,8 @@
                             <i class="fas fa-fire"></i>
                         </button>
                     </th>
-                    <td>{{recipe.name}}</td>
-                    <td>{{recipe.description}}</td>
+                    <td class="truncate">{{recipe.name}}</td>
+                    <td class="truncate">{{recipe.description}}</td>
                     <td>{{recipe.createdOn | date: 'dd MMM y, H:mm'}}</td>
                     <td>{{recipe.deletedOn | date: 'dd MMM y, H:mm'}}</td>
                 </tr>
@@ -94,8 +94,8 @@
                 </thead>
                 <tbody>
                 <tr *ngFor="let recipe of likedRecipes" (click)="showRecipe(recipe.id, $event)">
-                    <td>{{recipe.name}}</td>
-                    <td>{{recipe.description}}</td>
+                    <td class="truncate">{{recipe.name}}</td>
+                    <td class="truncate">{{recipe.description}}</td>
                     <td>{{recipe.createdOn | date: 'dd MMM y, H:mm'}}</td>
                     <td>{{recipe.updatedOn || '---'}}</td>
                     <td>

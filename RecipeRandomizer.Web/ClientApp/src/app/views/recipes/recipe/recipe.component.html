@@ -9,8 +9,11 @@
         </div>
         <div class="card-body">
             <div class="row">
-                <div class="col-12">
-                    <p id="recipeDates">
+                <div class="col-12 d-flex justify-content-between">
+                    <p class="credits">
+                        Created by:&nbsp;{{recipe.createdBy}}
+                    </p>
+                    <p class="credits">
                         <ng-container *ngIf="recipe.updatedOn; else createdOn">
                             Updated On:&nbsp;{{recipe.updatedOn | date: 'dd MMM y, H:mm'}}
                         </ng-container>

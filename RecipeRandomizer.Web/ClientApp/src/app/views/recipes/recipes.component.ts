@@ -4,7 +4,7 @@ import {Recipe} from '@app/models/recipe';
 import {TagCategory} from '@app/models/nomenclature/tagCategory';
 import {Tag} from '@app/models/nomenclature/tag';
 import {TagService} from '@app/services/tag.service';
-import {ActivatedRoute} from '@angular/router';
+import {ActivatedRoute, Router} from '@angular/router';
 
 @Component({
     selector: 'app-recipes',
@@ -24,7 +24,8 @@ export class RecipesComponent implements OnInit {
 
     constructor(private recipeService: RecipeService,
                 private tagService: TagService,
-                private route: ActivatedRoute) {
+                private route: ActivatedRoute,
+                private router: Router) {
     }
 
     public ngOnInit(): void {
@@ -50,5 +51,10 @@ export class RecipesComponent implements OnInit {
                 console.log(error);
             }
         );
+    }
+
+    public showRecipe(id: number): void {
+        const queryParams = this.route.snapshot.queryParams;
+        this.router.navigate([id], {relativeTo: this.route, queryParams: queryParams});
     }
 }

@@ -2,7 +2,6 @@
 import {Difficulty} from '@app/models/nomenclature/difficulty';
 import {Ingredient} from '@app/models/ingredient';
 import {Tag} from '@app/models/nomenclature/tag';
-import {User} from '@app/models/identity/user';
 
 export class Recipe {
     id: number;
@@ -23,6 +22,6 @@ export class Recipe {
 
     ingredients: Ingredient[];
     tags: Tag[]
-    user: User;
+    createdBy: string;
     likes: number;
 }

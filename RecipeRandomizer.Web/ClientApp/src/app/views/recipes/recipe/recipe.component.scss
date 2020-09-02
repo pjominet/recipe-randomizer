@@ -30,13 +30,11 @@
 #recipeDescription {
     font-style: italic;
     font-size: large;
-    color: $text-muted;
 }
 
-#recipeDates {
+.credits {
     font-style: italic;
     font-size: small;
     color: $text-muted;
-    text-align: right;
     margin-top: -1rem;
 }
