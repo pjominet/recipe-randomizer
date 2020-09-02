@@ -52,7 +52,7 @@ import {RandomRecipeComponent} from './views/recipes/random-recipe/random-recipe
         RecipeComponent
     ],
     providers: [
-        {provide: APP_INITIALIZER, useFactory: appInitializer, multi: true, deps: [AuthService]},
+        {provide: APP_INITIALIZER, useFactory: appInitializer, multi: true, deps: [AuthService]}, // TODO: need some investigation
         {provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true},
         {provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true},
     ],

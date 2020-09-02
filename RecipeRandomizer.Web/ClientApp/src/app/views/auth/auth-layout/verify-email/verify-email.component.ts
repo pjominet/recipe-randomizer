@@ -5,6 +5,7 @@ import {AlertService} from '@app/components/alert/alert.service';
 import {first} from 'rxjs/operators';
 import {VerificationRequest} from '../../../../models/identity/verificationRequest';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
+import {ValidationRequest} from '../../../../models/identity/validationRequest';
 
 enum EmailStatus {
     Verifying,
@@ -41,7 +42,7 @@ export class VerifyEmailComponent implements OnInit {
         // remove token from url to prevent http referer leakage
         this.router.navigate([], {relativeTo: this.route, replaceUrl: true});
 
-        this.authService.verifyEmail(token)
+        this.authService.verifyEmail(new ValidationRequest(token))
             .pipe(first())
             .subscribe({
                 next: () => {
