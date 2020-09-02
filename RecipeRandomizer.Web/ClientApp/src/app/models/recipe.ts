@@ -23,5 +23,5 @@ export class Recipe {
     ingredients: Ingredient[];
     tags: Tag[]
     createdBy: string;
-    likes: number;
+    likes: number[];
 }

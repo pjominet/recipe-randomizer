@@ -33,8 +33,18 @@ $input-focus-border-color: lighten($primary, 15%);
         darken($bg-color, 10%), darken($bg-color, 12.5%));
 }
 
-.btn-secondary-translucent {
-    @include bootstrap-button(rgba($secondary, .85));
+.btn {
+    &-secondary-translucent {
+        @include bootstrap-button(rgba($secondary, .85));
+    }
+
+    &-info-translucent {
+        @include bootstrap-button(rgba($info, .85));
+    }
+
+    &-light-translucent {
+        @include bootstrap-button(rgba($lighter, .85));
+    }
 }
 
 .badge {

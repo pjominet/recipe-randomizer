@@ -4,6 +4,8 @@ import {Recipe} from '@app/models/recipe';
 import {NgbActiveModal} from '@ng-bootstrap/ng-bootstrap';
 import {Cost} from '@app/models/nomenclature/cost';
 import {Difficulty} from '@app/models/nomenclature/difficulty';
+import {AuthService} from '@app/services/auth.service';
+import {User} from '@app/models/identity/user';
 
 @Component({
     selector: 'app-recipe',
@@ -17,18 +19,32 @@ export class RecipeComponent implements OnInit {
     public cost: typeof Cost = Cost;
     public difficulty: typeof Difficulty = Difficulty;
 
+    public user: User;
+    public isLiked: boolean = false;
+
     constructor(private recipeService: RecipeService,
-                public activeModal: NgbActiveModal) {
+                public activeModal: NgbActiveModal,
+                private authService: AuthService) {
+        this.user = this.authService.user;
     }
 
     public ngOnInit(): void {
         this.recipeService.getRecipe(this.id).subscribe(
             recipe => {
                 this.recipe = recipe;
-            }, error => {
-                console.log(error);
+                this.isLiked = this.recipe.likes.findIndex(l => l === this.user.id) !== -1;
+            });
+    }
+
+    public like(): void {
+        this.isLiked = !this.isLiked;
+        this.recipeService.likeRecipe(this.recipe.id, this.user.id, this.isLiked).subscribe(
+            () => {
+                if (this.isLiked)
+                    this.recipe.likes.push(this.user.id);
+                else this.recipe.likes = this.recipe.likes.filter(l => l === this.user.id);
             }
-        );
+        )
     }
 
     public costColor(cost: Cost): string {

@@ -2,16 +2,24 @@
     <div class="card border-0" *ngIf="recipe">
         <div class="img-container">
             <img src="{{recipe.imageUri ? recipe.imageUri : 'assets/img/recipe_placeholder.jpg'}}" alt="recipe preview image">
-            <h1 class="h4">{{recipe.name}}</h1>
-            <button class="btn btn-secondary-translucent btn-circle" (click)="activeModal.dismiss()">
+            <h1 class="h4 mb-0">{{recipe.name}}</h1>
+            <button id="dismissBtn" class="btn btn-secondary-translucent btn-circle" (click)="activeModal.dismiss()">
                 <i class="fas fa-times"></i>
+            </button>
+            <button id="likeBtn" class="btn btn-light btn-light-translucent btn-circle" (click)="like()">
+                <ng-container *ngIf="!isLiked; else liked">
+                    <i class="far fa-heart text-info"></i>
+                </ng-container>
+                <ng-template #liked>
+                    <i class="fas fa-heart text-info"></i>
+                </ng-template>
             </button>
         </div>
         <div class="card-body">
             <div class="row">
                 <div class="col-12 d-flex justify-content-between">
                     <p class="credits">
-                        Created by:&nbsp;{{recipe.createdBy}}
+                        Created by:&nbsp;{{recipe.createdBy}}<i class="fas fa-heart text-info ml-3 mr-1"></i>{{recipe.likes.length}}
                     </p>
                     <p class="credits">
                         <ng-container *ngIf="recipe.updatedOn; else createdOn">

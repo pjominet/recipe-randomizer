@@ -120,6 +120,18 @@ namespace RecipeRandomizer.Web.Controllers
                 : (IActionResult) StatusCode(StatusCodes.Status404NotFound);
         }
 
+        [HttpGet("{recipeId:int}/liked-by/{userId:int}")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public IActionResult LikeRecipe([FromRoute(Name = "recipeId")] int recipeId, [FromRoute(Name = "userId")] int userId, [FromQuery(Name = "like")] bool like = false)
+        {
+            var result = _recipeService.ToggleRecipeLike(recipeId, userId, like);
+
+            return result
+                ? NoContent()
+                : StatusCode(StatusCodes.Status500InternalServerError);
+        }
+
         [HttpPut]
         [Consumes("application/json")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]

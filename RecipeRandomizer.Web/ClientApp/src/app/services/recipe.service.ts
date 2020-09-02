@@ -64,6 +64,10 @@ export class RecipeService {
         return this.http.get<Recipe>(`${environment.apiUrl}/recipes/restore/${id}`).pipe(map(response => response));
     }
 
+    public likeRecipe(recipeId: number, userId: number, like: boolean): Observable<any> {
+        return this.http.get<any>(`${environment.apiUrl}/recipes/${recipeId}/liked-by/${userId}?like=${like}`, {observe: 'response'});
+    }
+
     private generateTagQueryParams(tagIds: number []): string {
         let queryParams = `?tag=${tagIds[0]}`;
         for (let i = 1; i < tagIds.length; i++) {

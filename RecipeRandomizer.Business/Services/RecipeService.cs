@@ -40,7 +40,8 @@ namespace RecipeRandomizer.Business.Services
                 $"{nameof(Entities.Recipe.Difficulty)}",
                 $"{nameof(Entities.Recipe.User)}",
                 $"{nameof(Entities.Recipe.Ingredients)}.{nameof(Entities.Ingredient.QuantityUnit)}",
-                $"{nameof(Entities.Recipe.RecipeTagAssociations)}.{nameof(Entities.RecipeTagAssociation.Tag)}"
+                $"{nameof(Entities.Recipe.RecipeTagAssociations)}.{nameof(Entities.RecipeTagAssociation.Tag)}",
+                $"{nameof(Entities.Recipe.RecipeLikes)}"
             };
             return _mapper.Map<Recipe>(_recipeRepository.GetFirstOrDefault<Entities.Recipe>(r => r.Id == id, includes));
         }
@@ -118,6 +119,23 @@ namespace RecipeRandomizer.Business.Services
             _recipeRepository.Update(recipeToRestore);
 
             return _recipeRepository.SaveChanges() ? _mapper.Map<Recipe>(recipeToRestore) : null;
+        }
+
+        public bool ToggleRecipeLike(int recipeId, int userId, bool like)
+        {
+            if (like)
+            {
+                _recipeRepository.Insert(new Entities.RecipeLike
+                {
+                    RecipeId = recipeId,
+                    UserId = userId
+                });
+            }
+            else _recipeRepository.Delete(
+                _recipeRepository.GetFirstOrDefault<Entities.RecipeLike>(
+                    rl => rl.UserId == userId && rl.RecipeId == recipeId));
+
+            return _recipeRepository.SaveChanges();
         }
     }
 }

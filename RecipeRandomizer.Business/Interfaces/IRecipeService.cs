@@ -18,5 +18,6 @@ namespace RecipeRandomizer.Business.Interfaces
         public bool UpdateRecipe(Recipe recipe);
         public bool DeleteRecipe(int id, bool hard = false);
         public Recipe RestoreDeletedRecipe(int id);
+        public bool ToggleRecipeLike(int recipeId, int userId, bool like);
     }
 }
