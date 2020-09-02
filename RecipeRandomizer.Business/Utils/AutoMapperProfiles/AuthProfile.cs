@@ -32,9 +32,9 @@ namespace RecipeRandomizer.Business.Utils.AutoMapperProfiles
                 .ForMember(dest => dest.Recipes, opt => opt.Ignore())
                 .ForMember(dest => dest.RecipeLikes, opt => opt.Ignore());
 
-            CreateMap<Models.Identity.UpdateUserRequest, Entities.Identity.User>()
+            CreateMap<Models.Identity.User, Entities.Identity.User>()
                 .ForMember(dest => dest.Id, opt => opt.Ignore())
-                .ForMember(dest => dest.RoleId, opt => opt.Ignore())
+                .ForMember(dest => dest.RoleId, opt => opt.MapFrom(src => (int) src.Role))
                 .ForMember(dest => dest.PasswordHash, opt => opt.Ignore())
                 .ForMember(dest => dest.VerificationToken, opt => opt.Ignore())
                 .ForMember(dest => dest.VerifiedOn, opt => opt.Ignore())

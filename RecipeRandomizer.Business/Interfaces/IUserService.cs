@@ -8,7 +8,7 @@ namespace RecipeRandomizer.Business.Interfaces
     {
         public IEnumerable<User> GetUsers();
         public User GetUser(int id);
-        User Update(int id, UpdateUserRequest request);
+        User Update(int id, User userUpdates);
         public bool UploadUserAvatar(Stream imageStream, int id);
         bool Delete(int id);
     }

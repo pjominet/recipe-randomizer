@@ -46,18 +46,14 @@ namespace RecipeRandomizer.Web.Controllers
         [HttpPut("{id:int}")]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(typeof(User), StatusCodes.Status200OK)]
-        public ActionResult<User> Update([FromRoute] int id, [FromBody] UpdateUserRequest request)
+        public ActionResult<User> Update([FromRoute] int id, [FromBody] User user)
         {
             // users can update their own account and admins can update any account
             if (id != User.Id && User.Role != Role.Admin)
                 return Unauthorized(new {message = "Unauthorized"});
 
-            // only admins can update role
-            if (User.Role != Role.Admin)
-                request.Role = null;
-
-            var user = _userService.Update(id, request);
-            return Ok(user);
+            var updatedUser = _userService.Update(id, user);
+            return Ok(updatedUser);
         }
 
         [Authorize]

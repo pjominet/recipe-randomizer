@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using AutoMapper;
 using RecipeRandomizer.Business.Interfaces;
 using RecipeRandomizer.Business.Models.Identity;
@@ -9,7 +8,6 @@ using RecipeRandomizer.Business.Utils.Exceptions;
 using RecipeRandomizer.Data.Contexts;
 using RecipeRandomizer.Data.Repositories;
 using Entities = RecipeRandomizer.Data.Entities.Identity;
-using BC = BCrypt.Net.BCrypt;
 
 namespace RecipeRandomizer.Business.Services
 {
@@ -34,22 +32,19 @@ namespace RecipeRandomizer.Business.Services
             return _mapper.Map<User>(_userRepository.GetFirstOrDefault<Entities.User>(u => u.Id == id));
         }
 
-        public User Update(int id, UpdateUserRequest request)
+        public User Update(int id, User userUpdates)
         {
             var user = _userRepository.GetFirstOrDefault<Entities.User>(u => u.Id == id);
 
             if (user == null)
                 throw new BadRequestException("User not found");
 
-            // validate
-            if (user.Email != request.Email && _userRepository.Exists<Entities.User>(u => u.Email == user.Email))
-                throw new BadRequestException($"Email '{request.Email}' is already taken");
+            // check if email is not already taken
+            if (user.Email != userUpdates.Email && _userRepository.Exists<Entities.User>(u => u.Email == user.Email))
+                throw new BadRequestException($"Email '{userUpdates.Email}' is already taken");
 
-            // hash password if it was entered
-            if (!string.IsNullOrEmpty(request.Password))
-                user.PasswordHash = BC.HashPassword(request.Password);
-
-            _mapper.Map(request, user);
+            // map any other value according to the mapping profile
+            _mapper.Map(userUpdates, user);
             user.UpdatedOn = DateTime.UtcNow;
             _userRepository.Update(user);
             if(!_userRepository.SaveChanges())
