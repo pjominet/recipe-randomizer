@@ -1,92 +1,114 @@
 <ul ngbNav #tabs="ngbNav" [(activeId)]="activeTab" class="nav-tabs mt-4" (activeIdChange)="onTabChange($event)">
     <li [ngbNavItem]="1">
-        <a ngbNavLink>Created Recipes<i class="text-success fas fa-star-of-life ml-2"></i></a>
+        <a ngbNavLink>Created Recipes<i class="text-success fas fa-globe-europe ml-2"></i></a>
         <ng-template ngbNavContent>
-            <section class="mt-4">
-                <div class="list-group list-group-flush" *ngIf="createdRecipes.length > 0; else noCreatedRecipes">
-                    <a class="list-group-item list-group-item-action" *ngFor="let recipe of createdRecipes" [routerLink]="[recipe.id]">
-                        <div class="row">
-                            <div class="col-12 col-md-4">
-                                <button class="btn btn-sm btn-warning mr-3" ngbTooltip="Mark as deleted" (click)="markAsDeleted(recipe.id)">
-                                    <i class="fas fa-trash-alt"></i>
-                                </button>
-                                {{recipe.name}}
-                            </div>
-                            <div class="col-12 col-md-4 truncate">
-                                {{recipe.description}}
-                            </div>
-                            <div class="col-12 col-md-4">
-                                <span class="badge badge-lg badge-secondary mx-1 rounded" *ngFor="let tag of recipe.tags">{{tag.label}}</span>
-                            </div>
-                        </div>
-                    </a>
-                </div>
-                <ng-template #noCreatedRecipes>
-                    <p class="text-center text-muted">
-                        You do not have any recipes yet :(
-                    </p>
-                </ng-template>
-                <div class="d-flex justify-content-center mt-4">
-                    <a class="btn btn-secondary" routerLink="../recipe-editor">
-                        <i class="fas fa-plus mr-2"></i>New Recipe
-                    </a>
-                </div>
-            </section>
+            <table class="table table-hover" *ngIf="createdRecipes.length > 0; else noCreatedRecipes">
+                <thead>
+                <tr>
+                    <th scope="col"></th>
+                    <th scope="col">Name</th>
+                    <th scope="col">Description</th>
+                    <th scope="col">Created On</th>
+                    <th scope="col">Updated On</th>
+                    <th scope="col">Tags</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr *ngFor="let recipe of createdRecipes" (click)="showRecipe(recipe.id, $event)">
+                    <th scope="row">
+                        <button class="btn btn-sm btn-warning mr-3" ngbTooltip="Unpublish recipe" (click)="markAsDeleted(recipe.id)">
+                            <i class="fas fa-eye-slash"></i>
+                        </button>
+                    </th>
+                    <td>{{recipe.name}}</td>
+                    <td>{{recipe.description}}</td>
+                    <td>{{recipe.createdOn | date: 'dd MMM y, H:mm'}}</td>
+                    <td>{{recipe.updatedOn || '---'}}</td>
+                    <td>
+                        <span class="badge badge-lg badge-secondary mx-1 rounded" *ngFor="let tag of recipe.tags">{{tag.label}}</span>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+            <ng-template #noCreatedRecipes>
+                <p class="text-center text-muted">
+                    You do not have any recipes yet :(
+                </p>
+            </ng-template>
+            <div class="d-flex justify-content-center mt-4">
+                <a class="btn btn-info" routerLink="../recipe-editor">
+                    <i class="fas fa-plus mr-2"></i>New Recipe
+                </a>
+            </div>
         </ng-template>
     </li>
     <li [ngbNavItem]="2">
-        <a ngbNavLink>Deleted Recipes <i class="text-danger fas fa-trash-alt ml-2"></i></a>
+        <a ngbNavLink>Unplublished Recipes<i class="text-danger fas fa-eye-slash ml-2"></i></a>
         <ng-template ngbNavContent>
-            <section class="mt-4">
-                <div class="list-group list-group-flush" *ngIf="deletedRecipes.length > 0; else noCreatedRecipes">
-                    <a class="list-group-item list-group-item-action row" *ngFor="let recipe of deletedRecipes" [routerLink]="[recipe.id]">
-                        <div class="col-12 col-md-4">
-                            {{recipe.name}}
-                        </div>
-                        <div class="col-12 col-md-4 truncate">
-                            {{recipe.description}}
-                        </div>
-                        <div class="col-12 col-md-4">
-                            <button class="btn btn-info" ngbTooltip="Restore" (click)="restore(recipe.id)">
-                                <i class="fas fa-recycle"></i>
-                            </button>
-                            <button class="btn btn-danger" ngbTooltip="Delete for good" (click)="hardDelete(recipe.id)">
-                                <i class="fas fa-fire"></i>
-                            </button>
-                        </div>
-                    </a>
-                </div>
-                <ng-template #noCreatedRecipes>
-                    <p class="text-center text-muted">
-                        You have not marked any recipes for deletion yet :)
-                    </p>
-                </ng-template>
-            </section>
+            <table class="table table-hover" *ngIf="deletedRecipes.length > 0; else noDeletedRecipes">
+                <thead>
+                <tr>
+                    <th scope="col"></th>
+                    <th scope="col">Name</th>
+                    <th scope="col">Description</th>
+                    <th scope="col">Created On</th>
+                    <th scope="col">Deleted On</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr *ngFor="let recipe of deletedRecipes" (click)="showRecipe(recipe.id, $event)">
+                    <th scope="row">
+                        <button class="btn btn-sm btn-success mx-1" ngbTooltip="Restore" (click)="restore(recipe.id)">
+                            <i class="fas fa-recycle"></i>
+                        </button>
+                        <button class="btn btn-sm btn-danger mx-1" ngbTooltip="Delete for good" (click)="hardDelete(recipe.id)">
+                            <i class="fas fa-fire"></i>
+                        </button>
+                    </th>
+                    <td>{{recipe.name}}</td>
+                    <td>{{recipe.description}}</td>
+                    <td>{{recipe.createdOn | date: 'dd MMM y, H:mm'}}</td>
+                    <td>{{recipe.deletedOn | date: 'dd MMM y, H:mm'}}</td>
+                </tr>
+                </tbody>
+            </table>
+            <ng-template #noDeletedRecipes>
+                <p class="text-center text-muted">
+                    You have not marked any recipes for deletion yet :)
+                </p>
+            </ng-template>
         </ng-template>
     </li>
     <li [ngbNavItem]="3">
         <a ngbNavLink>Liked Recipes<i class="text-info fas fa-heart ml-2"></i></a>
         <ng-template ngbNavContent>
-            <section class="mt-4">
-                <div class="list-group list-group-flush" *ngIf="likedRecipes.length > 0; else noCreatedRecipes">
-                    <a class="list-group-item list-group-item-action row" *ngFor="let recipe of likedRecipes" [routerLink]="[recipe.id]">
-                        <div class="col-12 col-md-4">
-                            {{recipe.name}}
-                        </div>
-                        <div class="col-12 col-md-4 truncate">
-                            {{recipe.description}}
-                        </div>
-                        <div class="col-12 col-md-4">
-                            <span class="badge badge-lg badge-secondary mx-1 rounded" *ngFor="let tag of recipe.tags">{{tag.label}}</span>
-                        </div>
-                    </a>
-                </div>
-                <ng-template #noCreatedRecipes>
-                    <p class="text-center text-muted">
-                        You have not liked any recipes yet :(
-                    </p>
-                </ng-template>
-            </section>
+            <table class="table table-hover" *ngIf="likedRecipes.length > 0; else noLikedRecipes">
+                <thead>
+                <tr>
+                    <th scope="col">Name</th>
+                    <th scope="col">Description</th>
+                    <th scope="col">Created On</th>
+                    <th scope="col">Updated On</th>
+                    <th scope="col">Tags</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr *ngFor="let recipe of likedRecipes" (click)="showRecipe(recipe.id, $event)">
+                    <td>{{recipe.name}}</td>
+                    <td>{{recipe.description}}</td>
+                    <td>{{recipe.createdOn | date: 'dd MMM y, H:mm'}}</td>
+                    <td>{{recipe.updatedOn || '---'}}</td>
+                    <td>
+                        <span class="badge badge-lg badge-secondary mx-1 rounded" *ngFor="let tag of recipe.tags">{{tag.label}}</span>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+            <ng-template #noLikedRecipes>
+                <p class="text-center text-muted">
+                    You have not liked any recipes yet :(
+                </p>
+            </ng-template>
         </ng-template>
     </li>
 </ul>

@@ -108,6 +108,18 @@ namespace RecipeRandomizer.Web.Controllers
                 : StatusCode(StatusCodes.Status404NotFound);
         }
 
+        [HttpGet("restore/{id}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public IActionResult RestoreDeletedRecipe([FromRoute] int id)
+        {
+            var restoredRecipe = _recipeService.RestoreDeletedRecipe(id);
+
+            return restoredRecipe != null
+                ? Ok(restoredRecipe)
+                : (IActionResult) StatusCode(StatusCodes.Status404NotFound);
+        }
+
         [HttpPut]
         [Consumes("application/json")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]

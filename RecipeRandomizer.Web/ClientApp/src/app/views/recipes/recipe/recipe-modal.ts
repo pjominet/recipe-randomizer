@@ -25,11 +25,12 @@ export class RecipeModal implements OnInit, OnDestroy {
             this.modalRef.componentInstance.id = params.rid;
 
             // go back to parent page after the modal is closed
+            const currentQueryParams = this.route.snapshot.queryParams;
             this.modalRef.result.then(
                 result => {
-                    this.router.navigate(['..'], {relativeTo: this.route});
+                    this.router.navigate(['..'], {relativeTo: this.route, queryParams: currentQueryParams});
                 }, reason => {
-                    this.router.navigate(['..'], {relativeTo: this.route});
+                    this.router.navigate(['..'], {relativeTo: this.route, queryParams: currentQueryParams});
                 });
         });
 

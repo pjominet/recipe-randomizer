@@ -84,7 +84,7 @@ namespace RecipeRandomizer.Business.Services
 
         public bool UploadRecipeImage(Stream imageStream, int id)
         {
-            throw new NotImplementedException();;
+            throw new NotImplementedException();
         }
 
         public bool UpdateRecipe(Recipe recipe)
@@ -108,6 +108,15 @@ namespace RecipeRandomizer.Business.Services
             }
 
             return _recipeRepository.SaveChanges();
+        }
+
+        public Recipe RestoreDeletedRecipe(int id)
+        {
+            var recipeToRestore = _recipeRepository.GetFirstOrDefault<Entities.Recipe>(r => r.Id == id);
+            recipeToRestore.DeletedOn = null;
+            _recipeRepository.Update(recipeToRestore);
+
+            return _recipeRepository.SaveChanges() ? _mapper.Map<Recipe>(recipeToRestore) : null;
         }
     }
 }

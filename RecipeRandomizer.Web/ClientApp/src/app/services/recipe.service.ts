@@ -27,37 +27,41 @@ export class RecipeService {
         if (tagIds.length > 0) {
             url += this.generateTagQueryParams(tagIds);
         }
+
         return this.http.get<Recipe[]>(url).pipe(map(response => response));
     }
 
     public getCreatedRecipesForUser(userId: number): Observable<Recipe[]> {
-        let url = `${environment.apiUrl}/recipes/created/${userId}`;
-
-        return this.http.get<Recipe[]>(url).pipe(map(response => response));
+        return this.http.get<Recipe[]>(`${environment.apiUrl}/recipes/created/${userId}`).pipe(map(response => response));
     }
 
     public getLikedRecipesForUser(userId: number): Observable<Recipe[]> {
-        let url = `${environment.apiUrl}/recipes/liked/${userId}`;
-
-        return this.http.get<Recipe[]>(url).pipe(map(response => response));
+        return this.http.get<Recipe[]>(`${environment.apiUrl}/recipes/liked/${userId}`).pipe(map(response => response));
     }
 
     public getRecipe(id: number): Observable<Recipe> {
-        let url = `${environment.apiUrl}/recipes/${id}`;
-
-        return this.http.get<Recipe>(url).pipe(map(response => response));
+        return this.http.get<Recipe>(`${environment.apiUrl}/recipes/${id}`).pipe(map(response => response));
     }
 
     public addRecipe(recipe: Recipe): Observable<any> {
-        let url = `${environment.apiUrl}/recipes`;
-
-        return this.http.post<any>(url, recipe, {observe: 'response'});
+        return this.http.post<any>(`${environment.apiUrl}/recipes`, recipe, {observe: 'response'});
     }
 
     public updateRecipe(recipe: Recipe): Observable<any> {
-        let url = `${environment.apiUrl}/recipes`;
+        return this.http.put<any>(`${environment.apiUrl}/recipes`, recipe, {observe: 'response'});
+    }
 
-        return this.http.put<any>(url, recipe, {observe: 'response'});
+    public deleteRecipe(id: number, hard: boolean = false): Observable<any> {
+        let url = `${environment.apiUrl}/recipes/${id}`;
+        if (hard) {
+            url += `&hard=${hard}`;
+        }
+
+        return this.http.delete<any>(url, {observe: 'response'});
+    }
+
+    public restoreRecipe(id: number): Observable<Recipe> {
+        return this.http.get<Recipe>(`${environment.apiUrl}/recipes/restore/${id}`).pipe(map(response => response));
     }
 
     private generateTagQueryParams(tagIds: number []): string {

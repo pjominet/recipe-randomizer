@@ -17,7 +17,7 @@ export class Recipe {
     cookTime: number;
     preparation: string;
     createdOn: Date;
-    lastUpdatedOn: Date;
+    updatedOn: Date;
     deletedOn: Date;
     isDeleted: boolean;
 

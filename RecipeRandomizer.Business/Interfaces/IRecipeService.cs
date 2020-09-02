@@ -17,5 +17,6 @@ namespace RecipeRandomizer.Business.Interfaces
         public bool UploadRecipeImage(Stream imageStream, int id);
         public bool UpdateRecipe(Recipe recipe);
         public bool DeleteRecipe(int id, bool hard = false);
+        public Recipe RestoreDeletedRecipe(int id);
     }
 }
