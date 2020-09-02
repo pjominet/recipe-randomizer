@@ -6,7 +6,7 @@ import {ProfileComponent} from './dashboard-layout/profile/profile.component';
 import {UserRecipesComponent} from './dashboard-layout/user-recipes/user-recipes.component';
 import {RecipeEditorComponent} from './dashboard-layout/recipe-editor/recipe-editor.component';
 import {RandomRecipeComponent} from '@app/views/recipes/random-recipe/random-recipe.component';
-import {RecipesComponent} from '@app/views/recipes/recipes.component';
+import {RecipeListComponent} from '@app/views/recipes//recipe-list/recipe-list.component';
 import {RecipeModal} from '@app/views/recipes/recipe/recipe-modal';
 import {ChangePasswordModal} from './change-password/change-password-modal';
 
@@ -27,7 +27,7 @@ const routes: Routes = [
             {path: 'recipe-editor', component: RecipeEditorComponent},
             {path: 'random-recipe', component: RandomRecipeComponent},
             {
-                path: 'recipes', component: RecipesComponent, children: [
+                path: 'recipes', component: RecipeListComponent, children: [
                     {path: ':rid', component: RecipeModal}
                 ], data: {showBackButton: false}
             }

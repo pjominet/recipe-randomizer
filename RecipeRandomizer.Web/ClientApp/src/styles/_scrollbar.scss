@@ -18,11 +18,11 @@
 
     /* Handle */
     &::-webkit-scrollbar-thumb {
-        background: $primary;
+        background: $info;
     }
 
     /* Handle on hover */
     &::-webkit-scrollbar-thumb:hover {
-        background: darken($primary, 7%);
+        background: darken($info, 7%);
     }
 }

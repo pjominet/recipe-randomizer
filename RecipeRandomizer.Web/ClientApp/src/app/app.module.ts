@@ -26,6 +26,7 @@ import {RecipesComponent} from '@app/views/recipes/recipes.component';
 import {RecipeComponent} from '@app/views/recipes/recipe/recipe.component';
 import {RecipeModal} from '@app/views/recipes/recipe/recipe-modal';
 import {RandomRecipeComponent} from './views/recipes/random-recipe/random-recipe.component';
+import {RecipeListComponent} from './views/recipes/recipe-list/recipe-list.component';
 
 @NgModule({
     declarations: [
@@ -38,7 +39,8 @@ import {RandomRecipeComponent} from './views/recipes/random-recipe/random-recipe
         RecipesComponent,
         RecipeComponent,
         RecipeModal,
-        RandomRecipeComponent
+        RandomRecipeComponent,
+        RecipeListComponent
     ],
     imports: [
         BrowserModule,

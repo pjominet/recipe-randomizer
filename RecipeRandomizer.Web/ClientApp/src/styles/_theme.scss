@@ -86,6 +86,7 @@ $ng-select-value-font-size: 0.9em;
 
 // fix colors that cannot be overridden by variable as they are hardcoded
 .ng-select.custom-ng-select {
+    width: 700px;
     &.ng-select-multiple {
         .ng-select-container {
             .ng-value-container {
