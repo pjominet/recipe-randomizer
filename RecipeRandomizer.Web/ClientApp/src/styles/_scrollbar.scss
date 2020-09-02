@@ -1,0 +1,28 @@
+// custom main scrollbar
+.custom-scroll {
+    /* Dimensions */
+    &::-webkit-scrollbar {
+        height: 10px;
+        width: 10px;
+    }
+
+    /* Track */
+    &::-webkit-scrollbar-track {
+        background: $light;
+    }
+
+    /* Corner */
+    &::-webkit-scrollbar-corner {
+        background-color: darken($light, 5%);
+    }
+
+    /* Handle */
+    &::-webkit-scrollbar-thumb {
+        background: $primary;
+    }
+
+    /* Handle on hover */
+    &::-webkit-scrollbar-thumb:hover {
+        background: darken($primary, 7%);
+    }
+}
