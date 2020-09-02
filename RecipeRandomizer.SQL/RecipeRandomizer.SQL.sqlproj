@@ -77,6 +77,7 @@
     <Build Include="RecipeRandomizer\Tables\Ingredient.sql" />
     <Build Include="RecipeRandomizer\Tables\Recipe.sql" />
     <Build Include="RecipeRandomizer\Tables\RecipeTag.sql" />
+    <Build Include="RecipeRandomizer\Tables\RecipeLike.sql" />
     <Build Include="RR_Identity\Tables\RefreshToken.sql" />
     <Build Include="RR_Identity\Tables\User.sql" />
     <Build Include="RR_Identity\Tables\Role.sql" />
@@ -86,6 +87,6 @@
     <Content Include="PostDeployScript.sql" />
     <Content Include="PurgeScript.sql" />
     <Content Include="RecipeRandomizer\Tables\RecipeLike.sql" />
-    <Content Include="TestSeedScript.sql" />    
+    <Content Include="TestSeedScript.sql" />
   </ItemGroup>
 </Project>

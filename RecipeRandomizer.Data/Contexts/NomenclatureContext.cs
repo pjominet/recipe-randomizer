@@ -7,7 +7,7 @@ namespace RecipeRandomizer.Data.Contexts
     {
         public virtual DbSet<Cost> Costs { get; set; }
         public virtual DbSet<Difficulty> Difficulties { get; set; }
-        public virtual DbSet<QuantityUnit> Quantities { get; set; }
+        public virtual DbSet<QuantityUnit> QuantityUnits { get; set; }
         public virtual DbSet<Tag> Tags { get; set; }
         public virtual DbSet<TagCategory> TagCategories { get; set; }
 
@@ -37,7 +37,7 @@ namespace RecipeRandomizer.Data.Contexts
 
             modelBuilder.Entity<QuantityUnit>(entity =>
             {
-                entity.ToTable("Quantity", "Nomenclature");
+                entity.ToTable("QuantityUnit", "Nomenclature");
 
                 entity.Property(e => e.Id).ValueGeneratedNever();
 

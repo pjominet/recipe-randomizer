@@ -1,8 +1,8 @@
 ﻿begin transaction
     set identity_insert [RecipeRandomizer].[Recipe] on
     merge [RecipeRandomizer].[Recipe] as target
-    using (values (1, null, N'Test Recipe', N'Do not cook this', null, 7, 2, 2, 15, 30, N'None', getdate(), getdate(), null)
-    ) as source ([Id], [UserId], [Name], [Description], [ImgUri], [NumberOfPeople], [CostId], [DifficultyId],
+    using (values (1, null, N'Test Recipe', N'Do not cook this', null, 7, 2, 2, 15, 30, N'None', getutcdate(), getutcdate(), null)
+    ) as source ([Id], [UserId], [Name], [Description], [ImageUri], [NumberOfPeople], [CostId], [DifficultyId],
                  [PrepTime], [CookTime], [Preparation], [CreatedOn], [LastUpdatedOn], [DeletedOn])
     on (target.[Id] = source.[Id])
     when matched then
@@ -10,7 +10,7 @@
         set [UserId]         = source.[UserId],
             [Name]           = source.[Name],
             [Description]    = source.[Description],
-            [ImgUri]         = source.[ImgUri],
+            [ImageUri]       = source.[ImageUri],
             [NumberOfPeople] = source.[NumberOfPeople],
             [CostId]         = source.[CostId],
             [DifficultyId]   = source.[DifficultyId],
@@ -21,9 +21,9 @@
             [LastUpdatedOn]  = source.[LastUpdatedOn],
             [DeletedOn]      = source.[DeletedOn]
     when not matched then
-        insert ([Id], [UserId], [Name], [Description], [ImgUri], [NumberOfPeople], [CostId], [DifficultyId],
+        insert ([Id], [UserId], [Name], [Description], [ImageUri], [NumberOfPeople], [CostId], [DifficultyId],
                 [PrepTime], [CookTime], [Preparation], [CreatedOn], [LastUpdatedOn], [DeletedOn])
-        values (source.[Id], source.[UserId], source.[Name], source.[Description], source.[ImgUri], source.[NumberOfPeople], source.[CostId], source.[DifficultyId],
+        values (source.[Id], source.[UserId], source.[Name], source.[Description], source.[ImageUri], source.[NumberOfPeople], source.[CostId], source.[DifficultyId],
                 source.[PrepTime], source.[CookTime], source.[Preparation], source.[CreatedOn], source.[LastUpdatedOn], source.[DeletedOn])
     when not matched by source then
         delete;
@@ -50,9 +50,8 @@
         delete;
     set identity_insert [RecipeRandomizer].[Ingredient] off
 
-    set identity_insert [RecipeRandomizer].[RecipeTag] on
     merge [RecipeRandomizer].[RecipeTag] as target
-    using (values (1, 7),
+    using (values (1, 2),
                   (1, 7),
                   (1, 8)
     ) as source ([RecipeId], [TagId])
@@ -66,5 +65,4 @@
         values (source.[RecipeId], source.[TagId])
     when not matched by source then
         delete;
-    set identity_insert [RecipeRandomizer].[RecipeTag] off
 commit transaction;

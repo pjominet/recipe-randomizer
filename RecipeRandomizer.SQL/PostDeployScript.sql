@@ -28,7 +28,7 @@ begin transaction
     when not matched by source then
         delete;
 
-    merge [Nomenclature].[Quantity] as target
+    merge [Nomenclature].[QuantityUnit] as target
     using (values (1, N'mg', N'milligram'),
                   (2, N'g', N'gram'),
                   (3, N'kg', N'kilogram'),
