@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.IO;
 using RecipeRandomizer.Business.Models.Identity;
 
 namespace RecipeRandomizer.Business.Interfaces
@@ -19,6 +20,7 @@ namespace RecipeRandomizer.Business.Interfaces
         public User GetUser(int id);
         public IEnumerable<string> GetUserRefreshTokens(int id);
         User Update(int id, UpdateUserRequest request);
+        public bool UploadUserAvatar(Stream imageStream, int id);
         bool Delete(int id);
     }
 }

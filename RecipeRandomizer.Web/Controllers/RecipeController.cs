@@ -19,14 +19,25 @@ namespace RecipeRandomizer.Web.Controllers
 
         [HttpGet]
         [ProducesResponseType(typeof(List<Recipe>), StatusCodes.Status200OK)]
-        public IActionResult GetRecipes([FromQuery(Name = "tag")] int[] tagIds, [FromQuery(Name = "user")] int? userId = null)
+        public IActionResult GetRecipes([FromQuery(Name = "tag")] int[] tagIds)
         {
-            if (tagIds.Any() && !userId.HasValue)
-                return Ok(_recipeService.GetRecipesFromTags(tagIds));
-            if (!tagIds.Any() && userId.HasValue)
-                return Ok(_recipeService.GetRecipesForUser(userId.Value));
+            return Ok(tagIds.Any()
+                ? _recipeService.GetRecipesFromTags(tagIds)
+                : _recipeService.GetRecipes());
+        }
 
-            return Ok(_recipeService.GetRecipes());
+        [HttpGet("created/{id:int}")]
+        [ProducesResponseType(typeof(List<Recipe>), StatusCodes.Status200OK)]
+        public IActionResult GetRecipesForUser([FromRoute(Name = "id")] int id)
+        {
+            return Ok(_recipeService.GetRecipesForUser(id));
+        }
+
+        [HttpGet("liked/{id:int}")]
+        [ProducesResponseType(typeof(List<Recipe>), StatusCodes.Status200OK)]
+        public IActionResult GetLikedRecipesForUser([FromRoute(Name = "id")] int id)
+        {
+            return Ok(_recipeService.GetLikedRecipesForUser(id));
         }
 
         [HttpGet("deleted")]
@@ -58,7 +69,6 @@ namespace RecipeRandomizer.Web.Controllers
                 : (IActionResult) NotFound();
         }
 
-
         [HttpPost]
         [Consumes("application/json")]
         [ProducesResponseType(StatusCodes.Status201Created)]
@@ -69,6 +79,23 @@ namespace RecipeRandomizer.Web.Controllers
             return id != -1
                 ? CreatedAtAction(nameof(GetRecipe), new {id}, recipe)
                 : (IActionResult) StatusCode(StatusCodes.Status500InternalServerError);
+        }
+
+        [HttpPost("image-upload")]
+        [Consumes("multipart/form-data")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public IActionResult UploadRecipeImage([FromForm(Name = "file")] IFormFile image, [FromForm(Name = "id")] int? recipeId)
+        {
+            if (image == null || !recipeId.HasValue)
+                return StatusCode(StatusCodes.Status400BadRequest);
+
+            var stream = image.OpenReadStream();
+            var result = _recipeService.UploadRecipeImage(stream, recipeId.Value);
+            stream.Close();
+
+            return result ? NoContent() : StatusCode(StatusCodes.Status500InternalServerError);
         }
 
         [HttpDelete("{id}")]

@@ -1,0 +1,8 @@
+<label class="text-muted"><i class="fas fa-exclamation-triangle text-warning mr-2"></i>only accepting .png & .jpeg</label>
+<div class="custom-file">
+    <label class="custom-file-label" for="fileInput">
+        <span *ngIf="!file; else fileName">Choose file...</span>
+        <ng-template #fileName>{{file.name}}</ng-template>
+    </label>
+    <input type="file" #fileInput id="fileInput" (change)="stageFile()" class="custom-file-input" accept="image/jpeg, image/png">
+</div>

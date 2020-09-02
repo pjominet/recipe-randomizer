@@ -13,6 +13,7 @@ import {EnumListPipe} from '@app/helpers/enumlist.pipe';
 // components
 import {NavbarComponent} from '@app/components/navbar/navbar.component';
 import {TopbarComponent} from '@app/components/topbar/topbar.component';
+import {FileUploadComponent} from '@app/components/file-upload/file-upload.component';
 
 // views
 import {DashboardLayoutComponent} from './dashboard-layout/dashboard-layout.component';
@@ -40,7 +41,8 @@ import {ChangePasswordModal} from './change-password/change-password-modal';
         RecipeEditorComponent,
         ChangePasswordComponent,
         ChangePasswordModal,
-        EnumListPipe
+        EnumListPipe,
+        FileUploadComponent
     ],
     entryComponents: [
         ChangePasswordComponent

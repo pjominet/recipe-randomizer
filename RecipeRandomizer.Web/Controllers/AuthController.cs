@@ -171,6 +171,24 @@ namespace RecipeRandomizer.Web.Controllers
         }
 
         [Authorize]
+        [HttpPost("image-upload")]
+        [Consumes("multipart/form-data")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public IActionResult UploadRecipeImage([FromForm(Name = "file")] IFormFile image, [FromForm(Name = "id")] int? userId)
+        {
+            if (image == null || !userId.HasValue)
+                return StatusCode(StatusCodes.Status400BadRequest);
+
+            var stream = image.OpenReadStream();
+            var result = _authService.UploadUserAvatar(stream, userId.Value);
+            stream.Close();
+
+            return result ? NoContent() : StatusCode(StatusCodes.Status500InternalServerError);
+        }
+
+        [Authorize]
         [HttpDelete("{id:int}")]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(typeof(object), StatusCodes.Status200OK)]

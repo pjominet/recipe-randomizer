@@ -4,6 +4,7 @@ import {User} from '@app/models/identity/user';
 import {RecipeService} from '@app/services/recipe.service';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {AlertService} from '@app/components/alert/alert.service';
+import {forkJoin} from 'rxjs';
 
 @Component({
     selector: 'app-profile',
@@ -42,14 +43,13 @@ export class ProfileComponent implements OnInit {
     }
 
     public ngOnInit(): void {
-        this.recipeService.getRecipes([], this.user.id).subscribe(
-            recipes => {
-                this.user.recipes = recipes;
-            });
-
-        this.recipeService.getLikedRecipes(this.user.id).subscribe(
-            recipes => {
-                this.user.likedRecipes = recipes;
+        forkJoin([
+            this.recipeService.getCreatedRecipesForUser(this.user.id),
+            this.recipeService.getLikedRecipesForUser(this.user.id)
+        ]).subscribe(
+            ([createdRecipes, likedRecipes]) => {
+                this.user.recipes = createdRecipes;
+                this.user.likedRecipes = likedRecipes;
             });
 
         this.editForm = this.formBuilder.group({

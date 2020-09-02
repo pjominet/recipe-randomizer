@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using AutoMapper;
 using RecipeRandomizer.Business.Interfaces;
@@ -74,15 +75,24 @@ namespace RecipeRandomizer.Business.Services
         {
             var newRecipe = _mapper.Map<Entities.Recipe>(recipe);
             newRecipe.CreatedOn = DateTime.UtcNow;
+            foreach (var tag in recipe.Tags)
+            {
+                _recipeRepository.Insert(_mapper.Map(new Entities.RecipeTagAssociation(), tag));
+            }
             _recipeRepository.Insert(newRecipe);
             return _recipeRepository.SaveChanges() ? newRecipe.Id : -1;
+        }
+
+        public bool UploadRecipeImage(Stream imageStream, int id)
+        {
+            throw new NotImplementedException();;
         }
 
         public bool UpdateRecipe(Recipe recipe)
         {
             var existingRecipe = _recipeRepository.GetFirstOrDefault<Entities.Recipe>(r => r.Id == recipe.Id);
             _mapper.Map(recipe, existingRecipe);
-            existingRecipe.LastUpdatedOn = DateTime.UtcNow;
+            existingRecipe.UpdatedOn = DateTime.UtcNow;
             _recipeRepository.Update(existingRecipe);
             return _recipeRepository.SaveChanges();
         }

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
+using System.IO;
 using System.Linq;
 using System.Security.Claims;
 using System.Security.Cryptography;
@@ -270,6 +271,11 @@ namespace RecipeRandomizer.Business.Services
                 throw new ApplicationException("Database error: Changes could not be saved correctly");
 
             return _mapper.Map<User>(user);
+        }
+
+        public bool UploadUserAvatar(Stream imageStream, int id)
+        {
+            throw new NotImplementedException();
         }
 
         public bool Delete(int id)

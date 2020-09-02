@@ -69,23 +69,29 @@ namespace RecipeRandomizer.Data.Repositories
 
         public IEnumerable<Recipe> GetLikedRecipesForUser(int userId)
         {
-            return Context.RecipeLikes
-                .Where(rta => rta.UserId == userId)
-                .Select(rta => rta.Recipe)
-                .Where(r => r.DeletedOn == null)
-                .Include(r => r.Cost)
-                .Include(r => r.Difficulty)
-                .Include(r => r.Ingredients)
-                .ThenInclude(i => i.QuantityUnit)
-                .Include(r => r.RecipeTagAssociations)
-                .ThenInclude(rta => rta.Tag)
-                .AsEnumerable();
+            var recipes = Context.RecipeLikes
+                .Where(rl => rl.UserId == userId)
+                .Select(rl => rl.Recipe)
+                .Where(r => r.DeletedOn == null);
+
+            if (!recipes.Any())
+                return null;
+
+            foreach (var recipe in recipes.ToList())
+            {
+                recipe.Ingredients = Context.Ingredients.Where(i => i.RecipeId == recipe.Id).Include(i => i.QuantityUnit).ToList();
+                recipe.RecipeTagAssociations = Context.RecipeTagAssociations.Where(rta => rta.RecipeId == recipe.Id).Include(rta => rta.Tag).ToList();
+            }
+            return recipes;
         }
 
         public void HardDeleteRecipe(int id)
         {
             foreach (var tagAssociation in Context.RecipeTagAssociations.Where(rta => rta.RecipeId == id))
                 Delete(tagAssociation);
+
+            foreach (var recipeLike in Context.RecipeLikes.Where(rl => rl.RecipeId == id))
+                Delete(recipeLike);
 
             Delete(Context.Recipes.Where(r => r.Id == id));
         }

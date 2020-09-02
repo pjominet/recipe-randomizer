@@ -12,7 +12,7 @@
     [CookTime]       int                 not null,
     [Preparation]    nvarchar(max)       not null,
     [CreatedOn]      datetime2           not null,
-    [LastUpdatedOn]  datetime2           not null,
+    [UpdatedOn]      datetime2           null,
     [DeletedOn]      datetime2           null,
     constraint [PK_Recipe] primary key clustered ([Id] asc),
     constraint [FK_Recipe_Cost] foreign key ([CostId]) references [Nomenclature].[Cost] ([Id]) on delete no action,

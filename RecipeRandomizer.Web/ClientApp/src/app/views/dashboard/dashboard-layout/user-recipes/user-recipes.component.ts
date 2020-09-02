@@ -4,6 +4,7 @@ import {RecipeService} from '@app/services/recipe.service';
 import {User} from '@app/models/identity/user';
 import {AuthService} from '@app/services/auth.service';
 import {ActivatedRoute, Router} from '@angular/router';
+import {forkJoin} from 'rxjs';
 
 @Component({
     selector: 'app-user-recipes',
@@ -35,25 +36,26 @@ export class UserRecipesComponent implements OnInit {
     }
 
     public ngOnInit(): void {
-        if (this.route.snapshot.queryParams['deleted']) {
-            this.activeTab = 2;
-        } else if (this.route.snapshot.queryParams['liked']) {
+        if (this.route.snapshot.queryParams['liked']) {
             this.activeTab = 3;
-        } else this.activeTab = 1;
+        } else if (this.route.snapshot.queryParams['deleted']) {
+            this.activeTab = 2;
+        } else {
+            this.activeTab = 1;
+        }
 
-        this.recipeService.getRecipes([], this.user.id).subscribe(
-            recipes => {
-                this.user.recipes = recipes;
-            });
-
-        this.recipeService.getLikedRecipes(this.user.id).subscribe(
-            recipes => {
-                this.user.likedRecipes = recipes;
+        forkJoin([
+            this.recipeService.getCreatedRecipesForUser(this.user.id),
+            this.recipeService.getLikedRecipesForUser(this.user.id)
+        ]).subscribe(
+            ([createdRecipes, likedRecipes]) => {
+                this.user.recipes = createdRecipes;
+                this.user.likedRecipes = likedRecipes;
             });
     }
 
     public onTabChange(activeTab: number): void {
-        let queryParams: {}
+        let queryParams: {};
         switch (activeTab) {
             case 1:
                 queryParams = {};

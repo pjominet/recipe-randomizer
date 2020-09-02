@@ -12,6 +12,11 @@ import {QuantityService} from '@app/services/quantity.service';
 import {TagService} from '@app/services/tag.service';
 import {TagCategory} from '@app/models/nomenclature/tagCategory';
 import {forkJoin} from 'rxjs';
+import {AlertService} from '@app/components/alert/alert.service';
+import {FileUploadRequest} from '@app/models/fileUploadRequest';
+import {environment} from '@env/environment';
+import {UploadService} from '@app/services/upload.service';
+import {HttpEventType, HttpResponse} from '@angular/common/http';
 
 @Component({
     selector: 'app-recipe-editor',
@@ -29,16 +34,21 @@ export class RecipeEditorComponent implements OnInit {
     public isEditMode: boolean = false;
 
     public user: User;
-    public recipe: Recipe;
+    public recipe: Recipe = new Recipe();
     public tagCategories: TagCategory[] = [];
+    public fileUploadRequest: FileUploadRequest;
+    public fileUploadSuccess: boolean = false;
 
     constructor(private route: ActivatedRoute,
                 private formBuilder: FormBuilder,
                 private authService: AuthService,
                 private recipeService: RecipeService,
                 private quantityService: QuantityService,
-                private tagService: TagService) {
+                private tagService: TagService,
+                private alertService: AlertService,
+                private uploadService: UploadService) {
         this.user = this.authService.user;
+        this.fileUploadRequest = new FileUploadRequest(`${environment.apiUrl}/recipes/image-upload`);
     }
 
     public get f() {
@@ -54,7 +64,6 @@ export class RecipeEditorComponent implements OnInit {
     }
 
     public ngOnInit(): void {
-
         forkJoin([
             this.quantityService.getQuantityUnits(),
             this.tagService.getTagCategories()
@@ -76,6 +85,8 @@ export class RecipeEditorComponent implements OnInit {
                 ]),
                 tags: ['']
             });
+
+            this.onFormValueChanged();
         });
 
         const recipeId = this.route.snapshot.params['rid'];
@@ -94,7 +105,7 @@ export class RecipeEditorComponent implements OnInit {
                         cookTime: recipe.cookTime,
                         preparation: recipe.preparation,
                         ingredients: recipe.ingredients.forEach((ingredient, index) => {
-                            this.i.push(this.addIngredientGroup())
+                            this.i.push(this.addIngredientGroup());
                             this.i.at(index).patchValue({
                                 name: ingredient.name,
                                 quantity: ingredient.quantity,
@@ -117,6 +128,10 @@ export class RecipeEditorComponent implements OnInit {
         this.i.removeAt(index);
     }
 
+    public onFileStaged(file: File): void {
+        this.fileUploadRequest.file = file;
+    }
+
     public onSubmit(): void {
         this.isSubmitted = true;
 
@@ -125,14 +140,35 @@ export class RecipeEditorComponent implements OnInit {
             return;
         }
 
-        //TODO: implement service call
+        this.alertService.clear();
+        this.isLoading = true;
+
+        if (this.isEditMode) {
+            this.recipeService.updateRecipe(this.recipe).subscribe(
+                response => {
+                    console.log(response);
+                    this.onEditSuccess(response, 'Successfully updated this recipe!', 'Recipe could not be updated: Image upload failed.');
+                }, error => {
+                    this.isLoading = false;
+                    this.alertService.error('Recipe could not be updated.');
+                });
+        } else {
+            this.recipeService.addRecipe(this.recipe).subscribe(
+                response => {
+                    console.log(response);
+                    this.onEditSuccess(response, 'Successfully created a new recipe!', 'Recipe could not be created: Image upload failed.');
+                }, error => {
+                    this.isLoading = false;
+                    this.alertService.error('Recipe could not be created.');
+                });
+        }
     }
 
     public resetFrom(): void {
         this.isSubmitted = false;
         this.i.clear();
         this.recipeForm.reset();
-        // re-add starting elements
+        // re-add starting element
         this.onIngredientAdd();
     }
 
@@ -140,7 +176,37 @@ export class RecipeEditorComponent implements OnInit {
         return this.formBuilder.group({
             name: ['', Validators.required],
             quantity: [0, [Validators.required, Validators.min(0)]],
-            quantityUnit: [this.quantityUnits[0].id]
+            quantityUnitId: [this.quantityUnits[0].id]
         });
+    }
+
+    private onFormValueChanged(): void {
+        this.recipeForm.valueChanges.subscribe((values: Partial<Recipe>) => {
+            Object.assign(this.recipe, values);
+        });
+    }
+
+    private onEditSuccess(response: any, successMessage: string, innerErrorMessage): void {
+        if (this.fileUploadRequest.file) {
+            // complete the file upload request
+            this.fileUploadRequest.id = response.body.id;
+            this.uploadService.uploadFile(this.fileUploadRequest).subscribe(
+                event => {
+                    if (event.type === HttpEventType.UploadProgress) {
+                        console.log(Math.round(100 * event.loaded / event.total));
+                    } else if (event instanceof HttpResponse) {
+                        this.isLoading = false;
+                        this.fileUploadSuccess = true;
+                        this.alertService.success(successMessage);
+                    }
+                },
+                error => {
+                    this.isLoading = false;
+                    this.alertService.error(innerErrorMessage);
+                });
+        } else {
+            this.alertService.success(successMessage);
+            this.isLoading = false;
+        }
     }
 }
