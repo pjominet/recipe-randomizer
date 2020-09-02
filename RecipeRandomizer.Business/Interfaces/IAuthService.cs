@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.IO;
 using RecipeRandomizer.Business.Models.Identity;
 
 namespace RecipeRandomizer.Business.Interfaces
@@ -16,11 +15,6 @@ namespace RecipeRandomizer.Business.Interfaces
         public void ValidateResetToken(ValidationRequest request);
         public void ResetPassword(ResetPasswordRequest request);
         public void ChangePassword(ChangePasswordRequest request);
-        public IEnumerable<User> GetUsers();
-        public User GetUser(int id);
         public IEnumerable<string> GetUserRefreshTokens(int id);
-        User Update(int id, UpdateUserRequest request);
-        public bool UploadUserAvatar(Stream imageStream, int id);
-        bool Delete(int id);
     }
 }

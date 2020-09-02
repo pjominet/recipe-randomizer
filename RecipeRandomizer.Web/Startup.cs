@@ -126,6 +126,7 @@ namespace RecipeRandomizer.Web
             services.AddTransient<ITagService, TagService>();
             services.AddTransient<IQuantityService, QuantityService>();
             services.AddTransient<IAuthService, AuthService>();
+            services.AddTransient<IUserService, UserService>();
             services.AddTransient<IEmailService, EmailService>();
         }
     }

@@ -33,6 +33,10 @@ export class AuthService {
         return this.userSubject.value;
     }
 
+    public set user(user: User) {
+        this.userSubject.next(user);
+    }
+
     public register(registerRequest: RegisterRequest): Observable<any> {
         return this.http.post<any>(`${apiUrl}/register`, registerRequest);
     }
@@ -84,29 +88,6 @@ export class AuthService {
 
     public changePassword(changePasswordRequest: ChangePasswordRequest): Observable<any> {
         return this.http.post<any>(`${apiUrl}/change-password`, changePasswordRequest);
-    }
-
-    public updateUser(id: number, updateUserRequest: UpdateUserRequest): Observable<User> {
-        return this.http.put<User>(`${apiUrl}/${id}`, updateUserRequest)
-            .pipe(map((updatedUser: User) => {
-                // update current user if the logged in user updated their own record
-                if (id == this.user.id) {
-                    // publish updated user to subscribers
-                    const user = {...this.user, ...updateUserRequest};
-                    this.userSubject.next(user);
-                }
-                return updatedUser;
-            }));
-    }
-
-    public deleteUser(id: number): void {
-        this.http.delete(`${apiUrl}/${id}`)
-            .pipe(finalize(() => {
-                // auto logout if the logged in user deleted their own record
-                if (id === this.user.id) {
-                    this.logout();
-                }
-            }));
     }
 
     private startRefreshTokenTimer() {

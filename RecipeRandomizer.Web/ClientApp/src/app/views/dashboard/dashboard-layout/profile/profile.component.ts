@@ -5,6 +5,8 @@ import {RecipeService} from '@app/services/recipe.service';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {AlertService} from '@app/components/alert/alert.service';
 import {forkJoin} from 'rxjs';
+import {UserService} from '@app/services/user.service';
+import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
     selector: 'app-profile',
@@ -21,7 +23,9 @@ export class ProfileComponent implements OnInit {
     constructor(private authService: AuthService,
                 private recipeService: RecipeService,
                 private formBuilder: FormBuilder,
-                private alertService: AlertService) {
+                private alertService: AlertService,
+                private userService: UserService,
+                private modalService: NgbModal) {
         this.user = this.authService.user;
     }
 
@@ -72,5 +76,14 @@ export class ProfileComponent implements OnInit {
         this.isLoading = true;
 
         this.alertService.success(`Edited values: ${this.f.values}`);
+    }
+
+    public openDeleteConfirmation(modalContent: any): void {
+        this.modalService.open(modalContent)
+    }
+
+    public deleteAccount(): void {
+        this.modalService.dismissAll();
+        this.userService.deleteUser(this.user.id);
     }
 }
