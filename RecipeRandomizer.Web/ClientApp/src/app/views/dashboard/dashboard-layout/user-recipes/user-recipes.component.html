@@ -4,18 +4,20 @@
         <ng-template ngbNavContent>
             <section class="mt-4">
                 <div class="list-group list-group-flush" *ngIf="createdRecipes.length > 0; else noCreatedRecipes">
-                    <a class="list-group-item list-group-item-action row" *ngFor="let recipe of createdRecipes" [routerLink]="[recipe.id]">
-                        <div class="col-12 col-md-4">
-                            <button class="btn btn-warning" ngbTooltip="Mark as deleted" (click)="markAsDeleted(recipe.id)">
-                                <i class="fas fa-trash-alt"></i>
-                            </button>
-                            {{recipe.name}}
-                        </div>
-                        <div class="col-12 col-md-4 truncate">
-                            {{recipe.description}}
-                        </div>
-                        <div class="col-12 col-md-4">
-                            <span class="badge badge-lg badge-secondary mx-1 rounded" *ngFor="let tag of recipe.tags">{{tag.label}}</span>
+                    <a class="list-group-item list-group-item-action" *ngFor="let recipe of createdRecipes" [routerLink]="[recipe.id]">
+                        <div class="row">
+                            <div class="col-12 col-md-4">
+                                <button class="btn btn-sm btn-warning mr-3" ngbTooltip="Mark as deleted" (click)="markAsDeleted(recipe.id)">
+                                    <i class="fas fa-trash-alt"></i>
+                                </button>
+                                {{recipe.name}}
+                            </div>
+                            <div class="col-12 col-md-4 truncate">
+                                {{recipe.description}}
+                            </div>
+                            <div class="col-12 col-md-4">
+                                <span class="badge badge-lg badge-secondary mx-1 rounded" *ngFor="let tag of recipe.tags">{{tag.label}}</span>
+                            </div>
                         </div>
                     </a>
                 </div>
@@ -90,3 +92,5 @@
 </ul>
 
 <div [ngbNavOutlet]="tabs" class="mt-2"></div>
+
+<router-outlet></router-outlet>

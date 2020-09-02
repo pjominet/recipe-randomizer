@@ -76,9 +76,8 @@ namespace RecipeRandomizer.Business.Services
             var newRecipe = _mapper.Map<Entities.Recipe>(recipe);
             newRecipe.CreatedOn = DateTime.UtcNow;
             foreach (var tag in recipe.Tags)
-            {
                 _recipeRepository.Insert(_mapper.Map(new Entities.RecipeTagAssociation(), tag));
-            }
+
             _recipeRepository.Insert(newRecipe);
             return _recipeRepository.SaveChanges() ? newRecipe.Id : -1;
         }

@@ -19,7 +19,11 @@ const routes: Routes = [
                 ]
             },
             {path: 'profile', redirectTo: '', pathMatch: 'full'},
-            {path: 'my-recipes', component: UserRecipesComponent},
+            {
+                path: 'my-recipes', component: UserRecipesComponent, children: [
+                    {path: ':rid', component: RecipeModal}
+                ]
+            },
             {path: 'recipe-editor', component: RecipeEditorComponent},
             {path: 'random-recipe', component: RandomRecipeComponent},
             {

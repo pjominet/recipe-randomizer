@@ -16,7 +16,6 @@ namespace RecipeRandomizer.Business.Utils.AutoMapperProfiles
                 .ForMember(dest => dest.Likes, opt => opt.MapFrom(src => src.RecipeLikes.Count));
             CreateMap<Models.Recipe, Entities.Recipe>()
                 .ForMember(dest => dest.Id, opt => opt.Ignore())
-                .ForMember(dest => dest.Ingredients, opt => opt.Ignore())
                 .ForMember(dest => dest.Cost, opt => opt.Ignore())
                 .ForMember(dest => dest.CostId, opt => opt.MapFrom(src => (int) src.Cost))
                 .ForMember(dest => dest.Difficulty, opt => opt.Ignore())

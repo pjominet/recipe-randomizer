@@ -143,6 +143,7 @@ export class RecipeEditorComponent implements OnInit {
         this.alertService.clear();
         this.isLoading = true;
 
+        this.recipe.userId = this.user.id;
         if (this.isEditMode) {
             this.recipeService.updateRecipe(this.recipe).subscribe(
                 response => {

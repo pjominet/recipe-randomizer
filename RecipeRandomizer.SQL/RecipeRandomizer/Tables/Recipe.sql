@@ -1,7 +1,7 @@
 ﻿create table [RecipeRandomizer].[Recipe]
 (
     [Id]             int identity (1, 1) not null,
-    [UserId]         int                 null,
+    [UserId]         int                 not null,
     [Name]           nvarchar(256)       not null,
     [Description]    nvarchar(max)       null,
     [ImageUri]       nvarchar(max)       null,
