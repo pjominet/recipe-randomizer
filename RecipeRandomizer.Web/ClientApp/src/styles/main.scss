@@ -26,7 +26,7 @@ body {
     }
 
     &-circle {
-        border-radius: 45px;
+        @include custom-border-radius(45px);
     }
 
     &-no-outline {

@@ -1,5 +1,11 @@
-.table th[scope=col] {
-    border-top: none !important;
+.table {
+    th[scope=col] {
+        border-top: none !important;
+    }
+
+    &-hover tbody tr:hover {
+        cursor: pointer;
+    }
 }
 
 .tab-content {

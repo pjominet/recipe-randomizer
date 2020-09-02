@@ -1,8 +1,7 @@
-﻿@import 'variables';
-@import 'mixins';
+﻿@import 'theme';
 
 .img-container {
-    height: 300px;
+    height: 325px;
     background-color: rgba($primary, .2);
     position: relative;
     overflow: hidden;
@@ -11,7 +10,7 @@
         width: 100%;
     }
 
-    > h4 {
+    > h1 {
         position: absolute;
         left: 2rem;
         bottom: 1rem;
@@ -31,4 +30,13 @@
 #recipeDescription {
     font-style: italic;
     font-size: large;
+    color: $text-muted;
+}
+
+#recipeDates {
+    font-style: italic;
+    font-size: small;
+    color: $text-muted;
+    text-align: right;
+    margin-top: -1rem;
 }
