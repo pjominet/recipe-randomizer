@@ -36,7 +36,7 @@ export class RandomRecipeComponent implements OnInit {
         this.alertService.clear();
         this.recipeService.getRandomRecipe(this.selectedTags.map(t => t.id)).subscribe(recipeId => {
             this.loadTimeOut(() => {
-                let modalRef = this.modalService.open(RecipeComponent, {size: 'lg', scrollable: true});
+                let modalRef = this.modalService.open(RecipeComponent, {size: 'xl', scrollable: true, backdrop: 'static'});
                 modalRef.componentInstance.id = recipeId;
             });
         }, () => {

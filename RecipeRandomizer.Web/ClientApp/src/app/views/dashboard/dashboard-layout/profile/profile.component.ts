@@ -75,6 +75,7 @@ export class ProfileComponent implements OnInit {
 
         this.isLoading = true;
 
+        // TODO: implement correct service use
         this.alertService.success(`Edited values: ${this.f.values}`);
     }
 
