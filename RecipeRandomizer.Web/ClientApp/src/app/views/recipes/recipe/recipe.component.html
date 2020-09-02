@@ -20,47 +20,48 @@
                     </p>
                 </div>
 
-                <div class="col-12 col-md-6">
+                <div class="col-12 col-md-8">
                     <p id="recipeDescription">{{recipe.description}}</p>
                 </div>
 
-                <div class="col-12 col-md-6">
+                <div class="col-12 col-md-4">
                     <ul class="list-group list-group-flush">
-                        <li class="list-group-item d-flex justify-content-between align-items-center">
-                            Difficulty
-                            <span class="badge badge-info badge-pill rounded">{{difficulty[recipe.difficulty]}}</span>
+                        <li class="list-group-item d-flex justify-content-between align-items-center py-2">
+                            <strong>Difficulty</strong>
+                            <span class="badge badge-{{difficultyColor(recipe.difficulty)}} badge-pill rounded">{{difficulty[recipe.difficulty]}}</span>
                         </li>
-                        <li class="list-group-item d-flex justify-content-between align-items-center">
-                            Cost
-                            <span class="badge badge-info badge-pill rounded">{{cost[recipe.cost]}}</span>
+                        <li class="list-group-item d-flex justify-content-between align-items-center py-2">
+                            <strong>Cost</strong>
+                            <span class="badge badge-{{costColor(recipe.cost)}} badge-pill rounded">{{cost[recipe.cost]}}</span>
                         </li>
-                        <li class="list-group-item d-flex justify-content-between align-items-center">
-                            Number of people
+                        <li class="list-group-item d-flex justify-content-between align-items-center py-2">
+                            <strong>Number of people</strong>
                             <span class="badge badge-info badge-pill rounded">{{recipe.numberOfPeople}}</span>
                         </li>
-                        <li class="list-group-item d-flex justify-content-between align-items-center">
-                            Preparation time
-                            <span class="badge badge-info badge-pill rounded">{{recipe.prepTime}} min.</span>
+                        <li class="list-group-item d-flex justify-content-between align-items-center py-2">
+                            <strong>Preparation time</strong>
+                            <span class="badge badge-{{timeColor(recipe.prepTime)}} badge-pill rounded">{{recipe.prepTime}} min.</span>
                         </li>
-                        <li class="list-group-item d-flex justify-content-between align-items-center">
-                            Cook time
-                            <span class="badge badge-info badge-pill rounded">{{recipe.cookTime}} min.</span>
+                        <li class="list-group-item d-flex justify-content-between align-items-center py-2">
+                            <strong>Cook time</strong>
+                            <span class="badge badge-{{timeColor(recipe.cookTime)}} badge-pill rounded">{{recipe.cookTime}} min.</span>
                         </li>
                     </ul>
                 </div>
 
                 <div class="col-12 mt-4"></div>
 
-                <div class="col-12 col-md-6">
+                <div class="col-12 col-md-4">
                     <h2 class="h5">Ingredients</h2>
                     <ul class="list-group list-group-flush">
-                        <li class="list-group-item" *ngFor="let ingredient of recipe.ingredients">
-                            {{ingredient.name}}&nbsp;{{ingredient.quantity}}&nbsp;{{ingredient.quantityUnit.label}}
+                        <li class="list-group-item d-flex justify-content-between align-items-center py-2" *ngFor="let ingredient of recipe.ingredients">
+                            <b>{{ingredient.name}}</b>
+                            <span>{{ingredient.quantity}}&nbsp;{{ingredient.quantityUnit.label}}</span>
                         </li>
                     </ul>
                 </div>
 
-                <div class="col-12 col-md-6">
+                <div class="col-12 col-md-8">
                     <h2 class="h5">How to prepare</h2>
                     <p class="text-muted">{{recipe.preparation}}</p>
                 </div>

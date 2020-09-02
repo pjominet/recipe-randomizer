@@ -44,6 +44,14 @@ $input-focus-border-color: lighten($primary, 15%);
     &-lg {
         font-size: 100% !important;
     }
+
+    &-primary-light {
+        @include badge-variant(lighten($primary, 20%))
+    }
+
+    &-primary-dark {
+        @include badge-variant(darken($primary, 10%))
+    }
 }
 
 // ng-select variable override

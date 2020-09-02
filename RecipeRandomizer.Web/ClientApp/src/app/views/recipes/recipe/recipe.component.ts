@@ -30,4 +30,52 @@ export class RecipeComponent implements OnInit {
             }
         );
     }
+
+    public costColor(cost: Cost): string {
+        let color: string;
+        switch (cost) {
+            case Cost.Cheap:
+                color = 'success';
+                break;
+            case Cost.Average:
+                color = 'warning';
+                break;
+            case Cost.Expensive:
+                color = 'danger';
+                break;
+            default:
+                color = 'success';
+        }
+
+        return color;
+    }
+
+    public difficultyColor(difficulty: Difficulty): string {
+        let color: string;
+        switch (difficulty) {
+            case Difficulty.Easy:
+                color = 'success';
+                break;
+            case Difficulty.Average:
+                color = 'warning';
+                break;
+            case Difficulty.Hard:
+                color = 'danger';
+                break;
+            default:
+                color = 'success';
+        }
+
+        return color;
+    }
+
+    public timeColor(time: number): string {
+        let color = 'primary-light';
+        if (time > 30 && time <= 90) {
+            color = 'primary';
+        } else if (time > 90) {
+            color = 'primary-dark'
+        }
+        return color;
+    }
 }
