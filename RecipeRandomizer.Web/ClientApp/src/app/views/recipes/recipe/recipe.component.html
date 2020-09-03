@@ -1,7 +1,7 @@
 <div class="modal-body p-0 custom-scroll">
     <div class="card border-0" *ngIf="recipe">
         <div class="img-container">
-            <img src="{{recipe.imageUri ? recipe.imageUri : 'assets/img/recipe_placeholder.jpg'}}" alt="recipe preview image">
+            <img src="{{recipeImage}}" alt="recipe preview image">
             <h1 class="h4 mb-0">{{recipe.name}}</h1>
             <button id="dismissBtn" class="btn btn-secondary-translucent btn-circle" (click)="activeModal.dismiss()">
                 <i class="fas fa-times"></i>

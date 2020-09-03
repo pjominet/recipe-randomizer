@@ -6,6 +6,7 @@ import {Cost} from '@app/models/nomenclature/cost';
 import {Difficulty} from '@app/models/nomenclature/difficulty';
 import {AuthService} from '@app/services/auth.service';
 import {User} from '@app/models/identity/user';
+import {environment} from '@env/environment';
 
 @Component({
     selector: 'app-recipe',
@@ -26,6 +27,12 @@ export class RecipeComponent implements OnInit {
                 public activeModal: NgbActiveModal,
                 private authService: AuthService) {
         this.user = this.authService.user;
+    }
+
+    public get recipeImage(): string {
+        return this.recipe.imageUri
+            ? `${environment.staticFileUrl}/${this.recipe.imageUri}`
+            : 'assets/img/recipe_placeholder.jpg'
     }
 
     public ngOnInit(): void {
