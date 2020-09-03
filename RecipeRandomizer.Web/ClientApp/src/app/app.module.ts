@@ -6,6 +6,7 @@ import {AppRouting} from '@app/app.routing';
 import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
 import {NgSelectModule} from '@ng-select/ng-select';
 import {ScrollingModule} from '@angular/cdk/scrolling';
+import {MarkdownModule} from 'ngx-markdown';
 
 // helpers
 import {appInitializer} from '@app/helpers/app.initializer';
@@ -50,7 +51,8 @@ import {RecipeListComponent} from './views/recipes/recipe-list/recipe-list.compo
         NgbModule,
         NgSelectModule,
         ReactiveFormsModule,
-        ScrollingModule
+        ScrollingModule,
+        MarkdownModule.forRoot()
     ],
     entryComponents: [
         RecipeComponent

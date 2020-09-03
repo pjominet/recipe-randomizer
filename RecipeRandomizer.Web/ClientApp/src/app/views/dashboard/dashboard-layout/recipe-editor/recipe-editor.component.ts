@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnInit, TemplateRef} from '@angular/core';
 import {FormArray, FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {ActivatedRoute} from '@angular/router';
 import {Recipe} from '@app/models/recipe';
@@ -17,6 +17,8 @@ import {FileUploadRequest} from '@app/models/fileUploadRequest';
 import {environment} from '@env/environment';
 import {UploadService} from '@app/services/upload.service';
 import {HttpEventType, HttpResponse} from '@angular/common/http';
+import {NgbModal, NgbTooltip} from '@ng-bootstrap/ng-bootstrap';
+import {CheatSheetComponent} from '../../../../components/cheat-sheet/cheat-sheet.component';
 
 @Component({
     selector: 'app-recipe-editor',
@@ -46,7 +48,8 @@ export class RecipeEditorComponent implements OnInit {
                 private quantityService: QuantityService,
                 private tagService: TagService,
                 private alertService: AlertService,
-                private uploadService: UploadService) {
+                private uploadService: UploadService,
+                private modalService: NgbModal) {
         this.user = this.authService.user;
         this.fileUploadRequest = new FileUploadRequest(`${environment.apiUrl}/recipes/image-upload`);
     }
@@ -130,6 +133,11 @@ export class RecipeEditorComponent implements OnInit {
 
     public onFileStaged(file: File): void {
         this.fileUploadRequest.file = file;
+    }
+
+    public showCheatSheet(tooltip: NgbTooltip): void {
+        tooltip.close();
+        this.modalService.open(CheatSheetComponent, {size: 'xl', scrollable: true});
     }
 
     public onSubmit(): void {

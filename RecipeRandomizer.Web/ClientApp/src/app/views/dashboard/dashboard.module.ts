@@ -3,6 +3,7 @@ import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {CommonModule} from '@angular/common';
 import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
 import {NgSelectModule} from '@ng-select/ng-select';
+import {MarkdownModule} from 'ngx-markdown';
 
 import {DashboardRoutingModule} from './dashboard.routing';
 
@@ -14,6 +15,7 @@ import {EnumListPipe} from '@app/helpers/enumlist.pipe';
 import {NavbarComponent} from '@app/components/navbar/navbar.component';
 import {TopbarComponent} from '@app/components/topbar/topbar.component';
 import {FileUploadComponent} from '@app/components/file-upload/file-upload.component';
+import {CheatSheetComponent} from '@app/components/cheat-sheet/cheat-sheet.component';
 
 // views
 import {DashboardLayoutComponent} from './dashboard-layout/dashboard-layout.component';
@@ -31,6 +33,7 @@ import {ChangePasswordModal} from './change-password/change-password-modal';
         DashboardRoutingModule,
         NgbModule,
         NgSelectModule,
+        MarkdownModule.forChild(),
     ],
     declarations: [
         DashboardLayoutComponent,
@@ -42,10 +45,12 @@ import {ChangePasswordModal} from './change-password/change-password-modal';
         ChangePasswordComponent,
         ChangePasswordModal,
         EnumListPipe,
-        FileUploadComponent
+        FileUploadComponent,
+        CheatSheetComponent
     ],
     entryComponents: [
-        ChangePasswordComponent
+        ChangePasswordComponent,
+        CheatSheetComponent
     ],
     providers: [
         UnsavedChangesGuard

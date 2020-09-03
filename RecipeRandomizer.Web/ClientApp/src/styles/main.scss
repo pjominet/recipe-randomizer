@@ -17,7 +17,7 @@ body {
 .btn {
     @include custom-box-shadow(3px, 3px, 10px, -2px, lighten($dark, 30%));
 
-    &[class*='-outline-'], &-link {
+    &[class*='-outline-'], &-link, &-shadow-none {
         @include box-shadow-none();
     }
 
@@ -64,4 +64,22 @@ body {
     .no-label {
         margin-top: 2rem;
     }
+}
+
+pre {
+    line-height: 1.5;
+    white-space: pre-wrap;
+}
+
+pre > code, code {
+    color: $info;
+}
+
+blockquote {
+    background: rgba($primary, .5);
+    border-left: 4px solid $primary;
+    border-radius: 4px;
+    color: $lighter;
+    margin: 1.2rem 0;
+    padding: .1rem .7rem;
 }

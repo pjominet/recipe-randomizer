@@ -17,6 +17,7 @@ $font-family-sans-serif: 'Titillium Web', 'Open Sans', sans-serif;
 $enable-responsive-font-sizes: true;
 $enable-rounded: false;
 $input-focus-border-color: lighten($primary, 15%);
+$link-color: $secondary;
 
 // import Bootstrap to save overrides
 @import '../../node_modules/bootstrap/scss/bootstrap';

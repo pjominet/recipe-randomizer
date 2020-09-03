@@ -3,7 +3,7 @@
         <form [formGroup]="recipeForm" (ngSubmit)="onSubmit()">
             <h3>Recipe Information</h3>
             <div class="row">
-                <div class=" col-12 form-group">
+                <div class=" col-12 form-group order-1">
                     <label for="nameInput">Name</label>
                     <input type="text" formControlName="name" id="nameInput" class="form-control" [ngClass]="{ 'is-invalid': isSubmitted && f.name.errors }">
                     <div *ngIf="isSubmitted && f.name.errors" class="invalid-feedback">
@@ -11,7 +11,7 @@
                     </div>
                 </div>
 
-                <div class="col-4 form-group">
+                <div class="col-4 form-group order-2">
                     <label for="numberOfPeopleInput">Number of people</label>
                     <input type="number" formControlName="numberOfPeople" id="numberOfPeopleInput" class="form-control"
                            [ngClass]="{ 'is-invalid': isSubmitted && f.numberOfPeople.errors }">
@@ -20,7 +20,7 @@
                     </div>
                 </div>
 
-                <div class="col-4 form-group">
+                <div class="col-4 form-group order-3">
                     <label for="costSelect">Cost</label>
                     <select formControlName="cost" class="form-control" id="costSelect">
                         <option *ngFor="let cost of costs | enumList" [value]="cost.key">
@@ -29,7 +29,7 @@
                     </select>
                 </div>
 
-                <div class="col-4 form-group">
+                <div class="col-4 form-group order-4">
                     <label for="difficultySelect">Difficulty</label>
                     <select formControlName="difficulty" class="form-control" id="difficultySelect">
                         <option *ngFor="let difficulties of difficulties | enumList" [value]="difficulties.key">
@@ -38,7 +38,7 @@
                     </select>
                 </div>
 
-                <div class="col-6 form-group">
+                <div class="col-6 form-group order-5">
                     <label for="prepTimeInput">Preparation time</label>
                     <div class="input-group">
                         <input type="number" formControlName="prepTime" class="form-control" id="prepTimeInput" [ngClass]="{ 'is-invalid': isSubmitted && f.prepTime.errors }">
@@ -51,7 +51,7 @@
                     </div>
                 </div>
 
-                <div class="col-6 form-group">
+                <div class="col-6 form-group order-6">
                     <label for="cookTimeInput">Cooking time</label>
                     <div class="input-group">
                         <input type="number" formControlName="cookTime" class="form-control" id="cookTimeInput" [ngClass]="{ 'is-invalid': isSubmitted && f.cookTime.errors }">
@@ -64,20 +64,47 @@
                     </div>
                 </div>
 
-                <div class="col-12 col-md-6 form-group">
-                    <label for="descriptionText">Description</label>
-                    <textarea formControlName="description" class="form-control" id="descriptionText" rows="7" [ngClass]="{ 'is-invalid': isSubmitted && f.description.errors }"></textarea>
+                <ng-template #markdownHint>
+                    <p class="mb-1">Supports markdown</p>
+                    <button type="button" class="btn btn-sm btn-info btn-shadow-none mb-1" (click)="showCheatSheet(markdownTip)">show cheatsheet</button>
+                </ng-template>
+
+                <div class="col-12 col-md-6 form-group order-7">
+                    <label for="descriptionText">
+                        Description<i class="fas fa-info-circle text-info ml-2"
+                                      [ngbTooltip]="markdownHint"
+                                      #markdownTip="ngbTooltip"
+                                      [closeDelay]="3000"></i>
+                    </label>
+                    <textarea formControlName="description" class="form-control" id="descriptionText" rows="7"
+                              [ngClass]="{ 'is-invalid': isSubmitted && f.description.errors }"></textarea>
                     <div *ngIf="isSubmitted && f.description.errors" class="invalid-feedback">
                         <div *ngIf="f.description.errors.required">Name is required</div>
                     </div>
                 </div>
 
-                <div class="col-12 col-md-6 form-group">
-                    <label for="preparationText">Preparation</label>
-                    <textarea formControlName="preparation" class="form-control" id="preparationText" rows="7" [ngClass]="{ 'is-invalid': isSubmitted && f.preparation.errors }"></textarea>
+                <div class="col-12 col-md-6 form-group order-9 order-md-8">
+                    <label for="preparationText">
+                        Preparation<i class="fas fa-info-circle text-info ml-2"
+                                      [ngbTooltip]="markdownHint"
+                                      #markdownTip="ngbTooltip"
+                                      [closeDelay]="3000"></i>
+                    </label>
+                    <textarea formControlName="preparation" class="form-control" id="preparationText" rows="7"
+                              [ngClass]="{ 'is-invalid': isSubmitted && f.preparation.errors }"></textarea>
                     <div *ngIf="isSubmitted && f.preparation.errors" class="invalid-feedback">
                         <div *ngIf="f.preparation.errors.required">Name is required</div>
                     </div>
+                </div>
+
+                <div class="col-12 col-md-6 form-group order-8 order-md-9" *ngIf="f.description.value">
+                    <label>Description Preview</label>
+                    <div class="form-control h-auto" [innerHTML]="f.description.value | markdown"></div>
+                </div>
+
+                <div class="col-12 col-md-6 form-group order-10" *ngIf="f.preparation.value">
+                    <label>Preparation Preview</label>
+                    <div class="form-control h-auto" [innerHTML]="f.preparation.value | markdown"></div>
                 </div>
             </div>
 
@@ -88,14 +115,16 @@
                         <div class="d-flex">
                             <div class="form-group w-100 mr-2">
                                 <label for="ingredientNameInput">Ingredient name</label>
-                                <input type="text" formControlName="name" id="ingredientNameInput" class="form-control" [ngClass]="{ 'is-invalid': isSubmitted && ingredient.errors }">
+                                <input type="text" formControlName="name" id="ingredientNameInput" class="form-control"
+                                       [ngClass]="{ 'is-invalid': isSubmitted && ingredient.errors }">
                                 <div *ngIf="isSubmitted && ingredient.errors" class="invalid-feedback">
                                     <div *ngIf="ingredient.errors.required">Ingredient name is required</div>
                                 </div>
                             </div>
                             <div class="form-group w-100 mr-2">
                                 <label for="quantityInput">Quantity</label>
-                                <input type="number" formControlName="quantity" id="quantityInput" class="form-control" [ngClass]="{ 'is-invalid': isSubmitted && ingredient.errors }">
+                                <input type="number" formControlName="quantity" id="quantityInput" class="form-control"
+                                       [ngClass]="{ 'is-invalid': isSubmitted && ingredient.errors }">
                                 <div *ngIf="isSubmitted && ingredient.errors" class="invalid-feedback">
                                     <div *ngIf="ingredient.errors.required">Quantity is required</div>
                                 </div>
