@@ -7,6 +7,7 @@ import {AlertService} from '@app/components/alert/alert.service';
 import {forkJoin} from 'rxjs';
 import {UserService} from '@app/services/user.service';
 import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
+import {environment} from '@env/environment';
 
 @Component({
     selector: 'app-profile',
@@ -44,6 +45,12 @@ export class ProfileComponent implements OnInit {
 
     public get likedRecipeCount(): number {
         return this.user.likedRecipes?.length ?? 0;
+    }
+
+    public get userAvatar(): string {
+        return this.user.profileImageUri
+            ? `${environment.staticFileUrl}/${this.user.profileImageUri}`
+            : 'assets/img/avatar_placeholder.png'
     }
 
     public ngOnInit(): void {

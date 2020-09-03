@@ -2,7 +2,7 @@
     <section class="col-12 col-md-5">
         <div class="card card-shadowed my-3">
             <div class="card-img-header">
-                <img class="profile-img" src="{{user.profileImageUri ? user.profileImageUri: 'assets/img/avatar_placeholder.png'}}" alt="user avatar">
+                <img class="profile-img" src="{{userAvatar}}" alt="user avatar">
             </div>
             <div class="card-body">
                 <form [formGroup]="editForm" (ngSubmit)="onSubmit()">
