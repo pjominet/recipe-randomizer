@@ -121,13 +121,14 @@ export class RecipeEditorComponent implements OnInit {
                             quantityUnitId: ingredient.quantityUnitId
                         }, {emitEvent: false});
                     });
+
+                    this.recipeForm.updateValueAndValidity();
                 });
         }
     }
 
     public onIngredientAdd(): void {
         this.i.push(this.addIngredientGroup());
-
         this.i.markAsDirty();
     }
 
