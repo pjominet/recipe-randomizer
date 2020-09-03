@@ -41,13 +41,6 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="ClientApp\src\app\components" />
-      <Folder Include="ClientApp\src\app\views" />
-      <Folder Include="ClientApp\src\assets\img" />
-      <Folder Include="wwwroot\images" />
-    </ItemGroup>
-
-    <ItemGroup>
       <ProjectReference Include="..\RecipeRandomizer.Business\RecipeRandomizer.Business.csproj" />
     </ItemGroup>
 

@@ -234,3 +234,4 @@ _Pvt_Extensions
 
 # don't upload any user images
 */wwwroot/*/**
+!*/wwwroot/*/.gitkeep
