@@ -1,4 +1,4 @@
-<section class="card card-shadowed mt-4 mb-3">
+<section class="card shadowed mt-4 mb-3">
     <div class="card-body" *ngIf="recipeForm">
         <form [formGroup]="recipeForm" (ngSubmit)="onSubmit()">
             <h3>Recipe Information</h3>
@@ -145,7 +145,7 @@
                         </div>
                     </div>
                 </div>
-                <button type="button" class="btn btn-outline-primary" (click)="onIngredientAdd()">
+                <button type="button" class="btn btn-primary" (click)="onIngredientAdd()">
                     <i class="fas fa-plus mr-2"></i>ingredient
                 </button>
             </div>

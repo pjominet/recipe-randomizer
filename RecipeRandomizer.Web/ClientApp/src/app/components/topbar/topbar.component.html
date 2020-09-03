@@ -1,11 +1,11 @@
 <section class="topbar">
-    <div class="container d-flex justify-content-end h-100 align-items-center">
-        <nav class="nav">
+    <div class="container-fluid h-100">
+        <nav class="nav d-flex h-100 justify-content-end align-items-center">
             <strong class="nav-link">Hello&nbsp;{{user.userName}}!</strong>
-            <a class="nav-link btn btn-outline-dark btn-no-outline mx-1" routerLink="profile">
-                <i class="fas fa-user-circle"></i>
+            <a class="nav-link ml-1 mr-2 size-50" routerLink="profile">
+                <img src="{{userAvatar}}" alt="user pictogram" class="img-circle size-50">
             </a>
-            <button class="nav-link btn btn-sm btn-outline-dark btn-no-outline mx-1" (click)="logout()">
+            <button class="nav-link btn btn-light btn-circle mx-2 size-50" (click)="logout()">
                 <i class="fas fa-sign-out-alt"></i>
             </button>
         </nav>

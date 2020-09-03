@@ -1,8 +1,8 @@
 <div class="row">
     <section class="col-12 col-md-5">
-        <div class="card card-shadowed my-3">
+        <div class="card shadowed my-3">
             <div class="card-img-header">
-                <img class="profile-img" src="{{userAvatar}}" alt="user avatar">
+                <img id="avatar" class="img-circle" src="{{userAvatar}}" alt="user avatar">
             </div>
             <div class="card-body">
                 <form [formGroup]="editForm" (ngSubmit)="onSubmit()">
@@ -42,7 +42,7 @@
     </section>
 
     <section class="col-12 col-md-7">
-        <div class="card card-shadowed my-3">
+        <div class="card shadowed my-3">
             <div class="card-body">
                 <div class="h5 mb-4">Advanced Settings</div>
                 <div class="d-flex flex-column">
@@ -56,7 +56,7 @@
             </div>
         </div>
 
-        <div class="card card-shadowed my-3">
+        <div class="card shadowed my-3">
             <div class="card-body">
                 <div class="list-group list-group-flush">
                     <a class="list-group-item list-group-item-action d-flex justify-content-between align-items-center" routerLink="my-recipes">

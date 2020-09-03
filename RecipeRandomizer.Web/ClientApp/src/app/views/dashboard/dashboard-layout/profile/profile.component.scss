@@ -6,9 +6,8 @@
     justify-content: center;
     align-items: center;
 
-    .profile-img {
+    #avatar {
         width: 150px;
         height: auto;
-        @include custom-border-radius(50%);
     }
 }

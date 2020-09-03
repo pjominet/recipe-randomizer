@@ -26,7 +26,7 @@ body {
     }
 
     &-circle {
-        @include custom-border-radius(45px);
+        @include custom-border-radius(50%);
     }
 
     &-no-outline {
@@ -39,7 +39,11 @@ body {
     }
 }
 
-.card-shadowed {
+.img-circle {
+    @include custom-border-radius(50%);
+}
+
+.shadowed {
     @include custom-box-shadow(3px, 3px, 10px, -2px, lighten($dark, 30%));
 }
 
