@@ -235,4 +235,4 @@ _Pvt_Extensions
 .fake/
 
 # don't upload any user images
-**/wwwroot/**/*
+*/wwwroot/*/*
