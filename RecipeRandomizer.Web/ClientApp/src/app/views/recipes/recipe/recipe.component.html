@@ -32,7 +32,7 @@
                 </div>
 
                 <div class="col-12 col-md-8">
-                    <p id="recipeDescription">{{recipe.description | markdown}}</p>
+                    <p id="recipeDescription" [innerHTML]="recipe.description | markdown"></p>
                 </div>
 
                 <div class="col-12 col-md-4">
@@ -74,7 +74,7 @@
 
                 <div class="col-12 col-md-8">
                     <h2 class="h5">How to prepare</h2>
-                    <p class="text-muted">{{recipe.preparation | markdown}}</p>
+                    <p class="text-muted" [innerHTML]="recipe.preparation | markdown"></p>
                 </div>
             </div>
 
