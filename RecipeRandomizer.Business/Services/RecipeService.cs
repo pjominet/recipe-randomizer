@@ -102,6 +102,7 @@ namespace RecipeRandomizer.Business.Services
                 throw new ApplicationException("File copy failed");
 
             recipe.ImageUri = trustedFilePath;
+            recipe.OriginalImageName = untrustedFileName;
             _recipeRepository.Update(recipe);
             return _recipeRepository.SaveChanges();
         }

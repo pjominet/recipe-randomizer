@@ -76,7 +76,7 @@
                                       #markdownTip="ngbTooltip"
                                       [closeDelay]="3000"></i>
                     </label>
-                    <textarea formControlName="description" class="form-control" id="descriptionText" rows="7"
+                    <textarea formControlName="description" class="form-control custom-scroll" id="descriptionText"
                               [ngClass]="{ 'is-invalid': isSubmitted && f.description.errors }"></textarea>
                     <div *ngIf="isSubmitted && f.description.errors" class="invalid-feedback">
                         <div *ngIf="f.description.errors.required">Name is required</div>
@@ -90,7 +90,7 @@
                                       #markdownTip="ngbTooltip"
                                       [closeDelay]="3000"></i>
                     </label>
-                    <textarea formControlName="preparation" class="form-control" id="preparationText" rows="7"
+                    <textarea formControlName="preparation" class="form-control custom-scroll" id="preparationText"
                               [ngClass]="{ 'is-invalid': isSubmitted && f.preparation.errors }"></textarea>
                     <div *ngIf="isSubmitted && f.preparation.errors" class="invalid-feedback">
                         <div *ngIf="f.preparation.errors.required">Name is required</div>
@@ -154,7 +154,7 @@
                 <h3 class="col-12">Tags & Image</h3>
                 <div class="form-group col-12 col-md-6">
                     <label>Add descriptive tags</label>
-                    <ng-select class="custom-ng-select"
+                    <ng-select class="custom-ng-select w-100"
                                [items]="tagCategories"
                                [multiple]="true"
                                groupBy="tags"
@@ -180,7 +180,20 @@
                 </div>
 
                 <div class="form-group col-12 col-md-6">
-                    <app-file-upload (onFileStaged)="onFileStaged($event)" [onUploadSuccess]=""></app-file-upload>
+                    <ng-container *ngIf="changeImage || !recipe?.originalImageName; else hasImage">
+                        <app-file-upload (onFileStaged)="onFileStaged($event)" [onUploadSuccess]=""></app-file-upload>
+                    </ng-container>
+                    <ng-template #hasImage>
+                        <label for="displayInput">Current image</label>
+                        <div class="input-group">
+                            <input type="text" class="form-control" id="displayInput" disabled [value]="recipe.originalImageName">
+                            <div class="input-group-append">
+                                <button type="button" class="btn btn-primary" (click)="changeImage = true">
+                                    Change<i class="fas fa-sync ml-2" ></i>
+                                </button>
+                            </div>
+                        </div>
+                    </ng-template>
                 </div>
             </div>
 

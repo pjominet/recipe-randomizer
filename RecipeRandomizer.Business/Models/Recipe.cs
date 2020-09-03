@@ -12,6 +12,7 @@ namespace RecipeRandomizer.Business.Models
         public string Name { get; set; }
         public string Description { get; set; }
         public string ImageUri { get; set; }
+        public string OriginalImageName { get; set; }
         public int NumberOfPeople { get; set; }
         public Cost Cost { get; set; }
         public Difficulty Difficulty { get; set; }

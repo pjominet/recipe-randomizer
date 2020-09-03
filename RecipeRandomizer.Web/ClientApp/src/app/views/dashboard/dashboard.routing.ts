@@ -25,6 +25,7 @@ const routes: Routes = [
                 ]
             },
             {path: 'recipe-editor', component: RecipeEditorComponent},
+            {path: 'recipe-editor/:rid', component: RecipeEditorComponent},
             {path: 'random-recipe', component: RandomRecipeComponent},
             {
                 path: 'recipes', component: RecipeListComponent, children: [

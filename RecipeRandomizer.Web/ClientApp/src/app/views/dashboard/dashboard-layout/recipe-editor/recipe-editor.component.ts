@@ -40,6 +40,7 @@ export class RecipeEditorComponent implements OnInit {
     public tagCategories: TagCategory[] = [];
     public fileUploadRequest: FileUploadRequest;
     public fileUploadSuccess: boolean = false;
+    public changeImage: boolean = false;
 
     constructor(private route: ActivatedRoute,
                 private formBuilder: FormBuilder,
@@ -107,12 +108,14 @@ export class RecipeEditorComponent implements OnInit {
                         prepTime: recipe.prepTime,
                         cookTime: recipe.cookTime,
                         preparation: recipe.preparation,
-                        ingredients: recipe.ingredients.forEach((ingredient, index) => {
-                            this.i.push(this.addIngredientGroup());
+                        ingredients: recipe.ingredients.forEach((ingredient, index) => { // TODO: check potential undefined state
+                            if (index !== 0) { // first group already exists
+                                this.i.push(this.addIngredientGroup());
+                            }
                             this.i.at(index).patchValue({
                                 name: ingredient.name,
                                 quantity: ingredient.quantity,
-                                quantityUnit: ingredient.quantityUnitId
+                                quantityUnitId: ingredient.quantityUnitId
                             });
                         }),
                         tags: recipe.tags

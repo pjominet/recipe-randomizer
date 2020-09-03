@@ -20,6 +20,7 @@ namespace RecipeRandomizer.Data.Entities
         public string Name { get; set; }
         public string Description { get; set; }
         public string ImageUri { get; set; }
+        public string OriginalImageName { get; set; }
         public int NumberOfPeople { get; set; }
         public int CostId { get; set; }
         public int DifficultyId { get; set; }

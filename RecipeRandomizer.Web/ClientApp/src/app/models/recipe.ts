@@ -9,6 +9,7 @@ export class Recipe {
     name: string;
     description: string;
     imageUri: string;
+    originalImageName: string;
     numberOfPeople: number;
     cost: Cost;
     difficulty: Difficulty;
