@@ -24,6 +24,7 @@ bld/
 [Oo]bj/
 */bin
 */obj
+*/ClientApp/dist
 
 # IDE cache/options directory
 .vs/
@@ -232,4 +233,3 @@ _Pvt_Extensions
 
 # FAKE - F# Make
 .fake/
-src/assets/img/

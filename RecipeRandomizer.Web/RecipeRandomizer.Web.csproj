@@ -36,6 +36,8 @@
           <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
           <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
         </Content>
+        <None Remove="ClientApp\dist\**" />
+        <Content Remove="ClientApp\dist\**" />
     </ItemGroup>
 
     <ItemGroup>
