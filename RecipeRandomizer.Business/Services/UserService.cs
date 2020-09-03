@@ -1,10 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Threading.Tasks;
 using AutoMapper;
+using Microsoft.Extensions.Options;
 using RecipeRandomizer.Business.Interfaces;
 using RecipeRandomizer.Business.Models.Identity;
 using RecipeRandomizer.Business.Utils.Exceptions;
+using RecipeRandomizer.Business.Utils.Settings;
 using RecipeRandomizer.Data.Contexts;
 using RecipeRandomizer.Data.Repositories;
 using Entities = RecipeRandomizer.Data.Entities.Identity;
@@ -15,11 +18,13 @@ namespace RecipeRandomizer.Business.Services
     {
         private readonly UserRepository _userRepository;
         private readonly IMapper _mapper;
+        private readonly AppSettings _appSettings;
 
-        public UserService(RRContext context, IMapper mapper)
+        public UserService(RRContext context, IMapper mapper, IOptions<AppSettings> appSettings)
         {
             _userRepository = new UserRepository(context);
             _mapper = mapper;
+            _appSettings = appSettings.Value;
         }
 
         public IEnumerable<User> GetUsers()
@@ -53,9 +58,21 @@ namespace RecipeRandomizer.Business.Services
             return _mapper.Map<User>(user);
         }
 
-        public bool UploadUserAvatar(Stream imageStream, int id)
+        public async Task<bool> UploadUserAvatar(Stream imageStream, string untrustedFileName, int id)
         {
-            throw new NotImplementedException();
+            var user = _userRepository.GetFirstOrDefault<Entities.User>(u => u.Id == id);
+            if(user == null)
+                throw new KeyNotFoundException("Recipe to add image to could not be found");
+
+            var trustedFilePath = _appSettings.UserAvatarsFolder + Guid.NewGuid() + Path.GetExtension(untrustedFileName);
+            await using var fileStream = new FileStream(Path.Combine(Directory.GetCurrentDirectory(), trustedFilePath), FileMode.Create);
+
+            if (!imageStream.CopyToAsync(fileStream).IsCompletedSuccessfully)
+                throw new ApplicationException("File copy failed");
+
+            user.ProfileImageUri = trustedFilePath;
+            _userRepository.Update(user);
+            return _userRepository.SaveChanges();
         }
 
         public bool Delete(int id)

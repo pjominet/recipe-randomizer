@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.IO;
+using System.Threading.Tasks;
 using RecipeRandomizer.Business.Models;
 
 namespace RecipeRandomizer.Business.Interfaces
@@ -14,7 +15,7 @@ namespace RecipeRandomizer.Business.Interfaces
         public IEnumerable<Recipe> GetRecipesForUser(int userId);
         public IEnumerable<Recipe> GetLikedRecipesForUser(int userId);
         public int CreateRecipe(Recipe recipe);
-        public bool UploadRecipeImage(Stream imageStream, int id);
+        public Task<bool> UploadRecipeImage(Stream imageStream, string untrustedFileName, int id);
         public bool UpdateRecipe(Recipe recipe);
         public bool DeleteRecipe(int id, bool hard = false);
         public Recipe RestoreDeletedRecipe(int id);

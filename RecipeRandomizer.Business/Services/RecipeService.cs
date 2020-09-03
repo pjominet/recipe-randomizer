@@ -2,9 +2,12 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 using AutoMapper;
+using Microsoft.Extensions.Options;
 using RecipeRandomizer.Business.Interfaces;
 using RecipeRandomizer.Business.Models;
+using RecipeRandomizer.Business.Utils.Settings;
 using RecipeRandomizer.Data.Contexts;
 using RecipeRandomizer.Data.Repositories;
 using Entities = RecipeRandomizer.Data.Entities;
@@ -15,11 +18,13 @@ namespace RecipeRandomizer.Business.Services
     {
         private readonly RecipeRepository _recipeRepository;
         private readonly IMapper _mapper;
+        private readonly AppSettings _appSettings;
 
-        public RecipeService(RRContext context, IMapper mapper)
+        public RecipeService(RRContext context, IMapper mapper, IOptions<AppSettings> appSettings)
         {
             _recipeRepository = new RecipeRepository(context);
             _mapper = mapper;
+            _appSettings = appSettings.Value;
         }
 
         public IEnumerable<Recipe> GetRecipes()
@@ -84,9 +89,21 @@ namespace RecipeRandomizer.Business.Services
             return _recipeRepository.SaveChanges() ? newRecipe.Id : -1;
         }
 
-        public bool UploadRecipeImage(Stream imageStream, int id)
+        public async Task<bool> UploadRecipeImage(Stream imageStream, string untrustedFileName, int id)
         {
-            throw new NotImplementedException();
+            var recipe = _recipeRepository.GetFirstOrDefault<Entities.Recipe>(r => r.Id == id);
+            if(recipe == null)
+                throw new KeyNotFoundException("Recipe to add image to could not be found");
+
+            var trustedFilePath = _appSettings.RecipeImagesFolder + Guid.NewGuid() + Path.GetExtension(untrustedFileName);
+            await using var fileStream = new FileStream(Path.Combine(Directory.GetCurrentDirectory(), trustedFilePath), FileMode.Create);
+
+            if (!imageStream.CopyToAsync(fileStream).IsCompletedSuccessfully)
+                throw new ApplicationException("File copy failed");
+
+            recipe.ImageUri = trustedFilePath;
+            _recipeRepository.Update(recipe);
+            return _recipeRepository.SaveChanges();
         }
 
         public bool UpdateRecipe(Recipe recipe)

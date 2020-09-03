@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using RecipeRandomizer.Business.Interfaces;
 using RecipeRandomizer.Business.Models;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace RecipeRandomizer.Web.Controllers
 {
@@ -86,16 +87,18 @@ namespace RecipeRandomizer.Web.Controllers
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public IActionResult UploadRecipeImage([FromForm(Name = "file")] IFormFile image, [FromForm(Name = "id")] int? recipeId)
+        public async Task<IActionResult> UploadRecipeImage([FromForm(Name = "file")] IFormFile image, [FromForm(Name = "id")] int? recipeId)
         {
-            if (image == null || !recipeId.HasValue)
-                return StatusCode(StatusCodes.Status400BadRequest);
+            if (image == null || image.Length <= 0 || !recipeId.HasValue)
+                return BadRequest("Missing information in form-data");
 
-            var stream = image.OpenReadStream();
-            var result = _recipeService.UploadRecipeImage(stream, recipeId.Value);
-            stream.Close();
+            Task<bool> result;
+            await using (var stream = image.OpenReadStream())
+            {
+                result = _recipeService.UploadRecipeImage(stream, image.FileName, recipeId.Value);
+            }
 
-            return result ? NoContent() : StatusCode(StatusCodes.Status500InternalServerError);
+            return await result ? NoContent() : StatusCode(StatusCodes.Status500InternalServerError);
         }
 
         [HttpDelete("{id}")]

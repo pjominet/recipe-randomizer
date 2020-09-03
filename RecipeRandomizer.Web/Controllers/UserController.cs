@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using RecipeRandomizer.Business.Interfaces;
@@ -62,16 +63,18 @@ namespace RecipeRandomizer.Web.Controllers
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public IActionResult UploadUserAvatar([FromForm(Name = "file")] IFormFile image, [FromForm(Name = "id")] int? userId)
+        public async Task<IActionResult> UploadUserAvatar([FromForm(Name = "file")] IFormFile image, [FromForm(Name = "id")] int? userId)
         {
-            if (image == null || !userId.HasValue)
+            if (image == null || image.Length <= 0 || !userId.HasValue)
                 return BadRequest("Missing information in form-data");
 
-            var stream = image.OpenReadStream();
-            var result = _userService.UploadUserAvatar(stream, userId.Value);
-            stream.Close();
+            Task<bool> result;
+            await using (var stream = image.OpenReadStream())
+            {
+                result = _userService.UploadUserAvatar(stream, image.FileName, userId.Value);
+            }
 
-            return result ? NoContent() : StatusCode(StatusCodes.Status500InternalServerError);
+            return await result ? NoContent() : StatusCode(StatusCodes.Status500InternalServerError);
         }
 
         [Authorize]
