@@ -17,7 +17,6 @@ import {AuthService} from '@app/services/auth.service';
 // components
 import {SpinnerComponent} from '@app/components/spinner/spinner.component';
 import {AlertComponent} from '@app/components/alert/alert.component';
-import {ToastComponent} from '@app/components/toast/toast.component';
 
 // views
 import {AppComponent} from '@app/app.component';
@@ -36,7 +35,6 @@ import {RecipeListComponent} from './views/recipes/recipe-list/recipe-list.compo
         AlertComponent,
         NotFoundComponent,
         HomeComponent,
-        ToastComponent,
         RecipesComponent,
         RecipeComponent,
         RecipeModal,
