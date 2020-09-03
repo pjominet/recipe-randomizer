@@ -1,4 +1,4 @@
-<div *ngFor="let alert of alerts" class="alert alert-dismissable {{getAlertColor(alert.type)}} {{alert.fade ? 'fade' : ''}} mt-3 container">
+<div *ngFor="let alert of alerts" class="alert alert-dismissable {{getStateColor(alert.type)}} {{alert.fade ? 'fade' : ''}} mt-3 container">
     <a class="close" (click)="removeAlert(alert)">&times;</a>
     <span [innerHTML]="alert.message"></span>
 </div>

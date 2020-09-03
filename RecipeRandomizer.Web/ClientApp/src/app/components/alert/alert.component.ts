@@ -11,7 +11,6 @@ import {AlertService} from '@app/components/alert/alert.service';
 })
 export class AlertComponent implements OnInit {
 
-    @Input() id: string = 'default-alert';
     @Input() fade: boolean = true;
 
     public alerts: Alert[] = [];
@@ -24,10 +23,10 @@ export class AlertComponent implements OnInit {
 
     public ngOnInit(): void {
         // subscribe to new alert notifications
-        this.alertSubscription = this.alertService.onAlert(this.id)
+        this.alertSubscription = this.alertService.onAlert()
             .subscribe(alert => {
                 // clear alerts when an empty alert is received
-                if (!alert.message) {
+                if (!alert) {
                     // filter out alerts without 'keepAfterRouteChange' flag
                     this.alerts = this.alerts.filter(x => x.keepAfterRouteChange);
 
@@ -48,7 +47,7 @@ export class AlertComponent implements OnInit {
         // clear alerts on location change
         this.routeSubscription = this.router.events.subscribe(event => {
             if (event instanceof NavigationStart) {
-                this.alertService.clear(this.id);
+                this.alertService.clear();
             }
         });
     }
@@ -79,7 +78,7 @@ export class AlertComponent implements OnInit {
         }
     }
 
-    public getAlertColor(type: AlertType): string {
+    public getStateColor(type: AlertType): string {
         const alertTypeClass = {
             [AlertType.Success]: 'alert-success',
             [AlertType.Error]: 'alert-danger',

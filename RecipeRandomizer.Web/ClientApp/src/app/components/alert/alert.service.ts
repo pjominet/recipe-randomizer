@@ -7,11 +7,10 @@ import {filter} from 'rxjs/operators';
     providedIn: 'root'
 })
 export class AlertService {
-    private subject = new Subject<Alert>();
-    private defaultId = 'default-alert';
+    private alertSubject: Subject<Alert> = new Subject<Alert>();
 
-    public onAlert(id = this.defaultId): Observable<Alert> {
-        return this.subject.asObservable().pipe(filter(x => x && x.id === id));
+    public onAlert(): Observable<Alert> {
+        return this.alertSubject.asObservable().pipe(filter(x => !!x));
     }
 
     public success(message: string, options?: any) {
@@ -31,13 +30,12 @@ export class AlertService {
     }
 
     public alert(alert: Alert) {
-        alert.id = alert.id || this.defaultId;
         alert.autoClose = (alert.autoClose === undefined ? true : alert.autoClose);
         alert.autoCloseTimeOut = (alert.autoCloseTimeOut === undefined ? 3000 : alert.autoCloseTimeOut);
-        this.subject.next(alert);
+        this.alertSubject.next(alert);
     }
 
-    public clear(id = this.defaultId) {
-        this.subject.next(new Alert({id}));
+    public clear() {
+        this.alertSubject.next();
     }
 }

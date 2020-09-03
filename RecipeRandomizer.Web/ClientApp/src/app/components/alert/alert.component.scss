@@ -1,9 +1,10 @@
 ﻿.alert {
     position: absolute;
-    bottom: 3em;
+    top: 3.3em;
     left: 0;
     right: 0;
-    min-width: 400px;
-    max-width: 800px;
+    max-width: 40%;
+    margin-left: auto;
+    margin-right: auto;
     z-index: 10000;
 }
