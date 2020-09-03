@@ -20,10 +20,8 @@ x64/
 x86/
 build/
 bld/
-[Bb]in/
-[Oo]bj/
-*/bin
-*/obj
+*/[Bb]in/
+*/[Oo]bj/
 */ClientApp/dist
 
 # IDE cache/options directory
