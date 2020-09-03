@@ -108,18 +108,19 @@ export class RecipeEditorComponent implements OnInit {
                         prepTime: recipe.prepTime,
                         cookTime: recipe.cookTime,
                         preparation: recipe.preparation,
-                        ingredients: recipe.ingredients.forEach((ingredient, index) => { // TODO: check potential undefined state
-                            if (index !== 0) { // first group already exists
-                                this.i.push(this.addIngredientGroup());
-                            }
-                            this.i.at(index).patchValue({
-                                name: ingredient.name,
-                                quantity: ingredient.quantity,
-                                quantityUnitId: ingredient.quantityUnitId
-                            });
-                        }),
-                        tags: recipe.tags
-                    }, {emitEvent: true});
+                        tags: recipe.tags,
+                    }, {emitEvent: false});
+
+                    recipe.ingredients.forEach((ingredient, index) => {
+                        if (index !== 0) { // first group already exists
+                            this.i.push(this.addIngredientGroup());
+                        }
+                        this.i.at(index).patchValue({
+                            name: ingredient.name,
+                            quantity: ingredient.quantity,
+                            quantityUnitId: ingredient.quantityUnitId
+                        }, {emitEvent: false});
+                    });
                 });
         }
     }
