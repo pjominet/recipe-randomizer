@@ -126,7 +126,7 @@ namespace RecipeRandomizer.Web.Controllers
         [HttpGet("{recipeId:int}/liked-by/{userId:int}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public IActionResult LikeRecipe([FromRoute(Name = "recipeId")] int recipeId, [FromRoute(Name = "userId")] int userId, [FromQuery(Name = "like")] bool like = false)
+        public IActionResult ToggleRecipeLike([FromRoute(Name = "recipeId")] int recipeId, [FromRoute(Name = "userId")] int userId, [FromQuery(Name = "like")] bool like = false)
         {
             var result = _recipeService.ToggleRecipeLike(recipeId, userId, like);
 
@@ -142,8 +142,8 @@ namespace RecipeRandomizer.Web.Controllers
         public IActionResult EditRecipe([FromBody] Recipe recipe)
         {
             return _recipeService.UpdateRecipe(recipe)
-                ? NoContent()
-                : StatusCode(StatusCodes.Status500InternalServerError);
+                ? Ok(recipe.Id)
+                : (IActionResult) StatusCode(StatusCodes.Status500InternalServerError);
         }
     }
 }

@@ -6,6 +6,7 @@ import {AuthService} from '@app/services/auth.service';
 import {ActivatedRoute, Router} from '@angular/router';
 import {forkJoin} from 'rxjs';
 import {AlertService} from '@app/components/alert/alert.service';
+import {Difficulty} from '../../../../models/nomenclature/difficulty';
 
 @Component({
     selector: 'app-user-recipes',
@@ -16,6 +17,7 @@ export class UserRecipesComponent implements OnInit {
 
     public user: User;
     public activeTab: number = 1;
+    public difficulties: typeof Difficulty = Difficulty;
 
     constructor(private recipeService: RecipeService,
                 private authService: AuthService,
@@ -117,6 +119,17 @@ export class UserRecipesComponent implements OnInit {
                 this.alertService.success('Successfully deleted recipe. It is gone for good!');
             }, error => {
                 this.alertService.error('Could not delete recipe.');
+            });
+    }
+
+    public unlike(id: number): void {
+        this.alertService.clear();
+        this.recipeService.toggleRecipeLike(id, this.user.id, false).subscribe(
+            () => {
+                this.user.likedRecipes = this.user.likedRecipes.filter(r => r.id === id);
+                this.alertService.success('Successfully unliked recipe.');
+            }, error => {
+                this.alertService.error('Could not unlike recipe.');
             });
     }
 }

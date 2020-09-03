@@ -57,11 +57,14 @@ body {
     }
 }
 
-.truncate {
-    width: 20%;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+.table-fixed{
+    table-layout: fixed;
+
+    .truncate {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
 }
 
 .form-group {

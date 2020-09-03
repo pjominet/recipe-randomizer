@@ -23,10 +23,10 @@
                     </p>
                     <p class="credits">
                         <ng-container *ngIf="recipe.updatedOn; else createdOn">
-                            Updated On:&nbsp;{{recipe.updatedOn | date: 'dd MMM y, H:mm'}}
+                            Last updated on:&nbsp;{{recipe.updatedOn | date: 'dd MMM y, H:mm'}}
                         </ng-container>
                         <ng-template #createdOn>
-                            Created On:&nbsp;{{recipe.createdOn | date: 'dd MMM y, H:mm'}}
+                            Created on:&nbsp;{{recipe.createdOn | date: 'dd MMM y, H:mm'}}
                         </ng-template>
                     </p>
                 </div>
@@ -39,7 +39,7 @@
                     <ul class="list-group list-group-flush">
                         <li class="list-group-item d-flex justify-content-between align-items-center py-2">
                             <strong>Difficulty</strong>
-                            <span class="badge badge-{{difficultyColor(recipe.difficulty)}} badge-pill rounded">{{difficulty[recipe.difficulty]}}</span>
+                            <span class="badge badge-{{difficultyColor(recipe.difficulty)}} badge-pill rounded">{{difficulties[recipe.difficulty]}}</span>
                         </li>
                         <li class="list-group-item d-flex justify-content-between align-items-center py-2">
                             <strong>Cost</strong>

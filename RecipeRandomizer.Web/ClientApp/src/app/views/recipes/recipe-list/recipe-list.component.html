@@ -36,7 +36,9 @@
             <thead>
             <tr>
                 <th scope="col">Name</th>
-                <th scope="col">Description</th>
+                <th scope="col">Difficulty</th>
+                <th scope="col">Preparation Time</th>
+                <th scope="col">Cooking Time</th>
                 <th scope="col">From</th>
                 <th scope="col">Created by</th>
                 <th scope="col">Tags</th>
@@ -44,8 +46,10 @@
             </thead>
             <tbody>
             <tr *cdkVirtualFor="let recipe of recipes" (click)="showRecipe(recipe.id)">
-                <th scope="row" class="truncate">{{recipe.name}}</th>
-                <td class="truncate">{{recipe.description}}</td>
+                <th scope="row"><strong class="text-primary">{{recipe.name}}</strong></th>
+                <td>{{difficulties[recipe.difficulty]}}</td>
+                <td>{{recipe.prepTime}}&nbsp;min.</td>
+                <td>{{recipe.cookTime}}&nbsp;min.</td>
                 <td>
                     <ng-container *ngIf="recipe.updatedOn; else createdOn">
                         {{recipe.updatedOn | date: 'dd MMM y, H:mm'}}

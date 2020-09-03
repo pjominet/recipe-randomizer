@@ -64,7 +64,7 @@ export class RecipeService {
         return this.http.get<Recipe>(`${environment.apiUrl}/recipes/restore/${id}`).pipe(map(response => response));
     }
 
-    public likeRecipe(recipeId: number, userId: number, like: boolean): Observable<any> {
+    public toggleRecipeLike(recipeId: number, userId: number, like: boolean): Observable<any> {
         return this.http.get<any>(`${environment.apiUrl}/recipes/${recipeId}/liked-by/${userId}?like=${like}`, {observe: 'response'});
     }
 

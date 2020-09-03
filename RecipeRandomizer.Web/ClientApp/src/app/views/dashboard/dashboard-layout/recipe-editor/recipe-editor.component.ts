@@ -203,7 +203,7 @@ export class RecipeEditorComponent implements OnInit {
     private onEditSuccess(response: any, successMessage: string, innerErrorMessage): void {
         if (this.fileUploadRequest.file) {
             // complete the file upload request
-            this.fileUploadRequest.id = response.body.id;
+            this.fileUploadRequest.id = response.body;
             this.uploadService.uploadFile(this.fileUploadRequest).subscribe(
                 event => {
                     if (event.type === HttpEventType.UploadProgress) {

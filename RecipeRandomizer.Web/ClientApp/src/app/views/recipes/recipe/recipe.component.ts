@@ -18,7 +18,7 @@ export class RecipeComponent implements OnInit {
     @Input() public id: number;
     public recipe: Recipe;
     public cost: typeof Cost = Cost;
-    public difficulty: typeof Difficulty = Difficulty;
+    public difficulties: typeof Difficulty = Difficulty;
 
     public user: User;
     public isLiked: boolean = false;
@@ -45,7 +45,7 @@ export class RecipeComponent implements OnInit {
 
     public like(): void {
         this.isLiked = !this.isLiked;
-        this.recipeService.likeRecipe(this.recipe.id, this.user.id, this.isLiked).subscribe(
+        this.recipeService.toggleRecipeLike(this.recipe.id, this.user.id, this.isLiked).subscribe(
             () => {
                 if (this.isLiked)
                     this.recipe.likes.push(this.user.id);

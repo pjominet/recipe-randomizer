@@ -5,6 +5,7 @@ import {Tag} from '@app/models/nomenclature/tag';
 import {RecipeService} from '@app/services/recipe.service';
 import {TagService} from '@app/services/tag.service';
 import {ActivatedRoute, Router} from '@angular/router';
+import {Difficulty} from '@app/models/nomenclature/difficulty';
 
 @Component({
     selector: 'app-recipe-list',
@@ -14,6 +15,7 @@ import {ActivatedRoute, Router} from '@angular/router';
 export class RecipeListComponent implements OnInit {
 
     public recipes: Recipe[] = [];
+    public difficulties: typeof Difficulty = Difficulty;
 
     public tagCategories: TagCategory[] = [];
     public selectedTags: Tag[] = [];

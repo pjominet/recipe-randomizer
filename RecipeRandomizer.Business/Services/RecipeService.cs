@@ -82,6 +82,7 @@ namespace RecipeRandomizer.Business.Services
         {
             var newRecipe = _mapper.Map<Entities.Recipe>(recipe);
             newRecipe.CreatedOn = DateTime.UtcNow;
+            newRecipe.UpdatedOn = DateTime.UtcNow;
             foreach (var tag in recipe.Tags)
                 _recipeRepository.Insert(_mapper.Map(new Entities.RecipeTagAssociation(), tag));
 
@@ -109,7 +110,14 @@ namespace RecipeRandomizer.Business.Services
 
         public bool UpdateRecipe(Recipe recipe)
         {
-            var existingRecipe = _recipeRepository.GetFirstOrDefault<Entities.Recipe>(r => r.Id == recipe.Id);
+            string[] includes =
+            {
+                $"{nameof(Entities.Recipe.Cost)}",
+                $"{nameof(Entities.Recipe.Difficulty)}",
+                $"{nameof(Entities.Recipe.Ingredients)}.{nameof(Entities.Ingredient.QuantityUnit)}",
+                $"{nameof(Entities.Recipe.RecipeTagAssociations)}.{nameof(Entities.RecipeTagAssociation.Tag)}"
+            };
+            var existingRecipe = _recipeRepository.GetFirstOrDefault<Entities.Recipe>(r => r.Id == recipe.Id, includes);
             _mapper.Map(recipe, existingRecipe);
             existingRecipe.UpdatedOn = DateTime.UtcNow;
             _recipeRepository.Update(existingRecipe);
