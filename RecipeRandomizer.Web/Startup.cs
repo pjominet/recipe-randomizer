@@ -4,6 +4,7 @@ using System.Reflection;
 using AutoMapper;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -100,7 +101,10 @@ namespace RecipeRandomizer.Web
                 builder.UseEndpoints(endpoints => { endpoints.MapControllers(); });
             });
 
-            // use SPA files as frontend
+            // url for serving static files
+            app.Map("/static", builder => { builder.UseFileServer(); });
+
+            // serve SPA files on root route
             if (!env.IsDevelopment())
                 app.UseSpaStaticFiles();
 
