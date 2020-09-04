@@ -5,7 +5,6 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using RecipeRandomizer.Business.Models.Identity;
-using RecipeRandomizer.Business.Models.Nomenclature;
 
 namespace RecipeRandomizer.Web.Utils
 {
@@ -21,7 +20,7 @@ namespace RecipeRandomizer.Web.Utils
 
         public void OnAuthorization(AuthorizationFilterContext context)
         {
-            var user = (User) context.HttpContext.Items["User"];
+            var user = (User) context.HttpContext.Items[$"{nameof(User)}"];
             if (user == null || (_roles.Any() && !_roles.Contains(user.Role)))
             {
                 // not logged in or role not authorized

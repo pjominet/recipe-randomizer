@@ -12,7 +12,7 @@ namespace RecipeRandomizer.Web.Controllers
     public class UserController : ApiController
     {
         // returns the current authenticated user (null if not logged in)
-        private new User User => (User) HttpContext.Items["User"];
+        private new User User => (User) HttpContext.Items[$"{nameof(RecipeRandomizer.Business.Models.Identity.User)}"];
         private readonly IUserService _userService;
 
         public UserController(IUserService userService)

@@ -12,7 +12,7 @@ namespace RecipeRandomizer.Web.Controllers
     public class AuthController : ApiController
     {
         // returns the current authenticated user (null if not logged in)
-        private new User User => (User) HttpContext.Items["User"];
+        private new User User => (User) HttpContext.Items[$"{nameof(RecipeRandomizer.Business.Models.Identity.User)}"];
         private readonly IAuthService _authService;
 
         public AuthController(IAuthService authService)
@@ -36,9 +36,11 @@ namespace RecipeRandomizer.Web.Controllers
         public ActionResult<User> RefreshToken()
         {
             var refreshToken = Request.Cookies["refreshToken"];
-            if (refreshToken == null)
-                return NoContent();
             var user = _authService.RefreshToken(refreshToken, IpAddress());
+
+            if (user == null)
+                return NoContent();
+
             SetTokenCookie(user.RefreshToken);
             return Ok(user);
         }
@@ -55,7 +57,7 @@ namespace RecipeRandomizer.Web.Controllers
             var token = request.Token ?? Request.Cookies["refreshToken"];
 
             if (string.IsNullOrEmpty(token))
-                return BadRequest(new {message = "Token is required"});
+                return BadRequest(new {message = "A refresh token is required"});
 
             // users can revoke their own tokens and admins can revoke any tokens
             if (!OwnsToken(User?.Id, token) && User?.Role != Role.Admin)

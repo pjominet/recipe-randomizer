@@ -53,8 +53,10 @@ export class AuthService {
     public refreshToken(): Observable<User> {
         return this.http.post<User>(`${apiUrl}/refresh-token`, {}, {withCredentials: true})
             .pipe(map((user: User) => {
-                this.userSubject.next(user);
-                this.startRefreshTokenTimer();
+                if (user) {
+                    this.userSubject.next(user);
+                    this.startRefreshTokenTimer();
+                }
                 return user;
             }));
     }

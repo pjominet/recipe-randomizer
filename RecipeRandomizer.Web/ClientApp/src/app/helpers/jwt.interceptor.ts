@@ -7,12 +7,12 @@ import {environment} from '@env/environment';
 
 @Injectable()
 export class JwtInterceptor implements HttpInterceptor {
-    constructor(private authenticationService: AuthService) {
+    constructor(private authService: AuthService) {
     }
 
     intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
         // add auth header with jwt if user is logged in and request is to the api url
-        const user = this.authenticationService.user;
+        const user = this.authService.user;
         const isLoggedIn = user && user.jwtToken;
         const isApiUrl = request.url.startsWith(environment.apiUrl);
         if (isLoggedIn && isApiUrl) {

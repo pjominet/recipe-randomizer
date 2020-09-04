@@ -19,15 +19,16 @@ namespace RecipeRandomizer.Business.Services
             _emailSettings = emailSettings.Value;
         }
 
-        public async Task SendEmailAsync(string to, string subject, string html, string from = null)
+        public async Task SendEmailAsync(string to, string subject, string html, string sender = null)
         {
             try
             {
                 // create message
                 var email = new MimeMessage
                 {
-                    Sender = MailboxAddress.Parse(from ?? _emailSettings.From)
+                    Sender = MailboxAddress.Parse(sender ?? _emailSettings.Sender)
                 };
+                email.From.Add(new MailboxAddress(_emailSettings.SenderName, sender ?? _emailSettings.Sender));
                 email.To.Add(MailboxAddress.Parse(to));
                 email.Subject = subject;
                 email.Body = new TextPart(TextFormat.Html)
