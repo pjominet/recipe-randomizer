@@ -4,6 +4,7 @@ import {CommonModule} from '@angular/common';
 import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
 import {NgSelectModule} from '@ng-select/ng-select';
 import {MarkdownModule} from 'ngx-markdown';
+import {ScrollingModule} from '@angular/cdk/scrolling';
 
 import {DashboardRoutingModule} from './dashboard.routing';
 
@@ -26,6 +27,7 @@ import {ChangePasswordComponent} from './change-password/change-password.compone
 import {ChangePasswordModal} from './change-password/change-password-modal';
 import {UserListComponent} from './admin/user-list/user-list.component';
 import {OrphanRecipesComponent} from './admin/orphan-recipes/orphan-recipes.component';
+import {AttributionComponent} from './admin/attribution/attribution.component';
 
 @NgModule({
     imports: [
@@ -36,6 +38,7 @@ import {OrphanRecipesComponent} from './admin/orphan-recipes/orphan-recipes.comp
         NgbModule,
         NgSelectModule,
         MarkdownModule.forChild(),
+        ScrollingModule
     ],
     declarations: [
         DashboardLayoutComponent,
@@ -50,11 +53,13 @@ import {OrphanRecipesComponent} from './admin/orphan-recipes/orphan-recipes.comp
         FileUploadComponent,
         CheatSheetComponent,
         UserListComponent,
-        OrphanRecipesComponent
+        OrphanRecipesComponent,
+        AttributionComponent
     ],
     entryComponents: [
         ChangePasswordComponent,
-        CheatSheetComponent
+        CheatSheetComponent,
+        AttributionComponent
     ],
     providers: [
         UnsavedChangesGuard

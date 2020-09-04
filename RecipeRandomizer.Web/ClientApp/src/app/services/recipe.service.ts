@@ -4,6 +4,7 @@ import {Observable} from 'rxjs';
 import {environment} from '@env/environment';
 import {map} from 'rxjs/operators';
 import {Recipe} from '@app/models/recipe';
+import {AttributionRequest} from '@app/models/attributionRequest';
 
 const recipeApi = `${environment.apiUrl}/recipes`;
 
@@ -72,6 +73,10 @@ export class RecipeService {
 
     public getOrphanRecipes(): Observable<Recipe[]> {
         return this.http.get<Recipe[]>(`${recipeApi}/orphans`).pipe(map(response => response));
+    }
+
+    public attributeRecipe(attributionRequest: AttributionRequest): Observable<any> {
+        return this.http.post<any>(`${recipeApi}/orphans`, attributionRequest, {observe: 'response'});
     }
 
     private generateTagQueryParams(tagIds: number []): string {

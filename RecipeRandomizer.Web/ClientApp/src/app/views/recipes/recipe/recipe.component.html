@@ -6,7 +6,7 @@
             <button id="dismissBtn" class="btn btn-secondary-translucent btn-circle" (click)="activeModal.dismiss()">
                 <i class="fas fa-times"></i>
             </button>
-            <button id="likeBtn" class="btn btn-light btn-light-translucent btn-circle" (click)="like()">
+            <button id="likeBtn" class="btn btn-light btn-light-translucent btn-circle" (click)="like()" *ngIf="recipe.createdBy">
                 <ng-container *ngIf="!isLiked; else liked">
                     <i class="far fa-heart text-info"></i>
                 </ng-container>
@@ -18,8 +18,11 @@
         <div class="card-body">
             <div class="row">
                 <div class="col-12 d-flex justify-content-between">
-                    <p class="credits">
+                    <p class="credits" *ngIf="recipe.createdBy">
                         Created by:&nbsp;{{recipe.createdBy}}<i class="fas fa-heart text-info ml-3 mr-1"></i>{{recipe.likes.length}}
+                    </p>
+                    <p class="credits" *ngIf="!recipe.createdBy">
+                        I'm currently an orphan :(
                     </p>
                     <p class="credits">
                         <ng-container *ngIf="recipe.updatedOn; else createdOn">
@@ -31,8 +34,12 @@
                     </p>
                 </div>
 
+                <div class="col-12 mb-2">
+                    <span class="badge badge-lg badge-secondary my-1 mr-2 rounded" *ngFor="let tag of recipe.tags">{{tag.label}}</span>
+                </div>
+
                 <div class="col-12 col-md-8">
-                    <p id="recipeDescription" [innerHTML]="recipe.description | markdown"></p>
+                    <div class="text-justify" [innerHTML]="recipe.description | markdown"></div>
                 </div>
 
                 <div class="col-12 col-md-4">
@@ -74,7 +81,7 @@
 
                 <div class="col-12 col-md-8">
                     <h2 class="h5">How to prepare</h2>
-                    <p class="text-muted" [innerHTML]="recipe.preparation | markdown"></p>
+                    <div class="text-justify" [innerHTML]="recipe.preparation | markdown"></div>
                 </div>
             </div>
 

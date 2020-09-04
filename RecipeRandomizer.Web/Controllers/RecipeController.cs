@@ -5,6 +5,8 @@ using RecipeRandomizer.Business.Interfaces;
 using RecipeRandomizer.Business.Models;
 using System.Linq;
 using System.Threading.Tasks;
+using RecipeRandomizer.Business.Models.Identity;
+using RecipeRandomizer.Web.Utils;
 
 namespace RecipeRandomizer.Web.Controllers
 {
@@ -70,6 +72,26 @@ namespace RecipeRandomizer.Web.Controllers
                 : (IActionResult) NotFound();
         }
 
+        [Authorize(Role.Admin)]
+        [HttpGet("orphans")]
+        [ProducesResponseType(typeof(List<Recipe>), StatusCodes.Status200OK)]
+        public IActionResult GetOrphanRecipes()
+        {
+            return Ok(_recipeService.GetOrphanRecipes());
+        }
+
+        [Authorize(Role.Admin)]
+        [HttpPost("orphans")]
+        [Consumes("application/json")]
+        [ProducesResponseType(typeof(List<Recipe>), StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public IActionResult AttributeRecipe([FromBody] AttributionRequest request)
+        {
+            return _recipeService.AttributeRecipe(request)
+                ? NoContent()
+                : StatusCode(StatusCodes.Status500InternalServerError);
+        }
+
         [HttpPost]
         [Consumes("application/json")]
         [ProducesResponseType(StatusCodes.Status201Created)]
@@ -128,9 +150,7 @@ namespace RecipeRandomizer.Web.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public IActionResult ToggleRecipeLike([FromRoute(Name = "recipeId")] int recipeId, [FromRoute(Name = "userId")] int userId, [FromQuery(Name = "like")] bool like = false)
         {
-            var result = _recipeService.ToggleRecipeLike(recipeId, userId, like);
-
-            return result
+            return _recipeService.ToggleRecipeLike(recipeId, userId, like)
                 ? NoContent()
                 : StatusCode(StatusCodes.Status500InternalServerError);
         }
@@ -144,13 +164,6 @@ namespace RecipeRandomizer.Web.Controllers
             return _recipeService.UpdateRecipe(recipe)
                 ? Ok(recipe.Id)
                 : (IActionResult) StatusCode(StatusCodes.Status500InternalServerError);
-        }
-
-        [HttpGet("orphans")]
-        [ProducesResponseType(typeof(List<Recipe>), StatusCodes.Status200OK)]
-        public IActionResult GetOrphanRecipes()
-        {
-            return Ok(_recipeService.GetOrphanRecipes());
         }
     }
 }

@@ -9,7 +9,7 @@ import {LockRequest} from '@app/models/identity/LockRequest';
 @Component({
     selector: 'app-user-list',
     templateUrl: './user-list.component.html',
-    styleUrls: ['./user-list.component.scss']
+    styleUrls: []
 })
 export class UserListComponent implements OnInit {
 

@@ -39,7 +39,12 @@ namespace RecipeRandomizer.Business.Services
 
         public IEnumerable<Recipe> GetOrphanRecipes()
         {
-            return _mapper.Map<IEnumerable<Recipe>>(_recipeRepository.GetAll<Entities.Recipe>(r => !r.UserId.HasValue));
+            string[] includes =
+            {
+                $"{nameof(Entities.Recipe.RecipeTagAssociations)}.{nameof(Entities.RecipeTagAssociation.Tag)}",
+                $"{nameof(Entities.Recipe.RecipeLikes)}"
+            };
+            return _mapper.Map<IEnumerable<Recipe>>(_recipeRepository.GetAll<Entities.Recipe>(r => !r.UserId.HasValue, includes));
         }
 
         public Recipe GetRecipe(int id)
@@ -166,6 +171,19 @@ namespace RecipeRandomizer.Business.Services
                 _recipeRepository.GetFirstOrDefault<Entities.RecipeLike>(
                     rl => rl.UserId == userId && rl.RecipeId == recipeId));
 
+            return _recipeRepository.SaveChanges();
+        }
+
+        public bool AttributeRecipe(AttributionRequest request)
+        {
+            var recipe = _recipeRepository.GetFirstOrDefault<Entities.Recipe>(r => r.Id == request.RecipeId);
+
+            if(recipe == null)
+                throw new KeyNotFoundException("Recipe does not exist");
+
+            recipe.UserId = request.UserId;
+            recipe.UpdatedOn = DateTime.UtcNow;
+            _recipeRepository.Update(recipe);
             return _recipeRepository.SaveChanges();
         }
     }
