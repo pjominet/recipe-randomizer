@@ -29,12 +29,12 @@ namespace RecipeRandomizer.Business.Services
 
         public IEnumerable<User> GetUsers()
         {
-            return _mapper.Map<IEnumerable<User>>(_userRepository.GetAll<Entities.User>());
+            return _mapper.Map<IEnumerable<User>>(_userRepository.GetAll<Entities.User>(null, $"{nameof(Entities.User.Role)}"));
         }
 
         public User GetUser(int id)
         {
-            return _mapper.Map<User>(_userRepository.GetFirstOrDefault<Entities.User>(u => u.Id == id));
+            return _mapper.Map<User>(_userRepository.GetFirstOrDefault<Entities.User>(u => u.Id == id, $"{nameof(Entities.User.Role)}"));
         }
 
         public User Update(int id, User userUpdates)
