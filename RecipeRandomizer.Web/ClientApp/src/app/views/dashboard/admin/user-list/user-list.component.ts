@@ -4,7 +4,7 @@ import {first} from 'rxjs/operators';
 import {IUser, Role} from '@app/models/identity/user';
 import {AlertService} from '@app/components/alert/alert.service';
 import {AuthService} from '@app/services/auth.service';
-import {UpdateUserRequest} from '@app/models/identity/updateUserRequest';
+import {LockRequest} from '@app/models/identity/LockRequest';
 
 @Component({
     selector: 'app-user-list',
@@ -52,9 +52,7 @@ export class UserListComponent implements OnInit {
         this.alertService.clear();
         this.isToggling = true;
 
-        this.userService.toggleUserLock(user.id, new UpdateUserRequest({
-            isLockedOut: !user.isLocked,
-            lockedOutBy: !user.isLocked ? this.currentUser : null})).subscribe(
+        this.userService.toggleUserLock(user.id, new LockRequest(!user.lockedOn, !user.lockedOn ? this.currentUser.id : null)).subscribe(
             () => {
                 let user = this.users.find(u => u.id === user.id);
                 user.isLocked = true;

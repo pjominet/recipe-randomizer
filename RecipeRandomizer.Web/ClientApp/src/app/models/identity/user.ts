@@ -10,9 +10,8 @@ export interface IUser {
     updatedOn: Date;
     isVerified: boolean;
     jwtToken?: string;
-    isLocked: boolean;
-    lockedBy?: User;
     lockedOn: Date;
+    lockedBy?: User;
 
     recipes: Recipe[];
     likedRecipes: Recipe[];
@@ -28,9 +27,8 @@ export class User implements IUser {
     updatedOn: Date;
     isVerified: boolean;
     jwtToken?: string;
-    isLocked: boolean;
-    lockedBy?: User;
     lockedOn: Date;
+    lockedBy?: User;
 
     recipes: Recipe[];
     likedRecipes: Recipe[];

@@ -7,7 +7,7 @@ namespace RecipeRandomizer.Business.Models.Identity
     public class User
     {
         public int Id { get; set; }
-        public string UserName { get; set; }
+        public string Username { get; set; }
         public string Email { get; set; }
         public string ProfileImageUri { get; set; }
         public Role Role { get; set; }
@@ -15,11 +15,10 @@ namespace RecipeRandomizer.Business.Models.Identity
         public DateTime? UpdatedOn { get; set; }
         public bool IsVerified { get; set; }
         public string JwtToken { get; set; }
-
-        // refresh token is returned in http only cookie
-        public string RefreshToken { get; set; }
+        public DateTime? LockedOn { get; set; }
 
         public IList<Recipe> Recipes { get; set; }
         public IList<Recipe> LikedRecipes { get; set; }
+        public User LockedBy { get; set; }
     }
 }

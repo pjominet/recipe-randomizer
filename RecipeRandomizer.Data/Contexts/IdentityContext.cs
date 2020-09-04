@@ -17,7 +17,7 @@ namespace RecipeRandomizer.Data.Contexts
 
                 entity.Property(e => e.Email).IsRequired();
 
-                entity.Property(e => e.UserName).IsRequired();
+                entity.Property(e => e.Username).IsRequired();
 
                 entity.Property(e => e.PasswordHash).IsRequired();
 
@@ -26,6 +26,12 @@ namespace RecipeRandomizer.Data.Contexts
                     .HasForeignKey(d => d.RoleId)
                     .OnDelete(DeleteBehavior.Restrict)
                     .HasConstraintName("FK_User_Role");
+
+                entity.HasOne(d => d.LockedBy)
+                    .WithOne(p => p.Locker)
+                    .HasForeignKey<User>(d => d.LockedById)
+                    .OnDelete(DeleteBehavior.NoAction)
+                    .HasConstraintName("FK_User_LockedBy");
             });
 
             modelBuilder.Entity<RefreshToken>(entity =>

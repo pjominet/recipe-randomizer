@@ -5,7 +5,7 @@ namespace RecipeRandomizer.Business.Models.Identity
     public class RegisterRequest
     {
         [Required]
-        public string UserName { get; set; }
+        public string Username { get; set; }
 
         [Required]
         [EmailAddress]

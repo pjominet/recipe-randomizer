@@ -37,6 +37,7 @@ namespace RecipeRandomizer.Web.Utils
                 {
                     BadRequestException e => (int) HttpStatusCode.BadRequest,
                     KeyNotFoundException e => (int) HttpStatusCode.NotFound,
+                    ForbiddenException e => (int) HttpStatusCode.Forbidden,
                     _ => (int) HttpStatusCode.InternalServerError
                 };
 

@@ -25,8 +25,8 @@ namespace RecipeRandomizer.Web.Controllers
         [ProducesResponseType(typeof(User), StatusCodes.Status200OK)]
         public ActionResult<User> Authenticate([FromBody] AuthRequest request)
         {
-            var user = _authService.Authenticate(request, IpAddress());
-            SetTokenCookie(user.RefreshToken);
+            var (user, refreshToken) = _authService.Authenticate(request, IpAddress());
+            SetTokenCookie(refreshToken);
             return Ok(user);
         }
 
@@ -36,12 +36,12 @@ namespace RecipeRandomizer.Web.Controllers
         public ActionResult<User> RefreshToken()
         {
             var refreshToken = Request.Cookies["refreshToken"];
-            var user = _authService.RefreshToken(refreshToken, IpAddress());
+            var (user, newRefreshToken) = _authService.RefreshToken(refreshToken, IpAddress());
 
             if (user == null)
                 return NoContent();
 
-            SetTokenCookie(user.RefreshToken);
+            SetTokenCookie(newRefreshToken);
             return Ok(user);
         }
 

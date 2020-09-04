@@ -20,16 +20,16 @@
         <td>{{user.email}}</td>
         <td>{{roles[user.role] | uppercase}}</td>
         <td>
-            <i class="fas fa-lock text-danger" *ngIf="user.isLocked"></i>
-            <i class="fas fa-unlock text-success" *ngIf="!user.isLocked"></i>
+            <i class="fas fa-lock text-danger" *ngIf="user.lockedOn"></i>
+            <i class="fas fa-unlock text-success" *ngIf="!user.lockedOn"></i>
         </td>
         <td>{{user.lockedBy?.username || '---'}}</td>
         <td>{{(user.lockedOn | date: 'dd MMM y, H:mm') || '---'}}</td>
         <td>
             <button (click)="toggleUserLock(user)" class="btn btn-sm btn-warning mr-2" [disabled]="isToggling || currentUser.id === user.id" ngbTooltip="Lock out user">
                 <span *ngIf="isToggling" class="spinner-border spinner-border-sm"></span>
-                <i *ngIf="!isToggling && !user.isLocked" class="fas fa-lock"></i>
-                <i *ngIf="!isToggling && user.isLocked" class="fas fa-unlock"></i>
+                <i *ngIf="!isToggling && !user.lockedOn" class="fas fa-lock"></i>
+                <i *ngIf="!isToggling && user.lockedOn" class="fas fa-unlock"></i>
             </button>
             <button (click)="deleteUser(user.id)" class="btn btn-sm btn-danger mr-2" [disabled]="isDeleting || currentUser.id === user.id" ngbTooltip="Delete user">
                 <span *ngIf="isDeleting" class="spinner-border spinner-border-sm"></span>

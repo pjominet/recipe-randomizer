@@ -5,8 +5,8 @@ namespace RecipeRandomizer.Business.Interfaces
 {
     public interface IAuthService
     {
-        public User Authenticate(AuthRequest request, string ipAddress);
-        public User RefreshToken(string token, string ipAddress);
+        public (User, string) Authenticate(AuthRequest request, string ipAddress);
+        public (User, string) RefreshToken(string token, string ipAddress);
         public void RevokeToken(string token, string ipAddress);
         public void Register(RegisterRequest request, string origin);
         public void VerifyEmail(ValidationRequest request);

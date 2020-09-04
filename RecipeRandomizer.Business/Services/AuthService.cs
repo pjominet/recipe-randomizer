@@ -35,7 +35,7 @@ namespace RecipeRandomizer.Business.Services
             _emailService = emailService;
         }
 
-        public User Authenticate(AuthRequest request, string ipAddress)
+        public (User, string) Authenticate(AuthRequest request, string ipAddress)
         {
             string[] includes =
             {
@@ -47,8 +47,11 @@ namespace RecipeRandomizer.Business.Services
             if (user == null || !BC.Verify(request.Password, user.PasswordHash))
                 throw new BadRequestException("Email or password is incorrect");
 
-            if(!user.IsVerified)
+            if (!user.IsVerified)
                 throw new BadRequestException("Email has not been verified");
+
+            if (user.IsLocked)
+                throw new ForbiddenException("You have been locked out of your account!");
 
             // authentication successful so generate jwt and refresh tokens
             var jwtToken = GenerateJwtToken(user);
@@ -60,20 +63,19 @@ namespace RecipeRandomizer.Business.Services
             // save refresh token
             user.RefreshTokens.Add(refreshToken);
             _userRepository.Update(user);
-            if(!_userRepository.SaveChanges())
+            if (!_userRepository.SaveChanges())
                 throw new ApplicationException("Database error: Changes could not be saved correctly");
 
             var authenticatedUser = _mapper.Map<User>(user);
             authenticatedUser.JwtToken = jwtToken;
-            authenticatedUser.RefreshToken = refreshToken.Token;
 
-            return authenticatedUser;
+            return (authenticatedUser, refreshToken.Token);
         }
 
-        public User RefreshToken(string token, string ipAddress)
+        public (User, string) RefreshToken(string token, string ipAddress)
         {
             if (string.IsNullOrWhiteSpace(token))
-                return null;
+                return (null, null);
 
             var (refreshToken, user) = GetRefreshToken(token);
 
@@ -84,15 +86,14 @@ namespace RecipeRandomizer.Business.Services
             refreshToken.ReplacedByToken = newRefreshToken.Token;
             user.RefreshTokens.Add(newRefreshToken);
             _userRepository.Update(user);
-            if(!_userRepository.SaveChanges())
+            if (!_userRepository.SaveChanges())
                 throw new ApplicationException("Database error: Changes could not be saved correctly");
 
             var jwtToken = GenerateJwtToken(user);
             var authenticatedUser = _mapper.Map<User>(user);
             authenticatedUser.JwtToken = jwtToken;
-            authenticatedUser.RefreshToken = newRefreshToken.Token;
 
-            return authenticatedUser;
+            return (authenticatedUser, newRefreshToken.Token);
         }
 
         public void RevokeToken(string token, string ipAddress)
@@ -103,7 +104,7 @@ namespace RecipeRandomizer.Business.Services
             refreshToken.RevokedOn = DateTime.UtcNow;
             refreshToken.RevokedByIp = ipAddress;
             _userRepository.Update(user);
-            if(!_userRepository.SaveChanges())
+            if (!_userRepository.SaveChanges())
                 throw new ApplicationException("Database error: Changes could not be saved correctly");
         }
 
@@ -130,7 +131,7 @@ namespace RecipeRandomizer.Business.Services
             user.PasswordHash = BC.HashPassword(request.Password);
 
             _userRepository.Insert(user);
-            if(!_userRepository.SaveChanges())
+            if (!_userRepository.SaveChanges())
                 throw new ApplicationException("Database error: Changes could not be saved correctly");
 
             SendVerificationEmail(user, origin);
@@ -146,7 +147,7 @@ namespace RecipeRandomizer.Business.Services
             user.VerificationToken = null;
 
             _userRepository.Update(user);
-            if(!_userRepository.SaveChanges())
+            if (!_userRepository.SaveChanges())
                 throw new ApplicationException("Database error: Changes could not be saved correctly");
         }
 
@@ -154,14 +155,14 @@ namespace RecipeRandomizer.Business.Services
         {
             var user = _userRepository.GetFirstOrDefault<Entities.User>(u => u.Email == request.Email);
 
-            if(user == null)
+            if (user == null)
                 throw new BadRequestException("No user matches the given email address");
 
             // generate new verification token
             user.VerificationToken = GenerateRandomToken();
 
             _userRepository.Update(user);
-            if(!_userRepository.SaveChanges())
+            if (!_userRepository.SaveChanges())
                 throw new ApplicationException("Database error: Changes could not be saved correctly");
 
             SendVerificationEmail(user, origin);
@@ -180,7 +181,7 @@ namespace RecipeRandomizer.Business.Services
             user.ResetTokenExpiresOn = DateTime.UtcNow.AddHours(24);
 
             _userRepository.Update(user);
-            if(!_userRepository.SaveChanges())
+            if (!_userRepository.SaveChanges())
                 throw new ApplicationException("Database error: Changes could not be saved correctly");
 
             // send email
@@ -213,7 +214,7 @@ namespace RecipeRandomizer.Business.Services
             user.ResetTokenExpiresOn = null;
 
             _userRepository.Update(user);
-            if(!_userRepository.SaveChanges())
+            if (!_userRepository.SaveChanges())
                 throw new ApplicationException("Database error: Changes could not be saved correctly");
         }
 
@@ -224,7 +225,7 @@ namespace RecipeRandomizer.Business.Services
             if (user == null)
                 throw new BadRequestException("User could not be found");
 
-            if(!BC.Verify(request.Password, user.PasswordHash))
+            if (!BC.Verify(request.Password, user.PasswordHash))
                 throw new BadRequestException("Current password is not correct");
 
             // update password
@@ -232,7 +233,7 @@ namespace RecipeRandomizer.Business.Services
             user.PasswordResetOn = DateTime.UtcNow;
 
             _userRepository.Update(user);
-            if(!_userRepository.SaveChanges())
+            if (!_userRepository.SaveChanges())
                 throw new ApplicationException("Database error: Changes could not be saved correctly");
         }
 

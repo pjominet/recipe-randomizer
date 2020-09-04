@@ -1,12 +1,12 @@
 ﻿export class RegisterRequest {
-    userName: string;
+    username: string;
     email: string;
     password: string;
     confirmPassword: string;
     hasAcceptedTerms: boolean;
 
-    constructor(userName: string, email: string, password: string, confirmPassword: string, hasAcceptedTerms: boolean) {
-        this.userName = userName;
+    constructor(username: string, email: string, password: string, confirmPassword: string, hasAcceptedTerms: boolean) {
+        this.username = username;
         this.email = email;
         this.password = password;
         this.confirmPassword = confirmPassword;

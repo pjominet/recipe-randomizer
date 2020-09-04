@@ -56,7 +56,7 @@ import {RecipeListComponent} from './views/recipes/recipe-list/recipe-list.compo
         RecipeComponent
     ],
     providers: [
-        {provide: APP_INITIALIZER, useFactory: appInitializer, multi: true, deps: [AuthService]}, // TODO: need some investigation
+        {provide: APP_INITIALIZER, useFactory: appInitializer, multi: true, deps: [AuthService]},
         {provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true},
         {provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true},
     ],

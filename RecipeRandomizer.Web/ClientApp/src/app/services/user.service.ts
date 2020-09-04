@@ -5,8 +5,9 @@ import {HttpClient} from '@angular/common/http';
 import {environment} from '@env/environment';
 import {finalize, map} from 'rxjs/operators';
 import {User} from '@app/models/identity/user';
-import {UpdateUserRequest} from '@app/models/identity/updateUserRequest';
+import {UpdateRequest} from '../models/identity/updateRequest';
 import {AuthService} from './auth.service';
+import {LockRequest} from '../models/identity/LockRequest';
 
 const usersApi = `${environment.apiUrl}/users`;
 
@@ -28,13 +29,13 @@ export class UserService {
         return this.http.get<User>(`${usersApi}/${id}`).pipe(map(response => response));
     }
 
-    public updateUser(id: number, updateUserRequest: UpdateUserRequest): Observable<User> {
-        return this.http.put<User>(`${usersApi}/${id}`, updateUserRequest)
+    public updateUser(id: number, updateRequest: UpdateRequest): Observable<User> {
+        return this.http.put<User>(`${usersApi}/${id}`, updateRequest)
             .pipe(map((updatedUser: User) => {
                 // update current user if the logged in user updated their own record
                 if (id == this.authService.user.id) {
                     // publish updated user to subscribers
-                    this.authService.user = {...this.authService.user, ...updateUserRequest};
+                    this.authService.user = {...this.authService.user, ...updateRequest};
                 }
                 return updatedUser;
             }));
@@ -50,7 +51,7 @@ export class UserService {
             }));
     }
 
-    public toggleUserLock(id: number, updateUserRequest: UpdateUserRequest): Observable<any> {
-        return this.http.post(`${usersApi}/${id}`, updateUserRequest, {observe: 'response'});
+    public toggleUserLock(id: number, lockRequest: LockRequest): Observable<any> {
+        return this.http.post(`${usersApi}/${id}`, lockRequest, {observe: 'response'});
     }
 }
