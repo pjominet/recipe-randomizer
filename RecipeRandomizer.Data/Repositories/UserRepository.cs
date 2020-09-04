@@ -11,5 +11,10 @@ namespace RecipeRandomizer.Data.Repositories
         {
             return Context.Users.Any();
         }
+
+        public int AdminCount()
+        {
+            return Context.Users.Count(r => r.RoleId == 1);
+        }
     }
 }

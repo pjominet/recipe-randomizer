@@ -77,6 +77,9 @@ namespace RecipeRandomizer.Business.Services
 
         public bool Delete(int id)
         {
+            if(_userRepository.AdminCount() <= 1)
+                throw new BadRequestException("The last admin can't delete his account!");
+
             var user = _userRepository.GetFirstOrDefault<Entities.User>(u => u.Id == id);
 
             if (user == null)
