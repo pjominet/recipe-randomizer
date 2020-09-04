@@ -52,32 +52,36 @@ namespace RecipeRandomizer.Business.Services
             _mapper.Map(updateRequest, user);
             user.UpdatedOn = DateTime.UtcNow;
             _userRepository.Update(user);
-            if(!_userRepository.SaveChanges())
+            if (!_userRepository.SaveChanges())
                 throw new ApplicationException("Database error: Changes could not be saved correctly");
 
             return _mapper.Map<User>(user);
         }
 
-        public async Task<bool> UploadUserAvatar(Stream imageStream, string untrustedFileName, int id)
+        public async Task<bool> UploadUserAvatar(Stream sourceStream, string untrustedFileName, int id)
         {
             var user = _userRepository.GetFirstOrDefault<Entities.User>(u => u.Id == id);
-            if(user == null)
-                throw new KeyNotFoundException("Recipe to add image to could not be found");
+            if (user == null)
+                throw new KeyNotFoundException("User to add avatar to could not be found");
 
-            var trustedFilePath = _appSettings.UserAvatarsFolder + Guid.NewGuid() + Path.GetExtension(untrustedFileName);
-            await using var fileStream = new FileStream(Path.Combine(Directory.GetCurrentDirectory(), "@wwwroot", trustedFilePath), FileMode.Create);
+            var physicalDestination = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", _appSettings.UserAvatarsFolder);
+            if (!Directory.Exists(physicalDestination))
+                Directory.CreateDirectory(physicalDestination);
 
-            if (!imageStream.CopyToAsync(fileStream).IsCompletedSuccessfully)
-                throw new ApplicationException("File copy failed");
+            var trustedFile = Guid.NewGuid() + Path.GetExtension(untrustedFileName);
+            await using var destinationStream = File.Create(Path.Combine(physicalDestination, trustedFile));
+            await sourceStream.CopyToAsync(destinationStream);
 
-            user.ProfileImageUri = trustedFilePath;
+            user.ProfileImageUri = Path.Combine(_appSettings.UserAvatarsFolder, trustedFile);
+            user.UpdatedOn = DateTime.UtcNow;
             _userRepository.Update(user);
+
             return _userRepository.SaveChanges();
         }
 
         public bool Delete(int id)
         {
-            if(_userRepository.AdminCount() <= 1)
+            if (_userRepository.AdminCount() <= 1)
                 throw new BadRequestException("The last admin can't delete his account!");
 
             var user = _userRepository.GetFirstOrDefault<Entities.User>(u => u.Id == id);

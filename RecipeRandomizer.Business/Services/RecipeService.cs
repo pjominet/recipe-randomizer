@@ -100,20 +100,23 @@ namespace RecipeRandomizer.Business.Services
             return _recipeRepository.SaveChanges() ? newRecipe.Id : -1;
         }
 
-        public async Task<bool> UploadRecipeImage(Stream imageStream, string untrustedFileName, int id)
+        public async Task<bool> UploadRecipeImage(Stream sourceStream, string untrustedFileName, int id)
         {
             var recipe = _recipeRepository.GetFirstOrDefault<Entities.Recipe>(r => r.Id == id);
-            if(recipe == null)
+            if (recipe == null)
                 throw new KeyNotFoundException("Recipe to add image to could not be found");
 
-            var trustedFilePath = _appSettings.RecipeImagesFolder + Guid.NewGuid() + Path.GetExtension(untrustedFileName);
-            await using var fileStream = new FileStream(Path.Combine(Directory.GetCurrentDirectory(), "@wwwroot", trustedFilePath), FileMode.Create);
+            var physicalDestination = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", _appSettings.RecipeImagesFolder);
+            if (!Directory.Exists(physicalDestination))
+                Directory.CreateDirectory(physicalDestination);
 
-            if (!imageStream.CopyToAsync(fileStream).IsCompletedSuccessfully)
-                throw new ApplicationException("File copy failed");
+            var trustedFile = Guid.NewGuid() + Path.GetExtension(untrustedFileName);
+            await using var destinationStream = File.Create(Path.Combine(physicalDestination, trustedFile));
+            await sourceStream.CopyToAsync(destinationStream);
 
-            recipe.ImageUri = trustedFilePath;
+            recipe.ImageUri = Path.Combine(_appSettings.RecipeImagesFolder, trustedFile);
             recipe.OriginalImageName = untrustedFileName;
+            recipe.UpdatedOn = DateTime.UtcNow;
             _recipeRepository.Update(recipe);
             return _recipeRepository.SaveChanges();
         }
@@ -167,9 +170,10 @@ namespace RecipeRandomizer.Business.Services
                     UserId = userId
                 });
             }
-            else _recipeRepository.Delete(
-                _recipeRepository.GetFirstOrDefault<Entities.RecipeLike>(
-                    rl => rl.UserId == userId && rl.RecipeId == recipeId));
+            else
+                _recipeRepository.Delete(
+                    _recipeRepository.GetFirstOrDefault<Entities.RecipeLike>(
+                        rl => rl.UserId == userId && rl.RecipeId == recipeId));
 
             return _recipeRepository.SaveChanges();
         }
@@ -178,7 +182,7 @@ namespace RecipeRandomizer.Business.Services
         {
             var recipe = _recipeRepository.GetFirstOrDefault<Entities.Recipe>(r => r.Id == request.RecipeId);
 
-            if(recipe == null)
+            if (recipe == null)
                 throw new KeyNotFoundException("Recipe does not exist");
 
             recipe.UserId = request.UserId;
