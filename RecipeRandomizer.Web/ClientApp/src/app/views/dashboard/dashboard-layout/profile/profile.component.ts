@@ -45,7 +45,7 @@ export class ProfileComponent implements OnInit {
             ? `${environment.staticFileUrl}/${this.user.profileImageUri}`
             : 'assets/img/avatar_placeholder.png';
         this._userAvatar = this._originalAvatar;
-        this.fileUploadRequest = new FileUploadRequest(`${environment.apiUrl}/recipes/image-upload`);
+        this.fileUploadRequest = new FileUploadRequest(`${environment.apiUrl}/users/image-upload`);
     }
 
     // convenience getter for easy access to form fields

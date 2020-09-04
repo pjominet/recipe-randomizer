@@ -65,7 +65,7 @@ namespace RecipeRandomizer.Business.Services
                 throw new KeyNotFoundException("Recipe to add image to could not be found");
 
             var trustedFilePath = _appSettings.UserAvatarsFolder + Guid.NewGuid() + Path.GetExtension(untrustedFileName);
-            await using var fileStream = new FileStream(Path.Combine(Directory.GetCurrentDirectory(), trustedFilePath), FileMode.Create);
+            await using var fileStream = new FileStream(Path.Combine(Directory.GetCurrentDirectory(), "@wwwroot", trustedFilePath), FileMode.Create);
 
             if (!imageStream.CopyToAsync(fileStream).IsCompletedSuccessfully)
                 throw new ApplicationException("File copy failed");
