@@ -2,7 +2,7 @@
 
 export interface IUser {
     id: number;
-    userName: string;
+    username: string;
     email: string;
     profileImageUri: string;
     role: Role;
@@ -10,6 +10,9 @@ export interface IUser {
     updatedOn: Date;
     isVerified: boolean;
     jwtToken?: string;
+    isLocked: boolean;
+    lockedBy?: User;
+    lockedOn: Date;
 
     recipes: Recipe[];
     likedRecipes: Recipe[];
@@ -17,7 +20,7 @@ export interface IUser {
 
 export class User implements IUser {
     id: number;
-    userName: string;
+    username: string;
     email: string;
     profileImageUri: string;
     role: Role;
@@ -25,6 +28,9 @@ export class User implements IUser {
     updatedOn: Date;
     isVerified: boolean;
     jwtToken?: string;
+    isLocked: boolean;
+    lockedBy?: User;
+    lockedOn: Date;
 
     recipes: Recipe[];
     likedRecipes: Recipe[];

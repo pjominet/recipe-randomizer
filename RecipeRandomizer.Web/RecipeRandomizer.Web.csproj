@@ -45,6 +45,7 @@
     </ItemGroup>
 
     <ItemGroup>
+      <Folder Include="ClientApp\src\app\views\dashboard\admin" />
       <Folder Include="wwwroot\images\recipes" />
     </ItemGroup>
 

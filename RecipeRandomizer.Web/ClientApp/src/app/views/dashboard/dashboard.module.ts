@@ -24,6 +24,8 @@ import {UserRecipesComponent} from './dashboard-layout/user-recipes/user-recipes
 import {RecipeEditorComponent} from './dashboard-layout/recipe-editor/recipe-editor.component';
 import {ChangePasswordComponent} from './change-password/change-password.component';
 import {ChangePasswordModal} from './change-password/change-password-modal';
+import {UserListComponent} from './admin/user-list/user-list.component';
+import {OrphanRecipesComponent} from './admin/orphan-recipes/orphan-recipes.component';
 
 @NgModule({
     imports: [
@@ -46,7 +48,9 @@ import {ChangePasswordModal} from './change-password/change-password-modal';
         ChangePasswordModal,
         EnumListPipe,
         FileUploadComponent,
-        CheatSheetComponent
+        CheatSheetComponent,
+        UserListComponent,
+        OrphanRecipesComponent
     ],
     entryComponents: [
         ChangePasswordComponent,

@@ -15,6 +15,7 @@ namespace RecipeRandomizer.Data.Repositories
         public IEnumerable<Recipe> GetRecipes(bool deleted = false)
         {
             return Context.Recipes
+                .Where(r => r.UserId.HasValue)
                 .Include(r => r.Cost)
                 .Include(r => r.Difficulty)
                 .Include(r => r.User)
@@ -42,6 +43,7 @@ namespace RecipeRandomizer.Data.Repositories
 
             return recipes
                 .Where(r => r.DeletedOn == null)
+                .Where(r => r.UserId.HasValue)
                 .Skip(rnd.Next(0, total))
                 .Include(r => r.User)
                 .Include(r => r.Ingredients)
@@ -56,6 +58,7 @@ namespace RecipeRandomizer.Data.Repositories
             var recipes = Context.RecipeTagAssociations
                 .Where(rta => tagIds.Contains(rta.TagId))
                 .Select(rta => rta.Recipe)
+                .Where(r => r.UserId.HasValue)
                 .Where(r => r.DeletedOn == null);
 
             if (!recipes.Any())

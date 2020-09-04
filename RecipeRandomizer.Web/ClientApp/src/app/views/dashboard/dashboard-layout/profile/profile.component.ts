@@ -64,7 +64,7 @@ export class ProfileComponent implements OnInit {
             });
 
         this.editForm = this.formBuilder.group({
-            username: [this.user.userName, Validators.required],
+            username: [this.user.username, Validators.required],
             email: [this.user.email, [Validators.required, Validators.email]]
         });
     }
@@ -92,6 +92,6 @@ export class ProfileComponent implements OnInit {
 
     public deleteAccount(): void {
         this.modalService.dismissAll();
-        this.userService.deleteUser(this.user.id);
+        this.userService.deleteUser(this.user.id).subscribe();
     }
 }

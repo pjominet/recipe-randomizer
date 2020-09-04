@@ -47,7 +47,7 @@ namespace RecipeRandomizer.Web.Controllers
         [HttpPut("{id:int}")]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(typeof(User), StatusCodes.Status200OK)]
-        public ActionResult<User> Update([FromRoute] int id, [FromBody] User user)
+        public ActionResult<User> Update([FromRoute] int id, [FromBody] User user) // TODO: Use UpdateUserRequest
         {
             // users can update their own account and admins can update any account
             if (id != User?.Id && User?.Role != Role.Admin)
@@ -92,5 +92,7 @@ namespace RecipeRandomizer.Web.Controllers
                 ? Ok(new {message = "Account deleted successfully"})
                 : (IActionResult) StatusCode(StatusCodes.Status500InternalServerError);
         }
+
+        // TODO add BlockUser method
     }
 }

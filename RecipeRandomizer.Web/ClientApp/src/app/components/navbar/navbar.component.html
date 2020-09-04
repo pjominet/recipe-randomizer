@@ -22,5 +22,18 @@
         <a class="nav-link" routerLink="recipes" routerLinkActive="nav-link-active">
             <i class="fas fa-list mr-3"></i>All Recipes
         </a>
+
+        <ng-container *ngIf="user.role == roles.admin">
+            <span class="nav-spacer"></span>
+            <h4 class="nav-link text-light">Administration</h4>
+
+            <a class="nav-link" routerLink="admin/user-list" routerLinkActive="nav-link-active">
+                <i class="fas fa-users mr-3"></i>User management
+            </a>
+
+            <a class="nav-link" routerLink="admin/orphan-recipes" routerLinkActive="nav-link-active">
+                <i class="fas fa-list mr-3"></i>Orphan Recipes
+            </a>
+        </ng-container>
     </nav>
 </section>

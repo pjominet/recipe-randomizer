@@ -9,7 +9,7 @@
                     <div class="form-group form-row">
                         <label class="col-5 col-form-label font-weight-bold" for="usernameInput">Current Nickname</label>
                         <div class="col-7 d-flex align-items-center">
-                            <span *ngIf="!isEditMode">{{user.userName}}</span>
+                            <span *ngIf="!isEditMode">{{user.username}}</span>
                             <input *ngIf="isEditMode" type="text" class="form-control" [ngClass]="{ 'is-invalid': isSubmitted && f.username.errors }"
                                    id="usernameInput" formControlName="username">
                         </div>
