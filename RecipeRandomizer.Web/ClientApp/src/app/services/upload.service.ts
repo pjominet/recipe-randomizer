@@ -13,9 +13,9 @@ export class UploadService {
 
     public uploadFile(fileUploadRequest: FileUploadRequest): Observable<HttpEvent<any>> {
         const formData: FormData = new FormData();
-        formData.append('id', `${fileUploadRequest.id}`);
+        formData.append('id', `${fileUploadRequest.entityId}`);
         formData.append('file', fileUploadRequest.file);
 
-        return this.http.post<any>(fileUploadRequest.url, formData, {reportProgress: true, responseType: 'json'});
+        return this.http.post<any>(fileUploadRequest.apiUrl, formData, {reportProgress: true, responseType: 'json'});
     }
 }

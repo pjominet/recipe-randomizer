@@ -187,7 +187,7 @@
                                 If no image is chosen a default placeholder image will be loaded :)
                             </p>
                         </ng-template>
-                        <app-file-upload (onFileStaged)="onFileStaged($event)" [onUploadSuccess]="">
+                        <app-file-upload (onFileStaged)="onFileStaged($event)" [allowedMimeTypes]="'image/jpeg, image/png'">
                             <label>Recipe Image<i class="fas fa-exclamation-triangle text-warning mx-2" [ngbTooltip]="imageWarning"></i></label>
                         </app-file-upload>
                     </ng-container>

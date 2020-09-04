@@ -1,13 +1,55 @@
 @import 'mixins';
+@import 'variables';
 
-.card-img-header {
-    height: 200px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+.avatar {
+    width: 150px;
+    height: 150px;
 
-    #avatar {
-        width: 150px;
-        height: auto;
+    &-input {
+        display: none;
     }
+
+    &-wrapper {
+        height: 200px;
+        width: 200px;
+        margin-right: auto;
+        margin-left: auto;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        position: relative;
+        flex-direction: column;
+
+        &:hover .avatar-overlay {
+            opacity: 1;
+        }
+    }
+
+    &-overlay {
+        position: absolute;
+        top: 24px;
+        background: rgba($primary, .5);
+        width: 150px;
+        height: 150px;
+        transition: .5s ease;
+        opacity: 0;
+        color: white;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        @include custom-border-radius(50%);
+
+        &-uploading {
+            opacity: 1;
+        }
+    }
+}
+
+.btn-mini {
+    padding: 0.25rem 0.5rem;
+    font-size: 0.875rem;
+    width: 2rem;
+    height: 2rem;
+    @include custom-border-radius(50%);
 }

@@ -1,4 +1,4 @@
-import {Component, OnInit, TemplateRef} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {FormArray, FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {ActivatedRoute} from '@angular/router';
 import {Recipe} from '@app/models/recipe';
@@ -18,7 +18,8 @@ import {environment} from '@env/environment';
 import {UploadService} from '@app/services/upload.service';
 import {HttpEventType, HttpResponse} from '@angular/common/http';
 import {NgbModal, NgbTooltip} from '@ng-bootstrap/ng-bootstrap';
-import {CheatSheetComponent} from '../../../../components/cheat-sheet/cheat-sheet.component';
+import {CheatSheetComponent} from '@app/components/cheat-sheet/cheat-sheet.component';
+import {FileUploadService} from '../../../../components/file-upload/file-upload.service';
 
 @Component({
     selector: 'app-recipe-editor',
@@ -50,7 +51,8 @@ export class RecipeEditorComponent implements OnInit {
                 private tagService: TagService,
                 private alertService: AlertService,
                 private uploadService: UploadService,
-                private modalService: NgbModal) {
+                private modalService: NgbModal,
+                private fileUploadService: FileUploadService) {
         this.user = this.authService.user;
         this.fileUploadRequest = new FileUploadRequest(`${environment.apiUrl}/recipes/image-upload`);
     }
@@ -171,7 +173,7 @@ export class RecipeEditorComponent implements OnInit {
                 response => {
                     console.log(response);
                     this.onEditSuccess(response, 'Successfully created a new recipe!', 'Recipe could not be created: Image upload failed.');
-                }, error => {
+                }, () => {
                     this.isLoading = false;
                     this.alertService.error('Recipe could not be created.');
                 });
@@ -203,7 +205,7 @@ export class RecipeEditorComponent implements OnInit {
     private onEditSuccess(response: any, successMessage: string, innerErrorMessage): void {
         if (this.fileUploadRequest.file) {
             // complete the file upload request
-            this.fileUploadRequest.id = response.body;
+            this.fileUploadRequest.entityId = response.body;
             this.uploadService.uploadFile(this.fileUploadRequest).subscribe(
                 event => {
                     if (event.type === HttpEventType.UploadProgress) {
@@ -211,10 +213,11 @@ export class RecipeEditorComponent implements OnInit {
                     } else if (event instanceof HttpResponse) {
                         this.isLoading = false;
                         this.fileUploadSuccess = true;
+                        this.fileUploadService.setFileUploadSuccess();
                         this.alertService.success(successMessage);
                     }
                 },
-                error => {
+                () => {
                     this.isLoading = false;
                     this.alertService.error(innerErrorMessage);
                 });

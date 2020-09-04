@@ -1,10 +1,32 @@
 <div class="row">
     <section class="col-12 col-md-5">
         <div class="card shadowed my-3">
-            <div class="card-img-header">
-                <img id="avatar" class="img-circle" src="{{userAvatar}}" alt="user avatar">
+
+            <div class="avatar-wrapper">
+                <img class="avatar img-circle" src="{{userAvatar}}" alt="user avatar" >
+                <input class="avatar-input" type="file" #avatarInput (change)="stageAvatar()" accept="image/jpeg, image/png">
+                <div class="avatar-overlay" (click)="avatarInput.click()">
+                    <i class="fas fa-camera fa-2x"></i>
+                    <small>upload new avatar</small>
+                </div>
+                <div class="avatar-overlay avatar-overlay-uploading" *ngIf="isUploading">
+                    <span class="spinner-border spinner-border-sm mr-1"></span>
+                </div>
             </div>
-            <div class="card-body">
+
+            <div class="d-flex justify-content-center flex-column" *ngIf="hasAvatarPreview">
+                <em class="text-center mb-1">Like your choice?</em>
+                <div class="d-flex justify-content-center">
+                    <button class="btn btn-danger mr-2 btn-mini" (click)="resetAvatar()">
+                        <i class="fas fa-times"></i>
+                    </button>
+                    <button class="btn btn-success ml-2 btn-mini" (click)="uploadAvatar()">
+                        <i class="fas fa-check"></i>
+                    </button>
+                </div>
+            </div>
+
+            <div class="card-body pt-0">
                 <form [formGroup]="editForm" (ngSubmit)="onSubmit()">
                     <div class="form-group form-row">
                         <label class="col-5 col-form-label font-weight-bold" for="usernameInput">Current Nickname</label>

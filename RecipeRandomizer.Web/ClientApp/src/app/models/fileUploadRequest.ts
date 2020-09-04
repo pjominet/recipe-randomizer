@@ -1,11 +1,11 @@
 ﻿export class FileUploadRequest {
-    url: string;
-    id: number;
+    apiUrl: string;
+    entityId: number;
     file: File;
 
-    constructor(url: string, id?: number, file?: File) {
-        this.url = url;
-        this.id = id;
+    constructor(apiUrl: string, entityId?: number, file?: File) {
+        this.apiUrl = apiUrl;
+        this.entityId = entityId;
         this.file = file;
     }
 }
