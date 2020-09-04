@@ -11,7 +11,7 @@ namespace RecipeRandomizer.Web.Controllers
     [Route("users")]
     public class UserController : ApiController
     {
-        // returns the current authenticated user (null if not logged in)
+        // returns the current authenticated user (null if not no valid jwt token was received)
         private new User User => (User) HttpContext.Items[$"{nameof(RecipeRandomizer.Business.Models.Identity.User)}"];
         private readonly IUserService _userService;
 
@@ -25,8 +25,7 @@ namespace RecipeRandomizer.Web.Controllers
         [ProducesResponseType(typeof(List<User>), StatusCodes.Status200OK)]
         public ActionResult<IEnumerable<User>> GetUsers()
         {
-            var users = _userService.GetUsers();
-            return Ok(users);
+            return Ok(_userService.GetUsers());
         }
 
         [Authorize]
@@ -39,22 +38,20 @@ namespace RecipeRandomizer.Web.Controllers
             if (id != User?.Id && User?.Role != Role.Admin)
                 return Unauthorized(new {message = "Unauthorized"});
 
-            var user = _userService.GetUser(id);
-            return Ok(user);
+            return Ok(_userService.GetUser(id));
         }
 
         [Authorize]
         [HttpPut("{id:int}")]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(typeof(User), StatusCodes.Status200OK)]
-        public ActionResult<User> Update([FromRoute] int id, [FromBody] User user) // TODO: Use UpdateUserRequest
+        public ActionResult<User> Update([FromRoute] int id, [FromBody] UpdateRequest updateRequest)
         {
             // users can update their own account and admins can update any account
             if (id != User?.Id && User?.Role != Role.Admin)
                 return Unauthorized(new {message = "Unauthorized"});
 
-            var updatedUser = _userService.Update(id, user);
-            return Ok(updatedUser);
+            return Ok(_userService.Update(id, updateRequest));
         }
 
         [Authorize]
@@ -82,7 +79,7 @@ namespace RecipeRandomizer.Web.Controllers
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(typeof(object), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public IActionResult Delete(int id)
+        public IActionResult Delete([FromRoute] int id)
         {
             // users can delete their own account and admins can delete any account
             if (id != User?.Id && User?.Role != Role.Admin)
@@ -93,6 +90,15 @@ namespace RecipeRandomizer.Web.Controllers
                 : (IActionResult) StatusCode(StatusCodes.Status500InternalServerError);
         }
 
-        // TODO add BlockUser method
+        [Authorize(Role.Admin)]
+        [HttpPost("{id:int}")]
+        [ProducesResponseType(typeof(object), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public IActionResult ToggleUserLock([FromRoute] int id, [FromBody] LockRequest lockRequest)
+        {
+            return _userService.ToggleUserLock(id, lockRequest)
+                ? Ok(new {message = "Successfully changed user lock"})
+                : (IActionResult) StatusCode(StatusCodes.Status500InternalServerError);
+        }
     }
 }

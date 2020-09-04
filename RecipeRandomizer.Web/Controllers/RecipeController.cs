@@ -48,7 +48,7 @@ namespace RecipeRandomizer.Web.Controllers
             return Ok(_recipeService.GetDeletedRecipes());
         }
 
-        [HttpGet("{id}")]
+        [HttpGet("{id:int}")]
         [ProducesResponseType(typeof(Recipe), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public IActionResult GetRecipe([FromRoute] int id)
@@ -101,7 +101,7 @@ namespace RecipeRandomizer.Web.Controllers
             return await result ? NoContent() : StatusCode(StatusCodes.Status500InternalServerError);
         }
 
-        [HttpDelete("{id}")]
+        [HttpDelete("{id:int}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public IActionResult DeleteRecipe([FromRoute] int id, [FromQuery(Name = "hard")] bool hard = false)
@@ -111,7 +111,7 @@ namespace RecipeRandomizer.Web.Controllers
                 : StatusCode(StatusCodes.Status404NotFound);
         }
 
-        [HttpGet("restore/{id}")]
+        [HttpGet("restore/{id:int}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public IActionResult RestoreDeletedRecipe([FromRoute] int id)
@@ -144,6 +144,13 @@ namespace RecipeRandomizer.Web.Controllers
             return _recipeService.UpdateRecipe(recipe)
                 ? Ok(recipe.Id)
                 : (IActionResult) StatusCode(StatusCodes.Status500InternalServerError);
+        }
+
+        [HttpGet("orphans")]
+        [ProducesResponseType(typeof(List<Recipe>), StatusCodes.Status200OK)]
+        public IActionResult GetOrphanRecipes()
+        {
+            return Ok(_recipeService.GetOrphanRecipes());
         }
     }
 }

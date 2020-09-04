@@ -9,8 +9,10 @@ namespace RecipeRandomizer.Business.Interfaces
     {
         public IEnumerable<User> GetUsers();
         public User GetUser(int id);
-        User Update(int id, User userUpdates);
+        User Update(int id, UpdateRequest updateRequest);
         public Task<bool> UploadUserAvatar(Stream imageStream, string untrustedFileName, int id);
-        bool Delete(int id);
+        public bool Delete(int id);
+        public bool ToggleUserLock(int id, LockRequest lockRequest);
+
     }
 }

@@ -5,9 +5,9 @@ import {HttpClient} from '@angular/common/http';
 import {environment} from '@env/environment';
 import {finalize, map} from 'rxjs/operators';
 import {User} from '@app/models/identity/user';
-import {UpdateRequest} from '../models/identity/updateRequest';
+import {UpdateRequest} from '@app/models/identity/updateRequest';
 import {AuthService} from './auth.service';
-import {LockRequest} from '../models/identity/LockRequest';
+import {LockRequest} from '@app/models/identity/LockRequest';
 
 const usersApi = `${environment.apiUrl}/users`;
 

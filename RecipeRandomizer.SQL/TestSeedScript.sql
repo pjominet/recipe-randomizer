@@ -3,7 +3,7 @@
     merge [RecipeRandomizer].[Recipe] as target
     using (values (1, null, N'Test Recipe', N'Do not cook this', null, 7, 2, 2, 15, 30, N'None', getutcdate(), getutcdate(), null)
     ) as source ([Id], [UserId], [Name], [Description], [ImageUri], [NumberOfPeople], [CostId], [DifficultyId],
-                 [PrepTime], [CookTime], [Preparation], [CreatedOn], [LastUpdatedOn], [DeletedOn])
+                 [PrepTime], [CookTime], [Preparation], [CreatedOn], [UpdatedOn], [DeletedOn])
     on (target.[Id] = source.[Id])
     when matched then
         update
@@ -18,13 +18,13 @@
             [CookTime]       = source.[CookTime],
             [Preparation]    = source.[Preparation],
             [CreatedOn]      = source.[CreatedOn],
-            [LastUpdatedOn]  = source.[LastUpdatedOn],
+            [UpdatedOn]      = source.[UpdatedOn],
             [DeletedOn]      = source.[DeletedOn]
     when not matched then
         insert ([Id], [UserId], [Name], [Description], [ImageUri], [NumberOfPeople], [CostId], [DifficultyId],
-                [PrepTime], [CookTime], [Preparation], [CreatedOn], [LastUpdatedOn], [DeletedOn])
+                [PrepTime], [CookTime], [Preparation], [CreatedOn], [UpdatedOn], [DeletedOn])
         values (source.[Id], source.[UserId], source.[Name], source.[Description], source.[ImageUri], source.[NumberOfPeople], source.[CostId], source.[DifficultyId],
-                source.[PrepTime], source.[CookTime], source.[Preparation], source.[CreatedOn], source.[LastUpdatedOn], source.[DeletedOn])
+                source.[PrepTime], source.[CookTime], source.[Preparation], source.[CreatedOn], source.[UpdatedOn], source.[DeletedOn])
     when not matched by source then
         delete;
     set identity_insert [RecipeRandomizer].[Recipe] off

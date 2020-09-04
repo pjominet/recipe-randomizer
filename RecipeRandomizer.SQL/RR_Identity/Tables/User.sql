@@ -14,7 +14,7 @@
     [PasswordResetOn]     datetime2           null,
     [CreatedOn]           datetime2           not null,
     [UpdatedOn]           datetime2           null,
-    [LockedOn]            bit                 null,
+    [LockedOn]            datetime2           null,
     [LockedById]          int                 null,
     constraint [PK_User] primary key clustered ([Id] asc),
     constraint [FK_User_Role] foreign key ([RoleId]) references [RR_Identity].[Role] ([Id]) on delete no action,
