@@ -66,4 +66,6 @@ export class UserListComponent implements OnInit {
         )
     }
 
+    // TODO: add possibility to change role of other users
+
 }

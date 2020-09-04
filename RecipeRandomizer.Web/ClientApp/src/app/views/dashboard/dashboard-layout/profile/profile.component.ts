@@ -86,6 +86,8 @@ export class ProfileComponent implements OnInit {
         this.alertService.success(`Edited values: ${this.f.values}`);
     }
 
+    // TODO: add possibility to change avatar
+
     public openDeleteConfirmation(modalContent: any): void {
         this.modalService.open(modalContent)
     }
