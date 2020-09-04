@@ -37,6 +37,11 @@ namespace RecipeRandomizer.Business.Services
             return _mapper.Map<IEnumerable<Recipe>>(_recipeRepository.GetRecipes(true));
         }
 
+        public IEnumerable<Recipe> GetOrphanRecipes()
+        {
+            return _mapper.Map<IEnumerable<Recipe>>(_recipeRepository.GetAll<Entities.Recipe>(r => !r.UserId.HasValue));
+        }
+
         public Recipe GetRecipe(int id)
         {
             string[] includes =

@@ -58,6 +58,7 @@ namespace RecipeRandomizer.Data.Contexts
                 entity.HasOne(r => r.User)
                     .WithMany(u => u.Recipes)
                     .HasForeignKey(r => r.UserId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_Recipe_User");
             });
 

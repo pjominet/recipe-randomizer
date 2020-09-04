@@ -9,6 +9,7 @@ namespace RecipeRandomizer.Business.Interfaces
     {
         public IEnumerable<Recipe> GetRecipes();
         public IEnumerable<Recipe> GetDeletedRecipes();
+        public IEnumerable<Recipe> GetOrphanRecipes();
         public Recipe GetRecipe(int id);
         public int? GetRandomRecipe(IEnumerable<int> tagIds);
         public IEnumerable<Recipe> GetRecipesFromTags(IEnumerable<int> tagIds);
