@@ -1,6 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {AuthService} from '@app/services/auth.service';
-import {User} from '@app/models/identity/user';
+import {Role, User} from '@app/models/identity/user';
 import {RecipeService} from '@app/services/recipe.service';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {AlertService} from '@app/components/alert/alert.service';
@@ -16,6 +16,7 @@ import {environment} from '@env/environment';
 })
 export class ProfileComponent implements OnInit {
     public user: User;
+    public roles: typeof Role = Role;
     public isEditMode: boolean = false;
     public editForm: FormGroup;
     public isSubmitted: boolean = false;
@@ -65,7 +66,8 @@ export class ProfileComponent implements OnInit {
 
         this.editForm = this.formBuilder.group({
             username: [this.user.username, Validators.required],
-            email: [this.user.email, [Validators.required, Validators.email]]
+            email: [this.user.email, [Validators.required, Validators.email]],
+            role: [{value: this.user.role, disabled: this.user.role !== Role.admin}, Validators.required]
         });
     }
 

@@ -22,6 +22,22 @@
                                    id="emailInput" formControlName="email">
                         </div>
                     </div>
+
+                    <ng-template #roleHint>
+                        Basic users are not allowed to change their role
+                    </ng-template>
+                    <div class="form-group form-row" [ngbTooltip]="isEditMode && user.role !== roles.admin ? roleHint : null">
+                        <label class="col-5 col-form-label font-weight-bold" for="roleSelect">Current Role</label>
+                        <div class="col-7 d-flex align-items-center">
+                            <span *ngIf="!isEditMode">{{roles[user.role] | uppercase}}</span>
+                            <select class="form-control" [ngClass]="{ 'is-invalid': isSubmitted && f.email.errors }"
+                                    id="roleSelect" formControlName="role" *ngIf="isEditMode">
+                                <option *ngFor="let role of roles | enumList" [value]="role.key">{{role.value | uppercase}}</option>
+                            </select>
+
+                        </div>
+                    </div>
+
                     <hr>
                     <div class="d-flex justify-content-between">
                         <button type="button" class="btn btn-outline-{{isEditMode ? 'danger' : 'info'}} btn-no-outline" (click)="isEditMode = !isEditMode">

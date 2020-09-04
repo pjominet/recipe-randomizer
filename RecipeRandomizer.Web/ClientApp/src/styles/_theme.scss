@@ -35,6 +35,24 @@ $link-color: $secondary;
 }
 
 .btn {
+    @include custom-box-shadow(3px, 3px, 10px, -2px, lighten($dark, 30%));
+
+    &[class*='-outline-'], &-link, &-shadow-none {
+        @include box-shadow-none();
+    }
+
+    &:hover:not(:disabled) {
+        @include box-shadow-none();
+    }
+
+    &-circle {
+        @include custom-border-radius(50%);
+    }
+
+    &-no-outline {
+        border: none !important;
+    }
+
     &-secondary-translucent {
         @include bootstrap-button(rgba($secondary, .85));
     }
@@ -128,3 +146,56 @@ $ng-select-value-font-size: 0.9em;
 
 // custom scrollbar
 @import 'scrollbar';
+
+// misc
+.w {
+    &-33 {
+        width: 33% !important;
+    }
+
+    &-66 {
+        width: 66% !important;
+    }
+}
+
+.form-group {
+    .no-label {
+        margin-top: 2rem;
+    }
+}
+
+pre {
+    line-height: 1.5;
+    white-space: pre-wrap;
+}
+
+pre > code, code {
+    color: $info;
+}
+
+blockquote {
+    background: rgba($primary, .5);
+    border-left: 4px solid $primary;
+    border-radius: 4px;
+    color: $lighter;
+    margin: 1.2rem 0;
+    padding: .1rem .7rem;
+}
+
+.img-circle {
+    @include custom-border-radius(50%);
+}
+
+.shadowed {
+    @include custom-box-shadow(3px, 3px, 10px, -2px, lighten($dark, 30%));
+}
+
+.table-fixed{
+    table-layout: fixed;
+
+    .truncate {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+}
