@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.Extensions.Options;
 using RecipeRandomizer.Business.Interfaces;
@@ -19,12 +18,14 @@ namespace RecipeRandomizer.Business.Services
         private readonly UserRepository _userRepository;
         private readonly IMapper _mapper;
         private readonly AppSettings _appSettings;
+        private readonly IFileService _fileService;
 
-        public UserService(RRContext context, IMapper mapper, IOptions<AppSettings> appSettings)
+        public UserService(RRContext context, IMapper mapper, IOptions<AppSettings> appSettings, IFileService fileService)
         {
             _userRepository = new UserRepository(context);
             _mapper = mapper;
             _appSettings = appSettings.Value;
+            _fileService = fileService;
         }
 
         public IEnumerable<User> GetUsers()
@@ -58,25 +59,36 @@ namespace RecipeRandomizer.Business.Services
             return _mapper.Map<User>(user);
         }
 
-        public async Task<bool> UploadUserAvatar(Stream sourceStream, string untrustedFileName, int id)
+        public bool UploadUserAvatar(Stream sourceStream, string untrustedFileName, int id)
         {
             var user = _userRepository.GetFirstOrDefault<Entities.User>(u => u.Id == id);
             if (user == null)
                 throw new KeyNotFoundException("User to add avatar to could not be found");
 
-            var physicalDestination = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", _appSettings.UserAvatarsFolder);
-            if (!Directory.Exists(physicalDestination))
-                Directory.CreateDirectory(physicalDestination);
+            try
+            {
+                var proposedFileExtension = Path.GetExtension(untrustedFileName);
+                 _fileService.CheckForAllowedSignature(sourceStream, proposedFileExtension);
 
-            var trustedFile = Guid.NewGuid() + Path.GetExtension(untrustedFileName);
-            await using var destinationStream = File.Create(Path.Combine(physicalDestination, trustedFile));
-            await sourceStream.CopyToAsync(destinationStream);
+                 // delete old avatar to avoid file clutter
+                 var physicalRoot = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot");
+                 _fileService.DeleteExistingFile(Path.Combine(physicalRoot, user.ProfileImageUri));
 
-            user.ProfileImageUri = Path.Combine(_appSettings.UserAvatarsFolder, trustedFile);
-            user.UpdatedOn = DateTime.UtcNow;
-            _userRepository.Update(user);
+                 // save new avatar
+                var trustedFileName = Guid.NewGuid() + proposedFileExtension;
+                _fileService.SaveFileToDisk(sourceStream, Path.Combine(physicalRoot, _appSettings.UserAvatarsFolder), trustedFileName);
 
-            return _userRepository.SaveChanges();
+                user.ProfileImageUri = Path.Combine(_appSettings.UserAvatarsFolder, trustedFileName);
+                user.UpdatedOn = DateTime.UtcNow;
+                _userRepository.Update(user);
+
+                return _userRepository.SaveChanges();
+            }
+            catch (IOException e)
+            {
+                Console.WriteLine(e);
+                throw new BadRequestException(e.Message);
+            }
         }
 
         public bool Delete(int id)

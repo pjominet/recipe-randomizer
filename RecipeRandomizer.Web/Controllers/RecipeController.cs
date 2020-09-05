@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.IO;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using RecipeRandomizer.Business.Interfaces;
@@ -109,18 +110,21 @@ namespace RecipeRandomizer.Web.Controllers
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> UploadRecipeImage([FromForm(Name = "file")] IFormFile image, [FromForm(Name = "id")] int? recipeId)
+        public IActionResult UploadRecipeImage([FromForm(Name = "file")] IFormFile image, [FromForm(Name = "id")] int? recipeId)
         {
             if (image == null || image.Length <= 0 || !recipeId.HasValue)
-                return BadRequest("Missing information in form-data");
+                return BadRequest("Missing information");
 
-            Task<bool> result;
-            await using (var stream = image.OpenReadStream())
-            {
-                result = _recipeService.UploadRecipeImage(stream, image.FileName, recipeId.Value);
-            }
+            if (image.Length > 2097152) // > 2MB
+                return BadRequest("File is too large");
 
-            return await result ? NoContent() : StatusCode(StatusCodes.Status500InternalServerError);
+            var stream = image.OpenReadStream();
+            var result = _recipeService.UploadRecipeImage(stream, image.FileName, recipeId.Value);
+            stream.Close();
+
+            return result
+                ? NoContent()
+                : StatusCode(StatusCodes.Status500InternalServerError);
         }
 
         [HttpDelete("{id:int}")]

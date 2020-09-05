@@ -19,7 +19,7 @@ import {UploadService} from '@app/services/upload.service';
 import {HttpEventType, HttpResponse} from '@angular/common/http';
 import {NgbModal, NgbTooltip} from '@ng-bootstrap/ng-bootstrap';
 import {CheatSheetComponent} from '@app/components/cheat-sheet/cheat-sheet.component';
-import {FileUploadService} from '../../../../components/file-upload/file-upload.service';
+import {FileUploadService} from '@app/components/file-upload/file-upload.service';
 
 @Component({
     selector: 'app-recipe-editor',
@@ -42,6 +42,7 @@ export class RecipeEditorComponent implements OnInit {
     public fileUploadRequest: FileUploadRequest;
     public fileUploadSuccess: boolean = false;
     public changeImage: boolean = false;
+    public imageUploadProgress: number = 0;
 
     constructor(private route: ActivatedRoute,
                 private formBuilder: FormBuilder,
@@ -209,7 +210,7 @@ export class RecipeEditorComponent implements OnInit {
             this.uploadService.uploadFile(this.fileUploadRequest).subscribe(
                 event => {
                     if (event.type === HttpEventType.UploadProgress) {
-                        console.log(Math.round(100 * event.loaded / event.total));
+                        this.imageUploadProgress = Math.round(100 * event.loaded / event.total);
                     } else if (event instanceof HttpResponse) {
                         this.isLoading = false;
                         this.fileUploadSuccess = true;

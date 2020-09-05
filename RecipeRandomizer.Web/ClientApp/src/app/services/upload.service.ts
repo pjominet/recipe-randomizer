@@ -16,6 +16,6 @@ export class UploadService {
         formData.append('id', `${fileUploadRequest.entityId}`);
         formData.append('file', fileUploadRequest.file);
 
-        return this.http.post<any>(fileUploadRequest.apiUrl, formData, {reportProgress: true, responseType: 'json'});
+        return this.http.post<any>(fileUploadRequest.apiUrl, formData, {reportProgress: true, observe: 'events'});
     }
 }

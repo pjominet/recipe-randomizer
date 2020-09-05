@@ -2,11 +2,11 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.Extensions.Options;
 using RecipeRandomizer.Business.Interfaces;
 using RecipeRandomizer.Business.Models;
+using RecipeRandomizer.Business.Utils.Exceptions;
 using RecipeRandomizer.Business.Utils.Settings;
 using RecipeRandomizer.Data.Contexts;
 using RecipeRandomizer.Data.Repositories;
@@ -19,12 +19,14 @@ namespace RecipeRandomizer.Business.Services
         private readonly RecipeRepository _recipeRepository;
         private readonly IMapper _mapper;
         private readonly AppSettings _appSettings;
+        private readonly IFileService _fileService;
 
-        public RecipeService(RRContext context, IMapper mapper, IOptions<AppSettings> appSettings)
+        public RecipeService(RRContext context, IMapper mapper, IOptions<AppSettings> appSettings, IFileService fileService)
         {
             _recipeRepository = new RecipeRepository(context);
             _mapper = mapper;
             _appSettings = appSettings.Value;
+            _fileService = fileService;
         }
 
         public IEnumerable<Recipe> GetRecipes()
@@ -100,25 +102,36 @@ namespace RecipeRandomizer.Business.Services
             return _recipeRepository.SaveChanges() ? newRecipe.Id : -1;
         }
 
-        public async Task<bool> UploadRecipeImage(Stream sourceStream, string untrustedFileName, int id)
+        public bool UploadRecipeImage(Stream sourceStream, string untrustedFileName, int id)
         {
             var recipe = _recipeRepository.GetFirstOrDefault<Entities.Recipe>(r => r.Id == id);
             if (recipe == null)
                 throw new KeyNotFoundException("Recipe to add image to could not be found");
 
-            var physicalDestination = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", _appSettings.RecipeImagesFolder);
-            if (!Directory.Exists(physicalDestination))
-                Directory.CreateDirectory(physicalDestination);
+            try
+            {
+                var proposedFileExtension = Path.GetExtension(untrustedFileName);
+                _fileService.CheckForAllowedSignature(sourceStream, proposedFileExtension);
 
-            var trustedFile = Guid.NewGuid() + Path.GetExtension(untrustedFileName);
-            await using var destinationStream = File.Create(Path.Combine(physicalDestination, trustedFile));
-            await sourceStream.CopyToAsync(destinationStream);
+                // delete old recipe image to avoid file clutter
+                var physicalRoot = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot");
+                _fileService.DeleteExistingFile(Path.Combine(physicalRoot, recipe.ImageUri));
 
-            recipe.ImageUri = Path.Combine(_appSettings.RecipeImagesFolder, trustedFile);
-            recipe.OriginalImageName = untrustedFileName;
-            recipe.UpdatedOn = DateTime.UtcNow;
-            _recipeRepository.Update(recipe);
-            return _recipeRepository.SaveChanges();
+                // save new recipe image
+                var trustedFileName = Guid.NewGuid() + proposedFileExtension;
+                _fileService.SaveFileToDisk(sourceStream, Path.Combine(physicalRoot, _appSettings.UserAvatarsFolder), trustedFileName);
+
+                recipe.ImageUri = Path.Combine(_appSettings.RecipeImagesFolder, trustedFileName);
+                recipe.OriginalImageName = untrustedFileName;
+                recipe.UpdatedOn = DateTime.UtcNow;
+                _recipeRepository.Update(recipe);
+                return _recipeRepository.SaveChanges();
+            }
+            catch (IOException e)
+            {
+                Console.WriteLine(e);
+                throw new BadRequestException(e.Message);
+            }
         }
 
         public bool UpdateRecipe(Recipe recipe)

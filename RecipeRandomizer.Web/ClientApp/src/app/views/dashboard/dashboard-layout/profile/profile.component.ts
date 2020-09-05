@@ -31,6 +31,7 @@ export class ProfileComponent implements OnInit {
 
     @ViewChild('avatarInput', {static: true}) public avatarInput: ElementRef;
     public hasAvatarPreview: boolean;
+    public avatarUploadProgress: number = 0;
     private fileUploadRequest: FileUploadRequest;
 
     constructor(private authService: AuthService,
@@ -148,11 +149,14 @@ export class ProfileComponent implements OnInit {
         this.uploadService.uploadFile(this.fileUploadRequest).subscribe(
             event => {
                 if (event.type === HttpEventType.UploadProgress) {
-                    console.log(Math.round(100 * event.loaded / event.total));
+                    this.avatarUploadProgress= Math.round(100 * event.loaded / event.total);
                 } else if (event instanceof HttpResponse) {
-                    this.isUploading = false;
-                    this.resetFileInput();
-                    this.alertService.success("Successfully updated avatar");
+                    this.userService.getUser(this.user.id).subscribe(user => {
+                        this.authService.user = user;
+                        this.isUploading = false;
+                        this.resetFileInput();
+                        this.alertService.success("Successfully updated avatar");
+                    });
                 }
             },
             () => {

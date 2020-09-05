@@ -126,12 +126,13 @@ namespace RecipeRandomizer.Web
 
         private static void InjectServices(IServiceCollection services)
         {
-            services.AddTransient<IRecipeService, RecipeService>();
+            services.AddScoped<IRecipeService, RecipeService>();
             services.AddTransient<ITagService, TagService>();
             services.AddTransient<IQuantityService, QuantityService>();
-            services.AddTransient<IAuthService, AuthService>();
-            services.AddTransient<IUserService, UserService>();
-            services.AddTransient<IEmailService, EmailService>();
+            services.AddScoped<IAuthService, AuthService>();
+            services.AddScoped<IUserService, UserService>();
+            services.AddSingleton<IEmailService, EmailService>();
+            services.AddSingleton<IFileService, FileService>();
         }
     }
 }

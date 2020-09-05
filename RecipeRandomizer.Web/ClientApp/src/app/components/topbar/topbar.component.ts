@@ -1,7 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {AuthService} from '@app/services/auth.service';
-import {User} from '../../models/identity/user';
-import {environment} from '../../../environments/environment';
+import {User} from '@app/models/identity/user';
+import {environment} from '@env/environment';
 
 @Component({
     selector: 'app-topbar',
@@ -17,8 +17,8 @@ export class TopbarComponent implements OnInit {
     }
 
     public get userAvatar(): string {
-        return this.user.profileImageUri
-            ? `${environment.staticFileUrl}/${this.user.profileImageUri}`
+        return this.authService.user.profileImageUri
+            ? `${environment.staticFileUrl}/${this.authService.user.profileImageUri}`
             : 'assets/img/avatar_placeholder.png'
     }
 
