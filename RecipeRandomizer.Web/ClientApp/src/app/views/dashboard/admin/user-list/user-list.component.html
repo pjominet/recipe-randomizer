@@ -33,7 +33,7 @@
                 <i *ngIf="!user.lockedOn" class="fas fa-fw fa-lock"></i>
                 <i *ngIf="user.lockedOn" class="fas fa-fw fa-unlock"></i>
             </button>
-            <button (click)="deleteUser(user.id)" class="btn btn-sm btn-danger mr-2" [disabled]="currentUser.id === user.id" ngbTooltip="Delete user">
+            <button (click)="deleteUser(user)" class="btn btn-sm btn-danger mr-2" [disabled]="currentUser.id === user.id" ngbTooltip="Delete user">
                 <i class="fas fa-fw fa-user-slash"></i>
             </button>
         </td>

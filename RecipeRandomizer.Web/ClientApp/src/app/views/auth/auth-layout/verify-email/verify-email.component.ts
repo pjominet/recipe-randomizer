@@ -75,11 +75,11 @@ export class VerifyEmailComponent implements OnInit {
             .pipe(first())
             .subscribe({
                 next: (response) => {
-                    this.alertService.success(response.message);
+                    this.alertService.success(response);
                 },
                 error: (error) => {
-                    this.alertService.success(error.message);
+                    this.alertService.success(error);
                 }
-            })
+            });
     }
 }

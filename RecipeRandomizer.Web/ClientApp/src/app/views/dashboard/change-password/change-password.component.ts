@@ -61,12 +61,12 @@ export class ChangePasswordComponent implements OnInit {
             .subscribe({
                 next: (response) => {
                     this.isLoading = false;
-                    this.alertService.success(response.message, {keepAfterRouteChange: true});
+                    this.alertService.success(response, {keepAfterRouteChange: true});
                     this.router.navigateByUrl('..');
                 },
-                error: () => {
+                error: (error) => {
                     this.isLoading = false;
-                    this.error = 'Something went wrong, password was not changed!';
+                    this.error = error;
                 }
             });
     }

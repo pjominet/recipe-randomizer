@@ -40,15 +40,15 @@ export class UserListComponent implements OnInit {
             });
     }
 
-    public deleteUser(id: number): void {
+    public deleteUser(user: IUser): void {
         this.alertService.clear();
-        this.userService.deleteUser(id)
+        this.userService.deleteUser(user.id)
             .pipe(first())
             .subscribe(() => {
-                this.users = this.users.filter(x => x.id !== id);
-                this.alertService.success(`Successfully deleted user: ${id}`);
+                this.users = this.users.filter(x => x.id !== user.id);
+                this.alertService.success(`Successfully deleted user: ${user.username}`);
             }, error => {
-                this.alertService.error('User could not be deleted');
+                this.alertService.error(error);
             });
     }
 

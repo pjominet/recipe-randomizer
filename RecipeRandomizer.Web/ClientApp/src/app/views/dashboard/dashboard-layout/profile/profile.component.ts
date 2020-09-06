@@ -118,9 +118,9 @@ export class ProfileComponent implements OnInit {
                 } else {
                     this.onProfileUpdateSuccess();
                 }
-            }, () => {
+            }, error => {
                 this.isLoading = false;
-                this.alertService.success('Profile update failed');
+                this.alertService.success(error);
             });
     }
 
@@ -164,10 +164,10 @@ export class ProfileComponent implements OnInit {
                     });
                 }
             },
-            () => {
+            error => {
                 this.isUploading = false;
                 this.resetAvatar();
-                this.alertService.error('Avatar update failed');
+                this.alertService.error(error);
             });
     }
 

@@ -163,8 +163,7 @@ export class RecipeEditorComponent implements OnInit {
         if (this.isEditMode) {
             this.recipeService.updateRecipe(this.recipe).subscribe(
                 response => {
-                    console.log(response); // TODO remove after check
-                    this.onEditSuccess(response, 'Successfully updated this recipe!', 'Recipe could not be updated: Image upload failed.');
+                    this.onEditSuccess(response, 'Successfully updated this recipe!');
                 }, error => {
                     this.isLoading = false;
                     this.alertService.error('Recipe could not be updated.');
@@ -172,9 +171,8 @@ export class RecipeEditorComponent implements OnInit {
         } else {
             this.recipeService.addRecipe(this.recipe).subscribe(
                 response => {
-                    console.log(response); // TODO remove after check
-                    this.onEditSuccess(response, 'Successfully created a new recipe!', 'Recipe could not be created: Image upload failed.');
-                }, () => {
+                    this.onEditSuccess(response, 'Successfully created a new recipe!');
+                }, error => {
                     this.isLoading = false;
                     this.alertService.error('Recipe could not be created.');
                 });
@@ -203,7 +201,7 @@ export class RecipeEditorComponent implements OnInit {
         });
     }
 
-    private onEditSuccess(response: any, successMessage: string, innerErrorMessage): void {
+    private onEditSuccess(response: any, successMessage: string): void {
         if (this.fileUploadRequest.file) {
             // complete the file upload request
             this.fileUploadRequest.entityId = response.body;
@@ -218,9 +216,9 @@ export class RecipeEditorComponent implements OnInit {
                         this.alertService.success(successMessage);
                     }
                 },
-                () => {
+                error => {
                     this.isLoading = false;
-                    this.alertService.error(innerErrorMessage);
+                    this.alertService.error(error);
                 });
         } else {
             this.alertService.success(successMessage);

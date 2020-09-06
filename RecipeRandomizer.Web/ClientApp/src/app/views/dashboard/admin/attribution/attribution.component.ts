@@ -44,10 +44,10 @@ export class AttributionComponent implements OnInit {
             () => {
                 this.activeModal.dismiss();
                 this.attributionService.attributionSuccess(this.recipeId);
-                this.alertService.success("Successfully attribute the recipe");
-            }, () => {
+                this.alertService.success("Successfully attributed the recipe");
+            }, error => {
                 this.activeModal.dismiss();
-                this.alertService.error("Attribution failed");
+                this.alertService.error(error);
             }
         )
     }
