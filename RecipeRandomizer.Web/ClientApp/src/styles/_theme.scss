@@ -69,6 +69,22 @@ $link-color: $secondary;
     &-light-translucent {
         @include bootstrap-button(rgba($lighter, .85));
     }
+
+    &-ellipse {
+        @include custom-border-radius(45px);
+    }
+
+    &-gradient {
+        border: none;
+        background-image: linear-gradient(150deg, $primary 0%, $gradient-middle 35%, $secondary 100%);
+        background-size: 170%;
+        background-position: left;
+        transition: background-position .75s;
+
+        &:hover, :focus {
+            background-position: right;
+        }
+    }
 }
 
 .badge {

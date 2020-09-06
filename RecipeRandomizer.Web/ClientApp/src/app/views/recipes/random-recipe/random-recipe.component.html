@@ -1,5 +1,5 @@
 <section class="text-center my-4" id="randomRecipe">
-    <button type="submit" class="btn btn-lg btn-secondary" (click)="getRandomRecipe()" *ngIf="!isFetching; else spinner">
+    <button type="submit" class="btn btn-lg btn-secondary btn-gradient btn-ellipse" (click)="getRandomRecipe()" *ngIf="!isFetching; else spinner">
         Get a random recipe
     </button>
     <ng-template #spinner>
