@@ -1,0 +1,48 @@
+﻿@import 'variables';
+@import 'mixins';
+
+.card {
+    @include border-radius-by-corner(0, 45px, 45px, 0);
+}
+
+#mainHeading {
+    font-family: $font-family-serif;
+    font-weight: bold;
+    font-size: 4rem;
+    height: 3em;
+    background-image: url("/../assets/img/notepad.png");
+    background-repeat: no-repeat;
+    background-position: 50% 100%;
+    background-size: 55%;
+    transform: rotate(-3deg);
+    padding-top: .5em;
+    margin-top: .5em;
+    color: $primary;
+    text-align: center;
+}
+
+#cookiesInfo {
+    position: absolute;
+    bottom: 1rem;
+    right: 1rem;
+    width: 300px;
+    padding: .7rem;
+    margin: 0;
+    @include border-radius-by-corner(0, 20px, 20px, 0);
+
+    opacity: 0;
+    background-color: $light;
+    animation-name: info-fade-in;
+    animation-duration: 1000ms;
+    animation-delay: 500ms;
+    animation-fill-mode: forwards;
+}
+
+@keyframes info-fade-in {
+    0%   {
+        opacity: 0;
+    }
+    100% {
+        opacity: 1;
+    }
+}

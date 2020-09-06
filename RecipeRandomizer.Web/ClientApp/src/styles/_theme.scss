@@ -1,4 +1,3 @@
-@import url(https://fonts.googleapis.com/css?family=Titillium+Web&display=swap);
 @import 'variables';
 
 // bootstrap variable override
@@ -13,7 +12,6 @@ $theme-colors: (
     "info": $info
 );
 
-$font-family-sans-serif: 'Titillium Web', 'Open Sans', sans-serif;
 $enable-responsive-font-sizes: true;
 $enable-rounded: false;
 $input-focus-border-color: lighten($primary, 15%);

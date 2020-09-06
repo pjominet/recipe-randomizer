@@ -1,6 +1,6 @@
-<section class="text-center my-4" id="fortuneWheel">
+<section class="text-center my-4" id="randomRecipe">
     <button type="submit" class="btn btn-lg btn-secondary" (click)="getRandomRecipe()" *ngIf="!isFetching; else spinner">
-        Spin The Wheel
+        Get a random recipe
     </button>
     <ng-template #spinner>
         <app-spinner [withBackdrop]="false"></app-spinner>
