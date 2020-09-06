@@ -1,4 +1,3 @@
-@import url(https://fonts.googleapis.com/css?family=Titillium+Web&display=swap);
 @import 'variables';
 
 // bootstrap variable override
@@ -13,7 +12,6 @@ $theme-colors: (
     "info": $info
 );
 
-$font-family-sans-serif: 'Titillium Web', 'Open Sans', sans-serif;
 $enable-responsive-font-sizes: true;
 $enable-rounded: false;
 $input-focus-border-color: lighten($primary, 15%);
@@ -70,6 +68,22 @@ $link-color: $secondary;
 
     &-light-translucent {
         @include bootstrap-button(rgba($lighter, .85));
+    }
+
+    &-ellipse {
+        @include custom-border-radius(45px);
+    }
+
+    &-gradient {
+        border: none;
+        background-image: linear-gradient(150deg, $primary 0%, $gradient-middle 35%, $secondary 100%);
+        background-size: 170%;
+        background-position: left;
+        transition: background-position .75s;
+
+        &:hover, :focus {
+            background-position: right;
+        }
     }
 }
 

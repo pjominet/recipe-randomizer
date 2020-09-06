@@ -11,7 +11,8 @@ main {
 }
 
 aside {
-    background-image: linear-gradient(180deg, $primary, $secondary);
+    background-color: $primary;
+    background-image: linear-gradient(180deg, $primary 0%, rgba(62,5,103,1) 45%, $secondary 100%);
 }
 
 @media (min-width: 768px) {
