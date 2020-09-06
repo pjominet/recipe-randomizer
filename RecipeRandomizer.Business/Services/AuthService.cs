@@ -51,7 +51,7 @@ namespace RecipeRandomizer.Business.Services
                 throw new BadRequestException("Email has not been verified");
 
             if (user.IsLocked)
-                throw new ForbiddenException("You have been locked out of your account!");
+                throw new ForbiddenException("You have been locked out of your account by an admin!");
 
             // authentication successful so generate jwt and refresh tokens
             var jwtToken = GenerateJwtToken(user);

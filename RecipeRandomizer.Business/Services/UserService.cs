@@ -91,9 +91,10 @@ namespace RecipeRandomizer.Business.Services
                 var proposedFileExtension = Path.GetExtension(untrustedFileName);
                  _fileService.CheckForAllowedSignature(sourceStream, proposedFileExtension);
 
-                 // delete old avatar to avoid file clutter
-                 var physicalRoot = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot");
-                 _fileService.DeleteExistingFile(Path.Combine(physicalRoot, user.ProfileImageUri));
+                 // delete old avatar (if any) to avoid file clutter
+                 var physicalRoot = Path.Combine(Directory.GetCurrentDirectory(), @"wwwroot");
+                 if (!string.IsNullOrWhiteSpace(user.ProfileImageUri))
+                    _fileService.DeleteExistingFile(Path.Combine(physicalRoot, user.ProfileImageUri));
 
                  // save new avatar
                 var trustedFileName = Guid.NewGuid() + proposedFileExtension;

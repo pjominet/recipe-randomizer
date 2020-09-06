@@ -113,9 +113,10 @@ namespace RecipeRandomizer.Business.Services
                 var proposedFileExtension = Path.GetExtension(untrustedFileName);
                 _fileService.CheckForAllowedSignature(sourceStream, proposedFileExtension);
 
-                // delete old recipe image to avoid file clutter
-                var physicalRoot = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot");
-                _fileService.DeleteExistingFile(Path.Combine(physicalRoot, recipe.ImageUri));
+                // delete old recipe image (if any) to avoid file clutter
+                var physicalRoot = Path.Combine(Directory.GetCurrentDirectory(), @"wwwroot");
+                if(!string.IsNullOrWhiteSpace(recipe.ImageUri))
+                    _fileService.DeleteExistingFile(Path.Combine(physicalRoot, recipe.ImageUri));
 
                 // save new recipe image
                 var trustedFileName = Guid.NewGuid() + proposedFileExtension;
