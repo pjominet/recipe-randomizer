@@ -53,28 +53,6 @@ namespace RecipeRandomizer.Business.Utils.AutoMapperProfiles
                 .ForMember(dest => dest.LockedById, opt => opt.Ignore())
                 .ForMember(dest => dest.LockedBy, opt => opt.Ignore())
                 .ForMember(dest => dest.Locker, opt => opt.Ignore());
-
-            CreateMap<Models.Identity.UpdateRequest, Entities.Identity.User>()
-                .ForMember(dest => dest.Id, opt => opt.Ignore())
-                .ForMember(dest => dest.RoleId, opt => opt.MapFrom(src => (int) src.Role))
-                .ForMember(dest => dest.PasswordHash, opt => opt.Ignore())
-                .ForMember(dest => dest.ProfileImageUri, opt => opt.Ignore())
-                .ForMember(dest => dest.VerificationToken, opt => opt.Ignore())
-                .ForMember(dest => dest.VerifiedOn, opt => opt.Ignore())
-                .ForMember(dest => dest.ResetToken, opt => opt.Ignore())
-                .ForMember(dest => dest.ResetTokenExpiresOn, opt => opt.Ignore())
-                .ForMember(dest => dest.PasswordResetOn, opt => opt.Ignore())
-                .ForMember(dest => dest.CreatedOn, opt => opt.Ignore())
-                .ForMember(dest => dest.UpdatedOn, opt => opt.Ignore())
-                .ForMember(dest => dest.HasAcceptedTerms, opt => opt.Ignore())
-                .ForMember(dest => dest.Role, opt => opt.Ignore())
-                .ForMember(dest => dest.RefreshTokens, opt => opt.Ignore())
-                .ForMember(dest => dest.Recipes, opt => opt.Ignore())
-                .ForMember(dest => dest.RecipeLikes, opt => opt.Ignore())
-                .ForMember(dest => dest.LockedOn, opt => opt.Ignore())
-                .ForMember(dest => dest.LockedById, opt => opt.Ignore())
-                .ForMember(dest => dest.LockedBy, opt => opt.Ignore())
-                .ForMember(dest => dest.Locker, opt => opt.Ignore());
         }
     }
 }

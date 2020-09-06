@@ -45,6 +45,13 @@ $link-color: $secondary;
         @include box-shadow-none();
     }
 
+    &-mini {
+        padding: 0.25rem 0.35rem;
+        font-size: 0.875rem;
+        width: 2rem;
+        height: 2rem;
+    }
+
     &-circle {
         @include custom-border-radius(50%);
     }
@@ -198,4 +205,8 @@ blockquote {
         overflow: hidden;
         text-overflow: ellipsis;
     }
+}
+
+.modal-content {
+    border: none !important;
 }

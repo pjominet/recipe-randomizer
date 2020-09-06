@@ -2,11 +2,12 @@
 
 namespace RecipeRandomizer.Business.Models.Identity
 {
-    public class UpdateRequest
+    public class UserUpdateRequest
     {
+        [Required]
         public string Username { get; set; }
+        [Required]
         [EmailAddress]
         public string Email { get; set; }
-        public Role Role { get; set; }
     }
 }

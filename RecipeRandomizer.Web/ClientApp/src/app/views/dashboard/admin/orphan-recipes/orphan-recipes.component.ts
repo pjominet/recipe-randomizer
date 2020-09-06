@@ -45,7 +45,7 @@ export class OrphanRecipesComponent implements OnInit, OnDestroy {
     }
 
     public showAttributeToUserDialog(id: number): void {
-        let modalRef = this.modalService.open(AttributionComponent, {centered: true, size: 'lg'});
+        let modalRef = this.modalService.open(AttributionComponent, {centered: true, backdrop: 'static'});
         modalRef.componentInstance.recipeId = id;
     }
 

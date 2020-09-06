@@ -10,18 +10,20 @@
                     <small>upload new avatar</small>
                 </div>
                 <div class="avatar-overlay avatar-overlay-uploading" *ngIf="isUploading">
-                    <span class="spinner-border spinner-border-sm mr-1"></span>
+                    <span class="spinner-border spinner-border-sm"></span>
+                    <br>
+                    {{this.avatarUploadProgress}}%
                 </div>
             </div>
 
             <div id="uploadConfirmation" *ngIf="hasAvatarPreview">
                 <em class="text-center mb-1">Like your choice?</em>
                 <div class="d-flex justify-content-center">
-                    <button class="btn btn-danger mr-2 btn-mini" (click)="resetAvatar()">
-                        <i class="fas fa-times"></i>
+                    <button class="btn btn-danger btn-mini btn-circle mr-2" (click)="resetAvatar()">
+                        <i class="fas fa-fw fa-times"></i>
                     </button>
-                    <button class="btn btn-success ml-2 btn-mini" (click)="uploadAvatar()">
-                        <i class="fas fa-check"></i>
+                    <button class="btn btn-success btn-mini btn-circle ml-2" (click)="uploadAvatar()">
+                        <i class="fas fa-fw fa-check"></i>
                     </button>
                 </div>
             </div>

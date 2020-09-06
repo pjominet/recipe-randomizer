@@ -1,6 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.IO;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using RecipeRandomizer.Business.Interfaces;
@@ -46,13 +44,22 @@ namespace RecipeRandomizer.Web.Controllers
         [HttpPut("{id:int}")]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(typeof(User), StatusCodes.Status200OK)]
-        public ActionResult<User> Update([FromRoute] int id, [FromBody] UpdateRequest updateRequest)
+        public ActionResult<User> UpdateUser([FromRoute] int id, [FromBody] UserUpdateRequest userUpdateRequest)
         {
             // users can update their own account and admins can update any account
             if (id != User?.Id && User?.Role != Role.Admin)
                 return Unauthorized(new {message = "Unauthorized"});
 
-            return Ok(_userService.Update(id, updateRequest));
+            return Ok(_userService.Update(id, userUpdateRequest));
+        }
+
+        [Authorize(Role.Admin)]
+        [HttpPut("{id:int}/role")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public ActionResult<User> UpdateUserRole([FromRoute] int id, [FromBody] RoleUpdateRequest roleUpdateRequest)
+        {
+            return Ok(_userService.Update(id, roleUpdateRequest));
         }
 
         [Authorize]
@@ -83,7 +90,7 @@ namespace RecipeRandomizer.Web.Controllers
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(typeof(object), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public IActionResult Delete([FromRoute] int id)
+        public IActionResult DeleteUser([FromRoute] int id)
         {
             // users can delete their own account and admins can delete any account
             if (id != User?.Id && User?.Role != Role.Admin)

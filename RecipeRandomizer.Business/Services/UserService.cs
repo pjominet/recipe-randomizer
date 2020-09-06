@@ -38,19 +38,40 @@ namespace RecipeRandomizer.Business.Services
             return _mapper.Map<User>(_userRepository.GetFirstOrDefault<Entities.User>(u => u.Id == id, $"{nameof(Entities.User.Role)}"));
         }
 
-        public User Update(int id, UpdateRequest updateRequest)
+        public User Update(int id, UserUpdateRequest userUpdateRequest)
         {
             var user = _userRepository.GetFirstOrDefault<Entities.User>(u => u.Id == id);
 
             if (user == null)
-                throw new BadRequestException("User not found");
+                throw new KeyNotFoundException("User not found");
 
             // check if email is not already taken
-            if (user.Email != updateRequest.Email && _userRepository.Exists<Entities.User>(u => u.Email == user.Email))
-                throw new BadRequestException($"Email '{updateRequest.Email}' is already taken");
+            if (user.Email != userUpdateRequest.Email && _userRepository.Exists<Entities.User>(u => u.Email == user.Email))
+                throw new BadRequestException($"Email '{userUpdateRequest.Email}' is already taken");
 
-            // map any other value according to the mapping profile
-            _mapper.Map(updateRequest, user);
+            // update user
+            user.Username = userUpdateRequest.Username;
+            user.Email = userUpdateRequest.Email;
+            user.UpdatedOn = DateTime.UtcNow;
+            _userRepository.Update(user);
+            if (!_userRepository.SaveChanges())
+                throw new ApplicationException("Database error: Changes could not be saved correctly");
+
+            return _mapper.Map<User>(user);
+        }
+
+        public User Update(int id, RoleUpdateRequest roleUpdateRequest)
+        {
+            if (_userRepository.AdminCount() <= 1)
+                throw new BadRequestException("The last admin can't demote himself!");
+
+            var user = _userRepository.GetFirstOrDefault<Entities.User>(u => u.Id == id);
+
+            if (user == null)
+                throw new KeyNotFoundException("User not found");
+
+            // update role
+            user.RoleId = (int) roleUpdateRequest.Role;
             user.UpdatedOn = DateTime.UtcNow;
             _userRepository.Update(user);
             if (!_userRepository.SaveChanges())
@@ -99,7 +120,7 @@ namespace RecipeRandomizer.Business.Services
             var user = _userRepository.GetFirstOrDefault<Entities.User>(u => u.Id == id);
 
             if (user == null)
-                throw new BadRequestException("User to delete could not be found.");
+                throw new KeyNotFoundException("User to delete could not be found.");
 
             _userRepository.Delete(user);
             return _userRepository.SaveChanges();

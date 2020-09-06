@@ -1,0 +1,22 @@
+<div class="modal-body">
+    <form name="form" #f="ngForm" (ngSubmit)="f.form.valid && onSubmit()" novalidate>
+        <div class="form-group">
+            <label for="userSelect">Select a role</label>
+            <select name="userId" #userId="ngModel" class="form-control" id="userSelect" [(ngModel)]="user.role"
+                    [ngClass]="{ 'is-invalid': f.submitted && userId.invalid }" required>
+                <option *ngFor="let role of roles | enumList" [value]="role.key">{{role.value | uppercase}}</option>
+            </select>
+            <div *ngIf="f.submitted && userId.invalid" class="invalid-feedback">
+                <div *ngIf="userId.errors.required">A role is required</div>
+            </div>
+        </div>
+        <div class="form-group d-flex justify-content-between">
+            <button type="submit" class="btn btn-secondary">
+                Change role<i class="fas fa-exchange-alt ml-2"></i>
+            </button>
+            <button type="button" class="btn btn-outline-dark" (click)="activeModal.dismiss()">
+                Cancel
+            </button>
+        </div>
+    </form>
+</div>

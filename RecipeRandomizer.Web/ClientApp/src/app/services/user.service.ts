@@ -4,10 +4,11 @@ import {Router} from '@angular/router';
 import {HttpClient} from '@angular/common/http';
 import {environment} from '@env/environment';
 import {finalize, map} from 'rxjs/operators';
-import {User} from '@app/models/identity/user';
-import {UpdateRequest} from '@app/models/identity/updateRequest';
+import {IUser} from '@app/models/identity/user';
 import {AuthService} from './auth.service';
 import {LockRequest} from '@app/models/identity/LockRequest';
+import {UserUpdateRequest} from '@app/models/identity/userUpdateRequest';
+import {RoleUpdateRequest} from '../models/identity/roleUpdateRequest';
 
 const usersApi = `${environment.apiUrl}/users`;
 
@@ -21,21 +22,33 @@ export class UserService {
                 private authService: AuthService) {
     }
 
-    public getUsers(): Observable<User[]>{
-        return this.http.get<User[]>(usersApi).pipe(map(response => response));
+    public getUsers(): Observable<IUser[]>{
+        return this.http.get<IUser[]>(usersApi).pipe(map(response => response));
     }
 
-    public getUser(id: number): Observable<User> {
-        return this.http.get<User>(`${usersApi}/${id}`).pipe(map(response => response));
+    public getUser(id: number): Observable<IUser> {
+        return this.http.get<IUser>(`${usersApi}/${id}`).pipe(map(response => response));
     }
 
-    public updateUser(id: number, updateRequest: UpdateRequest): Observable<User> {
-        return this.http.put<User>(`${usersApi}/${id}`, updateRequest)
-            .pipe(map((updatedUser: User) => {
+    public updateUser(id: number, userUpdateRequest: UserUpdateRequest): Observable<IUser> {
+        return this.http.put<IUser>(`${usersApi}/${id}`, userUpdateRequest)
+            .pipe(map((updatedUser: IUser) => {
                 // update current user if the logged in user updated their own record
                 if (id == this.authService.user.id) {
                     // publish updated user to subscribers
-                    this.authService.user = {...this.authService.user, ...updateRequest};
+                    this.authService.user = {...this.authService.user, ...userUpdateRequest};
+                }
+                return updatedUser;
+            }));
+    }
+
+    public updateUserRole(id: number, roleUpdateRequest: RoleUpdateRequest): Observable<IUser> {
+        return this.http.put<any>(`${usersApi}/${id}/role`, roleUpdateRequest)
+            .pipe(map((updatedUser: IUser) => {
+                // update current user role if the logged in user updated their own record
+                if (id == this.authService.user.id) {
+                    // publish updated user to subscribers
+                    this.authService.user = {...this.authService.user, ...roleUpdateRequest};
                 }
                 return updatedUser;
             }));

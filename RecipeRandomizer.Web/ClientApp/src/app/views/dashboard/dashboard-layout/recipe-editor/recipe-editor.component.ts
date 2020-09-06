@@ -163,7 +163,7 @@ export class RecipeEditorComponent implements OnInit {
         if (this.isEditMode) {
             this.recipeService.updateRecipe(this.recipe).subscribe(
                 response => {
-                    console.log(response);
+                    console.log(response); // TODO remove after check
                     this.onEditSuccess(response, 'Successfully updated this recipe!', 'Recipe could not be updated: Image upload failed.');
                 }, error => {
                     this.isLoading = false;
@@ -172,7 +172,7 @@ export class RecipeEditorComponent implements OnInit {
         } else {
             this.recipeService.addRecipe(this.recipe).subscribe(
                 response => {
-                    console.log(response);
+                    console.log(response); // TODO remove after check
                     this.onEditSuccess(response, 'Successfully created a new recipe!', 'Recipe could not be created: Image upload failed.');
                 }, () => {
                     this.isLoading = false;

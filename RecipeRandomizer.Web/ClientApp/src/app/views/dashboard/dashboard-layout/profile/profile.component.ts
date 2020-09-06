@@ -8,10 +8,11 @@ import {forkJoin} from 'rxjs';
 import {UserService} from '@app/services/user.service';
 import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
 import {environment} from '@env/environment';
-import {UpdateRequest} from '@app/models/identity/updateRequest';
 import {UploadService} from '@app/services/upload.service';
 import {FileUploadRequest} from '@app/models/fileUploadRequest';
 import {HttpEventType, HttpResponse} from '@angular/common/http';
+import {UserUpdateRequest} from '@app/models/identity/userUpdateRequest';
+import {RoleUpdateRequest} from '../../../../models/identity/roleUpdateRequest';
 
 @Component({
     selector: 'app-profile',
@@ -103,16 +104,20 @@ export class ProfileComponent implements OnInit {
         }
 
         this.isLoading = true;
-
-        this.userService.updateUser(this.user.id, new UpdateRequest({
-            username: this.f.username.value,
-            email: this.f.email.value,
-            role: this.f.role.value
-        })).subscribe(
+        this.userService.updateUser(this.user.id, new UserUpdateRequest(this.f.username.value, this.f.email.value)).subscribe(
             () => {
-                this.isLoading = false;
-                this.isEditMode = false;
-                this.alertService.success('Successfully updated profile');
+                if (this.user.role === Role.admin) {
+                    this.userService.updateUserRole(this.user.id, new RoleUpdateRequest(this.f.role.value)).subscribe(
+                        () => {
+                            this.onProfileUpdateSuccess();
+                        }, () => {
+                            this.isLoading = false;
+                            this.alertService.success('Role update failed');
+                        }
+                    );
+                } else {
+                    this.onProfileUpdateSuccess();
+                }
             }, () => {
                 this.isLoading = false;
                 this.alertService.success('Profile update failed');
@@ -149,20 +154,20 @@ export class ProfileComponent implements OnInit {
         this.uploadService.uploadFile(this.fileUploadRequest).subscribe(
             event => {
                 if (event.type === HttpEventType.UploadProgress) {
-                    this.avatarUploadProgress= Math.round(100 * event.loaded / event.total);
+                    this.avatarUploadProgress = Math.round(100 * event.loaded / event.total);
                 } else if (event instanceof HttpResponse) {
                     this.userService.getUser(this.user.id).subscribe(user => {
                         this.authService.user = user;
                         this.isUploading = false;
                         this.resetFileInput();
-                        this.alertService.success("Successfully updated avatar");
+                        this.alertService.success('Successfully updated avatar');
                     });
                 }
             },
             () => {
                 this.isUploading = false;
                 this.resetAvatar();
-                this.alertService.error("Avatar update failed");
+                this.alertService.error('Avatar update failed');
             });
     }
 
@@ -197,5 +202,11 @@ export class ProfileComponent implements OnInit {
 
             reader.readAsDataURL(file);
         });
+    }
+
+    private onProfileUpdateSuccess(): void {
+        this.isLoading = false;
+        this.isEditMode = false;
+        this.alertService.success('Successfully updated profile');
     }
 }

@@ -28,6 +28,7 @@ import {ChangePasswordModal} from './change-password/change-password-modal';
 import {UserListComponent} from './admin/user-list/user-list.component';
 import {OrphanRecipesComponent} from './admin/orphan-recipes/orphan-recipes.component';
 import {AttributionComponent} from './admin/attribution/attribution.component';
+import {ChangeRoleComponent} from './admin/change-role/change-role.component';
 
 @NgModule({
     imports: [
@@ -54,12 +55,14 @@ import {AttributionComponent} from './admin/attribution/attribution.component';
         CheatSheetComponent,
         UserListComponent,
         OrphanRecipesComponent,
-        AttributionComponent
+        AttributionComponent,
+        ChangeRoleComponent
     ],
     entryComponents: [
         ChangePasswordComponent,
         CheatSheetComponent,
-        AttributionComponent
+        AttributionComponent,
+        ChangeRoleComponent
     ],
     providers: [
         UnsavedChangesGuard
