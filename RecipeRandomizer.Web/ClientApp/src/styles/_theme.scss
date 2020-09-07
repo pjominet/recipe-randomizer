@@ -32,6 +32,14 @@ $link-color: $secondary;
         darken($bg-color, 10%), darken($bg-color, 12.5%));
 }
 
+.font-serif {
+    font-family: $font-family-serif;
+}
+
+.font-sans {
+    font-family: $font-family-sans-serif;
+}
+
 .btn {
     @include custom-box-shadow(3px, 3px, 10px, -2px, lighten($dark, 30%));
 
@@ -201,6 +209,14 @@ blockquote {
     color: $lighter;
     margin: 1.2rem 0;
     padding: .1rem .7rem;
+
+    a {
+        color: darken($secondary, 15%);
+
+        &:hover {
+            color: $secondary;
+        }
+    }
 }
 
 .img-circle {
