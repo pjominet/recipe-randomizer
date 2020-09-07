@@ -32,7 +32,7 @@ export class RecipeComponent implements OnInit {
     public get recipeImage(): string {
         return this.recipe.imageUri
             ? `${environment.staticFileUrl}/${this.recipe.imageUri}`
-            : 'assets/img/recipe_placeholder.jpg'
+            : 'assets/img/recipe_placeholder.jpg';
     }
 
     public ngOnInit(): void {
@@ -47,11 +47,13 @@ export class RecipeComponent implements OnInit {
         this.isLiked = !this.isLiked;
         this.recipeService.toggleRecipeLike(this.recipe.id, this.user.id, this.isLiked).subscribe(
             () => {
-                if (this.isLiked)
+                if (this.isLiked) {
                     this.recipe.likes.push(this.user.id);
-                else this.recipe.likes = this.recipe.likes.filter(l => l === this.user.id);
+                } else {
+                    this.recipe.likes = this.recipe.likes.filter(l => l === this.user.id);
+                }
             }
-        )
+        );
     }
 
     public costColor(cost: Cost): string {
@@ -97,7 +99,7 @@ export class RecipeComponent implements OnInit {
         if (time > 30 && time <= 90) {
             color = 'primary';
         } else if (time > 90) {
-            color = 'primary-dark'
+            color = 'primary-dark';
         }
         return color;
     }
