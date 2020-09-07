@@ -34,6 +34,11 @@ namespace RecipeRandomizer.Business.Services
             return _mapper.Map<IEnumerable<Recipe>>(_recipeRepository.GetRecipes());
         }
 
+        public int GetPublishedRecipeCount()
+        {
+            return _recipeRepository.GetPublishedRecipeCount();
+        }
+
         public IEnumerable<Recipe> GetDeletedRecipes()
         {
             return _mapper.Map<IEnumerable<Recipe>>(_recipeRepository.GetRecipes(true));

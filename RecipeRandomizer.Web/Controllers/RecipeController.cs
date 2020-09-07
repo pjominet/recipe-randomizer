@@ -1,11 +1,9 @@
 ﻿using System.Collections.Generic;
-using System.IO;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using RecipeRandomizer.Business.Interfaces;
 using RecipeRandomizer.Business.Models;
 using System.Linq;
-using System.Threading.Tasks;
 using RecipeRandomizer.Business.Models.Identity;
 using RecipeRandomizer.Web.Utils;
 
@@ -28,6 +26,13 @@ namespace RecipeRandomizer.Web.Controllers
             return Ok(tagIds.Any()
                 ? _recipeService.GetRecipesFromTags(tagIds)
                 : _recipeService.GetRecipes());
+        }
+
+        [HttpGet("published-count")]
+        [ProducesResponseType(typeof(int), StatusCodes.Status200OK)]
+        public IActionResult GetPublishedRecipeCount()
+        {
+            return Ok(_recipeService.GetPublishedRecipeCount());
         }
 
         [Authorize]

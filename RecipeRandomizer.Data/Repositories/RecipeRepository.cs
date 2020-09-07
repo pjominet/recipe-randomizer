@@ -12,6 +12,13 @@ namespace RecipeRandomizer.Data.Repositories
     {
         public RecipeRepository(RRContext context) : base(context) { }
 
+        public int GetPublishedRecipeCount()
+        {
+            return Context.Recipes
+                .Where(r => r.UserId.HasValue)
+                .Count(r => r.DeletedOn == null);
+        }
+
         public IEnumerable<Recipe> GetRecipes(bool deleted = false)
         {
             return Context.Recipes

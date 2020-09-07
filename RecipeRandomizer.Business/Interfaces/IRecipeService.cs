@@ -7,6 +7,7 @@ namespace RecipeRandomizer.Business.Interfaces
     public interface IRecipeService
     {
         public IEnumerable<Recipe> GetRecipes();
+        public int GetPublishedRecipeCount();
         public IEnumerable<Recipe> GetDeletedRecipes();
         public IEnumerable<Recipe> GetOrphanRecipes();
         public Recipe GetRecipe(int id);

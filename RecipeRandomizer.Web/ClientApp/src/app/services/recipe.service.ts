@@ -34,6 +34,10 @@ export class RecipeService {
         return this.http.get<Recipe[]>(url).pipe(map(response => response));
     }
 
+    public getPublishedRecipeCount(): Observable<number> {
+        return this.http.get<number>(`${recipeApi}/published-count`).pipe(map(response => response));
+    }
+
     public getCreatedRecipesForUser(userId: number): Observable<Recipe[]> {
         return this.http.get<Recipe[]>(`${recipeApi}/created/${userId}`).pipe(map(response => response));
     }
