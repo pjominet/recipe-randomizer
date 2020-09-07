@@ -25,7 +25,7 @@ namespace RecipeRandomizer.Web.Controllers
         [ProducesResponseType(typeof(User), StatusCodes.Status200OK)]
         public ActionResult<User> Authenticate([FromBody] AuthRequest request)
         {
-            var (user, refreshToken) = _authService.Authenticate(request, IpAddress());
+            var (user, refreshToken) = _authService.Authenticate(request, GetIpAddress());
             SetTokenCookie(refreshToken);
             return Ok(user);
         }
@@ -36,7 +36,7 @@ namespace RecipeRandomizer.Web.Controllers
         public ActionResult<User> RefreshToken()
         {
             var refreshToken = Request.Cookies["refreshToken"];
-            var (user, newRefreshToken) = _authService.RefreshToken(refreshToken, IpAddress());
+            var (user, newRefreshToken) = _authService.RefreshToken(refreshToken, GetIpAddress());
 
             if (user == null)
                 return NoContent();
@@ -63,7 +63,7 @@ namespace RecipeRandomizer.Web.Controllers
             if (!OwnsToken(User?.Id, token) && User?.Role != Role.Admin)
                 return Unauthorized(new {message = "Unauthorized"});
 
-            _authService.RevokeToken(token, IpAddress());
+            _authService.RevokeToken(token, GetIpAddress());
             return Ok(new {message = "Token revoked"});
         }
 
@@ -142,7 +142,7 @@ namespace RecipeRandomizer.Web.Controllers
             Response.Cookies.Append("refreshToken", token, cookieOptions);
         }
 
-        private string IpAddress()
+        private string GetIpAddress()
         {
             if (Request.Headers.ContainsKey("X-Forwarded-For"))
                 return Request.Headers["X-Forwarded-For"];
