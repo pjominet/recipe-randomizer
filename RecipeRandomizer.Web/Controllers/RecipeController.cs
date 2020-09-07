@@ -30,6 +30,7 @@ namespace RecipeRandomizer.Web.Controllers
                 : _recipeService.GetRecipes());
         }
 
+        [Authorize]
         [HttpGet("created/{id:int}")]
         [ProducesResponseType(typeof(List<Recipe>), StatusCodes.Status200OK)]
         public IActionResult GetRecipesForUser([FromRoute(Name = "id")] int id)
@@ -37,6 +38,7 @@ namespace RecipeRandomizer.Web.Controllers
             return Ok(_recipeService.GetRecipesForUser(id));
         }
 
+        [Authorize]
         [HttpGet("liked/{id:int}")]
         [ProducesResponseType(typeof(List<Recipe>), StatusCodes.Status200OK)]
         public IActionResult GetLikedRecipesForUser([FromRoute(Name = "id")] int id)
@@ -93,6 +95,7 @@ namespace RecipeRandomizer.Web.Controllers
                 : StatusCode(StatusCodes.Status500InternalServerError);
         }
 
+        [Authorize]
         [HttpPost]
         [Consumes("application/json")]
         [ProducesResponseType(StatusCodes.Status201Created)]
@@ -105,6 +108,7 @@ namespace RecipeRandomizer.Web.Controllers
                 : (IActionResult) StatusCode(StatusCodes.Status500InternalServerError);
         }
 
+        [Authorize]
         [HttpPost("image-upload")]
         [Consumes("multipart/form-data")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
@@ -127,6 +131,7 @@ namespace RecipeRandomizer.Web.Controllers
                 : StatusCode(StatusCodes.Status500InternalServerError);
         }
 
+        [Authorize]
         [HttpDelete("{id:int}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -137,6 +142,7 @@ namespace RecipeRandomizer.Web.Controllers
                 : StatusCode(StatusCodes.Status404NotFound);
         }
 
+        [Authorize]
         [HttpGet("restore/{id:int}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -149,6 +155,7 @@ namespace RecipeRandomizer.Web.Controllers
                 : (IActionResult) StatusCode(StatusCodes.Status404NotFound);
         }
 
+        [Authorize]
         [HttpGet("{recipeId:int}/liked-by/{userId:int}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
@@ -159,6 +166,7 @@ namespace RecipeRandomizer.Web.Controllers
                 : StatusCode(StatusCodes.Status500InternalServerError);
         }
 
+        [Authorize]
         [HttpPut]
         [Consumes("application/json")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]

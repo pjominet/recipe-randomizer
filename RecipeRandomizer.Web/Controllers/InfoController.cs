@@ -21,7 +21,7 @@ namespace RecipeRandomizer.Web.Controllers
         [ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
         public IActionResult GetApiInfo()
         {
-            return Ok("Recipe Randomizer API is currently running @" + _version);
+            return Ok("Recipe Repository API is currently running @" + _version);
         }
 
         [HttpGet("version")]

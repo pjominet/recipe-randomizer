@@ -57,7 +57,7 @@ namespace RecipeRandomizer.Business.Services
             var jwtToken = GenerateJwtToken(user);
 
             // check if there is already an active refresh token and use that instead of generating a new one
-            var activeRefreshToken = user.RefreshTokens.SingleOrDefault(r => r.IsActive && r.ExpiresOn >= DateTime.UtcNow);
+            var activeRefreshToken = user.RefreshTokens.FirstOrDefault(r => r.IsActive && r.ExpiresOn >= DateTime.UtcNow);
             var refreshToken = activeRefreshToken ?? GenerateRefreshToken(ipAddress);
 
             // save refresh token
