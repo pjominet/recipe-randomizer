@@ -27,6 +27,8 @@ import {RecipeComponent} from '@app/views/recipes/recipe/recipe.component';
 import {RecipeModal} from '@app/views/recipes/recipe/recipe-modal';
 import {RandomRecipeComponent} from './views/recipes/random-recipe/random-recipe.component';
 import {RecipeListComponent} from './views/recipes/recipe-list/recipe-list.component';
+import {AboutComponent} from './views/about/about.component';
+import {TermsServicesComponent} from './views/terms-services/terms-services.component';
 
 @NgModule({
     declarations: [
@@ -39,7 +41,9 @@ import {RecipeListComponent} from './views/recipes/recipe-list/recipe-list.compo
         RecipeComponent,
         RecipeModal,
         RandomRecipeComponent,
-        RecipeListComponent
+        RecipeListComponent,
+        AboutComponent,
+        TermsServicesComponent
     ],
     imports: [
         BrowserModule,

@@ -25,7 +25,10 @@
             </section>
             <hr class="my-4">
             <footer class="d-flex flex-column align-items-center mb-3">
-                <a routerLink="">Terms & Services</a>
+                <div id="footerLinks d-flex justify-content-center">
+                    <a routerLink="/about" class="mx-2">About</a>
+                    <a routerLink="/terms-and-services" class="mx-2">Terms & Services</a>
+                </div>
                 <span class="text-muted">made with ❤️ by Patrick Jominet</span>
             </footer>
         </div>
@@ -36,7 +39,7 @@
 <div id="cookiesInfo" *ngIf="showCookiesInfo">
     <p class="mb-1">
         This site uses cookies to optimize site functionality and give you the best possible experience.
-        <a routerLink="">Learn more</a>
+        <a routerLink="/terms-and-services">Learn more</a>
     </p>
     <div class="d-flex justify-content-end">
         <button type="button" class="btn btn-sm btn-success" (click)="acceptCookies()">OK</button>

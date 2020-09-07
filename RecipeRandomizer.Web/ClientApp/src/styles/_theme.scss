@@ -76,7 +76,7 @@ $link-color: $secondary;
 
     &-gradient {
         border: none;
-        background-image: linear-gradient(150deg, $primary 0%, $gradient-middle 35%, $secondary 100%);
+        background-image: linear-gradient(150deg, $secondary 0%, $gradient-middle 60%, $primary 100%);
         background-size: 170%;
         background-position: left;
         transition: background-position .75s;
