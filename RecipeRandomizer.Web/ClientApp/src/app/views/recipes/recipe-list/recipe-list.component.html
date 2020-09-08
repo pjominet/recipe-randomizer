@@ -1,34 +1,35 @@
 <h2 class="text-secondary text-center pt-5 mb-5">Recipe Browser</h2>
-<section class="container mb-4">
-    <div class="input-group w-75 mx-auto">
-        <div class="input-group-prepend">
-            <span class="input-group-text py-0">Add filters</span>
+<section class="container mb-4" *ngIf="tagCategories && selectionForm">
+    <form [formGroup]="selectionForm">
+        <div class="input-group w-75 mx-auto">
+            <div class="input-group-prepend">
+                <span class="input-group-text py-0">Add filters</span>
+            </div>
+            <ng-select class="custom-ng-select"
+                       [items]="tagCategories"
+                       [multiple]="true"
+                       groupBy="tags"
+                       [selectableGroup]="true"
+                       [selectableGroupAsModel]="false"
+                       [closeOnSelect]="false"
+                       formControlName="tags">
+                <ng-template ng-optgroup-tmp let-tagCategory="item" let-item$="item$" let-index="index">
+                    <div class="custom-control custom-checkbox">
+                        <label for="tag-group-{{index}}" class="sr-only"></label>
+                        <input type="checkbox" [checked]="item$.selected" class="custom-control-input" id="tag-group-{{index}}"/>
+                        <label class="custom-control-label">{{tagCategory.label | uppercase}}</label>
+                    </div>
+                </ng-template>
+                <ng-template ng-option-tmp let-tag="item" let-item$="item$" let-index="index">
+                    <div class="custom-control custom-checkbox">
+                        <label for="tag-{{index}}" class="sr-only"></label>
+                        <input type="checkbox" [checked]="item$.selected" class="custom-control-input" id="tag-{{index}}"/>
+                        <label class="custom-control-label">{{tag.label}}</label>
+                    </div>
+                </ng-template>
+            </ng-select>
         </div>
-        <ng-select class="custom-ng-select"
-                   [items]="tagCategories"
-                   [multiple]="true"
-                   groupBy="tags"
-                   [selectableGroup]="true"
-                   [selectableGroupAsModel]="false"
-                   [closeOnSelect]="false"
-                   [(ngModel)]="selectedTags"
-                   (change)="applyFilters()">
-            <ng-template ng-optgroup-tmp let-tagCategory="item" let-item$="item$" let-index="index">
-                <div class="custom-control custom-checkbox">
-                    <label for="tag-group-{{index}}" class="sr-only"></label>
-                    <input type="checkbox" [ngModel]="item$.selected" class="custom-control-input" id="tag-group-{{index}}"/>
-                    <label class="custom-control-label">{{tagCategory.label | uppercase}}</label>
-                </div>
-            </ng-template>
-            <ng-template ng-option-tmp let-tag="item" let-item$="item$" let-index="index">
-                <div class="custom-control custom-checkbox">
-                    <label for="tag-{{index}}" class="sr-only"></label>
-                    <input type="checkbox" [ngModel]="item$.selected" class="custom-control-input" id="tag-{{index}}"/>
-                    <label class="custom-control-label">{{tag.label}}</label>
-                </div>
-            </ng-template>
-        </ng-select>
-    </div>
+    </form>
 </section>
 <section class="container-fluid mb-3">
     <cdk-virtual-scroll-viewport [itemSize]="30" style="height: 500px">
@@ -69,7 +70,9 @@
 
     <ng-template #noRecipes>
         <p class="text-center text-muted">
-            There are no recipes yet :(
+            No recipes match the current filter selection 😢
+            <br>
+            Add one now <a routerLink="/dashboard/recipe-editor" class="btn btn-secondary btn-mini btn-circle ml-1"><i class="fas fa-fw fa-plus"></i></a>
         </p>
     </ng-template>
 </section>
