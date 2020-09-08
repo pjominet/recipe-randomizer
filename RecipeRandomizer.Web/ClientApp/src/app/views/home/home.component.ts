@@ -8,7 +8,6 @@ import {RecipeService} from '@app/services/recipe.service';
     styleUrls: ['./home.component.scss'],
 })
 export class HomeComponent implements OnInit {
-
     public showCookiesInfo: boolean = true;
     public recipeCount: number = 0;
 
@@ -17,7 +16,7 @@ export class HomeComponent implements OnInit {
         this.showCookiesInfo = this.cookieService.get('acceptedCookies') != 'true';
     }
 
-    public ngOnInit(): void {
+    ngOnInit(): void {
         this.recipeService.getPublishedRecipeCount().subscribe((count) => this.recipeCount = count);
     }
 

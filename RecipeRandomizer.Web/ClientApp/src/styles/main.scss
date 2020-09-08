@@ -17,9 +17,8 @@ body {
 
     .body-overlay {
         min-height: 100vh;
-        background-image: url("/../assets/img/artwork-bg-overlay.png");
-        background-repeat: no-repeat;
-        background-size: cover;
+        background-image: url("/../assets/img/bg-overlay.png");
+        background-repeat: repeat;
     }
 }
 
