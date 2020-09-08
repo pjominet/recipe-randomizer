@@ -22,7 +22,7 @@
                 <button [disabled]="isLoading" class="btn btn-primary mr-1">
                     <span *ngIf="isLoading" class="spinner-border spinner-border-sm mr-1"></span>Login
                 </button>
-                <a class="btn btn-outline-dark ml-1" routerLink="/">Cancel</a>
+                <button class="btn btn-outline-dark ml-1" (click)="back()">Cancel</button>
             </div>
 
             <div class="d-flex justify-content-center align-items-center">

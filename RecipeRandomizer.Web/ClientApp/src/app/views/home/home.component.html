@@ -6,19 +6,20 @@
             <app-random-recipe></app-random-recipe>
 
             <section class="text-center mt-2 mb-4">
-                <a routerLink="/recipes">
+                <a routerLink="/recipes" class="font-size-larger">
                     Browse all {{recipeCount}} recipes<i class="fas fa-stream ml-2"></i>
                 </a>
             </section>
-            <section>
-                <p class="text-center">
+            <section class="text-muted">
+                <p class="text-center mb-2">
                     Want to upload recipes yourself?
                 </p>
-                <div class="d-flex justify-content-center">
-                    <a class="btn btn-outline-info mr-1" routerLink="/auth/login">
+                <div class="d-flex justify-content-center align-items-center">
+                    <a class="btn btn-outline-info btn-ellipse mx-2" routerLink="/auth/login">
                         Sign-In
                     </a>
-                    <a class="btn btn-outline-info ml-1" routerLink="/auth/register">
+                    or
+                    <a class="btn btn-outline-info btn-ellipse mx-2" routerLink="/auth/register">
                         Sign-Up
                     </a>
                 </div>
