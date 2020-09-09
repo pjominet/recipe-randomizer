@@ -96,10 +96,10 @@ namespace RecipeRandomizer.Data.Repositories
                 .Where(r => matchingRecipeIds.Contains(r.Id))
                 .Where(r => r.DeletedOn == null)
                 .Where(r => r.UserId.HasValue)
-                .Distinct();
+                .OrderBy(r => r.CreatedOn);
 
             if (!recipes.Any())
-                return null;
+                return Enumerable.Empty<Recipe>().AsQueryable();
 
             return recipes
                 .Include(r => r.User)
@@ -110,5 +110,6 @@ namespace RecipeRandomizer.Data.Repositories
         }
 
         #endregion
+
     }
 }
