@@ -1,5 +1,5 @@
 <div class="container vh-100 d-flex align-items-center">
-    <div class="card w-100">
+    <div class="card card-2-rounded-corners w-100">
         <div class="card-body">
             <h1 id="mainHeading">The Recipe Repository</h1>
 
@@ -15,13 +15,15 @@
                     Want to upload recipes yourself?
                 </p>
                 <div class="d-flex justify-content-center align-items-center">
-                    <a class="btn btn-outline-info btn-ellipse mx-2" routerLink="/auth/login">
+                    <a class="btn btn-outline-primary btn-ellipse mx-2" routerLink="/auth/login">
                         Sign-In
                     </a>
-                    or
-                    <a class="btn btn-outline-info btn-ellipse mx-2" routerLink="/auth/register">
-                        Sign-Up
-                    </a>
+                    <ng-container *ngIf="!user">
+                        or
+                        <a class="btn btn-outline-primary btn-ellipse mx-2" routerLink="/auth/register">
+                            Sign-Up
+                        </a>
+                    </ng-container>
                 </div>
             </section>
             <hr class="my-4">

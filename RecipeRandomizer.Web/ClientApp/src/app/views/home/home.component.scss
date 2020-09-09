@@ -1,10 +1,6 @@
 ﻿@import 'variables';
 @import 'mixins';
 
-.card {
-    @include border-radius-by-corner(0, 45px, 45px, 0);
-}
-
 #mainHeading {
     font-family: $font-family-serif;
     font-weight: bold;

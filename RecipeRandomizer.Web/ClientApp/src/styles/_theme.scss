@@ -126,6 +126,13 @@ $link-color: $secondary;
     }
 }
 
+.card {
+    &-2-rounded-corners {
+        @include border-radius-by-corner(0, 45px, 45px, 0);
+
+    }
+}
+
 // ng-select variable override
 $ng-select-highlight: $secondary;
 $ng-select-primary-text: $white;
@@ -205,15 +212,6 @@ $ng-select-value-font-size: 0.9em;
     .no-label {
         margin-top: 2rem;
     }
-}
-
-pre {
-    line-height: 1.5;
-    white-space: pre-wrap;
-}
-
-pre > code, code {
-    color: $info;
 }
 
 blockquote {
