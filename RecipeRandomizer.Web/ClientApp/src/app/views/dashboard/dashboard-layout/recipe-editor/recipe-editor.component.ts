@@ -163,17 +163,20 @@ export class RecipeEditorComponent implements OnInit {
         if (this.isEditMode) {
             this.recipeService.updateRecipe(this.recipe).subscribe(
                 response => {
+                    this.resetView();
                     this.onEditSuccess(response, 'Successfully updated this recipe!');
                 }, error => {
-                    this.isLoading = false;
+                    this.resetView();
                     this.alertService.error('Recipe could not be updated.');
                 });
         } else {
             this.recipeService.addRecipe(this.recipe).subscribe(
                 response => {
+                    this.resetFrom();
+                    this.resetView();
                     this.onEditSuccess(response, 'Successfully created a new recipe!');
                 }, error => {
-                    this.isLoading = false;
+                    this.resetView();
                     this.alertService.error('Recipe could not be created.');
                 });
         }
@@ -185,6 +188,11 @@ export class RecipeEditorComponent implements OnInit {
         this.recipeForm.reset();
         // re-add starting element
         this.onIngredientAdd();
+    }
+
+    private resetView(): void {
+        this.isLoading = false;
+        window.scrollTo(0, 0);
     }
 
     private addIngredientGroup(): FormGroup {
