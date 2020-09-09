@@ -2,7 +2,7 @@
     <form name="form" #f="ngForm" (ngSubmit)="f.form.valid && onSubmit()" novalidate>
         <div class="form-group">
             <label for="userSelect">Select a role</label>
-            <select name="userId" #userId="ngModel" class="form-control" id="userSelect" [(ngModel)]="user.role"
+            <select name="userId" #userId="ngModel" class="custom-select" id="userSelect" [(ngModel)]="user.role"
                     [ngClass]="{ 'is-invalid': f.submitted && userId.invalid }" required>
                 <option *ngFor="let role of roles | enumList" [value]="role.key">{{role.value | uppercase}}</option>
             </select>

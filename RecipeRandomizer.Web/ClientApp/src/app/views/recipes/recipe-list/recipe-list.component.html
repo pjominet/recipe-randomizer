@@ -1,5 +1,5 @@
 <h2 class="text-secondary text-center pt-5 mb-5">Recipe Browser</h2>
-<section class="container mb-4" *ngIf="tagCategories && selectionForm">
+<section class="container mb-4" *ngIf="tagCategories">
     <form [formGroup]="selectionForm">
         <div class="input-group w-75 mx-auto">
             <div class="input-group-prepend">
@@ -32,8 +32,8 @@
     </form>
 </section>
 <section class="container-fluid mb-3">
-    <cdk-virtual-scroll-viewport [itemSize]="30" style="height: 500px">
-        <table class="table table-hover" *ngIf="recipes.length > 0; else noRecipes">
+    <cdk-virtual-scroll-viewport [itemSize]="30" style="height: 500px" *ngIf="recipes.length > 0; else noRecipes">
+        <table class="table table-hover">
             <thead>
             <tr>
                 <th scope="col">Name</th>

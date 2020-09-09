@@ -2,7 +2,7 @@
     <form name="form" #f="ngForm" (ngSubmit)="f.form.valid && onSubmit()" novalidate>
         <div class="form-group">
             <label for="userSelect">Select a user</label>
-            <select name="userId" #userId="ngModel" class="form-control" id="userSelect" [(ngModel)]="selectedUserId"
+            <select name="userId" #userId="ngModel" class="custom-select" id="userSelect" [(ngModel)]="selectedUserId"
                     [ngClass]="{ 'is-invalid': f.submitted && userId.invalid }" required [disabled]="isLoading">
                 <option *ngFor="let user of existingUsers" [value]="user.id">{{user.username}}</option>
             </select>

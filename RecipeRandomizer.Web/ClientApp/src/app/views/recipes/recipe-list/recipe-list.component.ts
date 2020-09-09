@@ -7,7 +7,6 @@ import {ActivatedRoute, Router} from '@angular/router';
 import {Difficulty} from '@app/models/nomenclature/difficulty';
 import {FormBuilder, FormGroup} from '@angular/forms';
 import {Subscription} from 'rxjs';
-import {Tag} from '@app/models/nomenclature/tag';
 
 @Component({
     selector: 'app-recipe-list',
@@ -31,52 +30,47 @@ export class RecipeListComponent implements OnInit, OnDestroy {
     }
 
     public ngOnInit(): void {
+        this.selectionForm = this.formBuilder.group({
+            tags: ['']
+        });
+
+        this.onSelectionChange();
+
         this.tagService.getTagCategories().subscribe(categories => {
             this.tagCategories = categories;
 
             const params = this.route.snapshot.queryParams['tag']
             const paramTagIds = Array.isArray(params) ? params.map(p => +p) : [+params];
             const tags = [].concat.apply([], this.tagCategories.map(tc => tc.tags));
-            this.selectionForm = this.formBuilder.group({
-                tags: [tags.filter(t => paramTagIds.includes(t.id))]
-            });
 
-            this.onSelectionChange();
             if(paramTagIds.length > 0){
-                this.applyFilters(this.selectionForm.controls.tags.value.map(t => t.id));
+                this.selectionForm.patchValue({
+                    tags: tags.filter(t => paramTagIds.includes(t.id))
+                }, {emitEvent: true});
             }
         });
-
-        this.recipeService.getRecipes().subscribe(
-            recipes => {
-                this.recipes = recipes;
-            }, error => {
-                console.log(error);
-            }
-        );
     }
 
     public onSelectionChange(): void {
         this.sub = this.selectionForm.valueChanges.subscribe(
             (formControls) => {
-                console.log(formControls.tags);
-                this.applyFilters(formControls.tags?.map(t => t.id));
+                this.applyFilters(formControls.tags.map(t => t.id));
             });
     }
 
     private applyFilters(selectedTagIds: number[]): void {
+        this.router.navigate([], {relativeTo: this.route, replaceUrl: true, queryParams: {tag: selectedTagIds}});
+
         if(selectedTagIds.length > 0) {
-            console.log(selectedTagIds);
-            this.router.navigate([], {relativeTo: this.route, replaceUrl: true, queryParams: {tag: selectedTagIds}});
             this.recipeService.getRecipes(selectedTagIds).subscribe(
                 recipes => {
-                    console.log(recipes);
-                    this.recipes = recipes;
-                }, error => {
-                    console.log(error);
-                }
-            );
-        }
+                    console.log('tagged', recipes);
+                    this.recipes = recipes
+                });
+        } else this.recipeService.getRecipes().subscribe(recipes => {
+            console.log('noTags', recipes);
+            this.recipes = recipes
+        });
     }
 
     public showRecipe(id: number): void {
