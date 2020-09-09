@@ -100,11 +100,17 @@ namespace RecipeRandomizer.Business.Services
             var newRecipe = _mapper.Map<Entities.Recipe>(recipe);
             newRecipe.CreatedOn = DateTime.UtcNow;
             newRecipe.UpdatedOn = DateTime.UtcNow;
-            foreach (var tag in recipe.Tags)
-                _recipeRepository.Insert(_mapper.Map(new Entities.RecipeTagAssociation(), tag));
-
             _recipeRepository.Insert(newRecipe);
-            return _recipeRepository.SaveChanges() ? newRecipe.Id : -1;
+
+            var result = _recipeRepository.SaveChanges();
+            if (!result)
+                return -1;
+
+            foreach (var tag in recipe.Tags)
+                _recipeRepository.Insert(new Entities.RecipeTagAssociation {TagId = tag.Id, RecipeId = newRecipe.Id});
+
+            result &= _recipeRepository.SaveChanges();
+            return result ? newRecipe.Id : -1;
         }
 
         public bool UploadRecipeImage(Stream sourceStream, string untrustedFileName, int id)
