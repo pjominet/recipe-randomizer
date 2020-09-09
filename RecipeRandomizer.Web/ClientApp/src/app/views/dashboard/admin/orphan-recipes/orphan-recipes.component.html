@@ -1,5 +1,7 @@
 <h1 class="h1 mt-3">Orphaned Recipes</h1>
-<p class="text-muted mb-4">List of all recipes that do not have an attributed creator</p>
+<p class="text-muted mb-4">
+    List of all recipes that do not have an attributed creator anymore (i.e. account deleted)
+</p>
 <section class="container-fluid mb-3">
     <cdk-virtual-scroll-viewport [itemSize]="30" style="height: 500px">
         <table class="table table-hover table-fixed" *ngIf="orphans.length > 0; else noRecipes">
@@ -39,7 +41,7 @@
 
     <ng-template #noRecipes>
         <p class="text-muted">
-            There are currently no orphaned recipes 😃
+            There are currently no abandoned recipes 😃
         </p>
     </ng-template>
 </section>

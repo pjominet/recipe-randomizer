@@ -40,7 +40,7 @@ const routes: Routes = [
                 ], data: {showBackButton: false}
             },
             {path: 'admin/user-list', component: UserListComponent, canActivate: [AuthGuard], data: {roles: [Role.admin]}},
-            {path: 'admin/orphan-recipes', component: OrphanRecipesComponent, canActivate: [AuthGuard], data: {roles: [Role.admin]}},
+            {path: 'admin/abandoned-recipes', component: OrphanRecipesComponent, canActivate: [AuthGuard], data: {roles: [Role.admin]}},
         ]
     }
 ];
