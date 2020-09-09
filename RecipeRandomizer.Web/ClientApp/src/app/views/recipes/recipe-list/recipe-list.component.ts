@@ -64,12 +64,14 @@ export class RecipeListComponent implements OnInit, OnDestroy {
         if(selectedTagIds.length > 0) {
             this.recipeService.getRecipes(selectedTagIds).subscribe(
                 recipes => {
-                    console.log('tagged', recipes);
-                    this.recipes = recipes
+                    this.recipes = recipes.sort((a, b) => {
+                        return new Date(b.createdOn).getTime() - new Date(a.createdOn).getTime();
+                    });
                 });
         } else this.recipeService.getRecipes().subscribe(recipes => {
-            console.log('noTags', recipes);
-            this.recipes = recipes
+            this.recipes = recipes.sort((a, b) => {
+                return new Date(b.createdOn).getTime() - new Date(a.createdOn).getTime();
+            });
         });
     }
 

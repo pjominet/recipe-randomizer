@@ -55,9 +55,7 @@
                                 "src/styles"
                             ]
                         },
-                        "scripts": [
-                            "node_modules/marked/lib/marked.js"
-                        ]
+                        "scripts": []
                     },
                     "configurations": {
                         "production": {

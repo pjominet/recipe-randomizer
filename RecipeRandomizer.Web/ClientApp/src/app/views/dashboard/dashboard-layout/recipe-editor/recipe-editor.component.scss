@@ -1,5 +1,10 @@
-textarea {
-    overflow: auto;
-    height: 250px;
-    resize: none;
+@import 'variables';
+
+:host ::ng-deep .ck-editor__editable {
+    min-height: 250px;
+}
+
+:host ::ng-deep ckeditor.is-invalid :host ::ng-deep .ck-editor {
+    border-color: $danger;
+    padding-right: calc(1.5em + 0.75rem);
 }

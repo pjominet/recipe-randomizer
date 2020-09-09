@@ -45,8 +45,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="ClientApp\src\app\views\dashboard\admin" />
-      <Folder Include="wwwroot\images\recipes" />
+      <Folder Include="wwwroot\images\users" />
     </ItemGroup>
 
     <Target Name="DebugEnsureNodeEnv" BeforeTargets="Build" Condition=" '$(Configuration)' == 'Debug' And !Exists('$(SpaRoot)node_modules') ">

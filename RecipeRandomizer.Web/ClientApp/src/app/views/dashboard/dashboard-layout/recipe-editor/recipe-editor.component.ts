@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnInit, ViewEncapsulation} from '@angular/core';
 import {FormArray, FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {ActivatedRoute} from '@angular/router';
 import {Recipe} from '@app/models/recipe';
@@ -17,9 +17,9 @@ import {FileUploadRequest} from '@app/models/fileUploadRequest';
 import {environment} from '@env/environment';
 import {UploadService} from '@app/services/upload.service';
 import {HttpEventType, HttpResponse} from '@angular/common/http';
-import {NgbModal, NgbTooltip} from '@ng-bootstrap/ng-bootstrap';
-import {CheatSheetComponent} from '@app/components/cheat-sheet/cheat-sheet.component';
+import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
 import {FileUploadService} from '@app/components/file-upload/file-upload.service';
+import * as ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 
 @Component({
     selector: 'app-recipe-editor',
@@ -43,6 +43,34 @@ export class RecipeEditorComponent implements OnInit {
     public fileUploadSuccess: boolean = false;
     public changeImage: boolean = false;
     public imageUploadProgress: number = 0;
+
+    public editor = ClassicEditor;
+    public editorConfig = {
+        removePlugin: [
+            'CKFinderUploadAdapter',
+            'CKFinder',
+            'EasyImage',
+            'Image',
+            'ImageCaption',
+            'ImageStyle',
+            'ImageToolbar',
+            'ImageUpload',
+            'Link',
+            'MediaEmbed',
+        ],
+        toolbar: [
+            'heading', '|',
+            'bold', 'italic', 'bulletedList', 'numberedList', '|',
+            'undo', 'redo'
+        ],
+        heading: {
+            options: [
+                {model: 'paragraph', title: 'Paragraph', class: 'ck-heading_paragraph'},
+                {model: 'heading1', view: 'h4', title: 'Heading 1', class: 'ck-heading_heading1'},
+                {model: 'heading2', view: 'h5', title: 'Heading 2', class: 'ck-heading_heading2'}
+            ]
+        }
+    };
 
     constructor(private route: ActivatedRoute,
                 private formBuilder: FormBuilder,
@@ -141,11 +169,6 @@ export class RecipeEditorComponent implements OnInit {
 
     public onFileStaged(file: File): void {
         this.fileUploadRequest.file = file;
-    }
-
-    public showCheatSheet(tooltip: NgbTooltip): void {
-        tooltip.close();
-        this.modalService.open(CheatSheetComponent, {size: 'xl', scrollable: true});
     }
 
     public onSubmit(): void {

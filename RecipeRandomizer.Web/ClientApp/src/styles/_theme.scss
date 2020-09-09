@@ -66,16 +66,30 @@ $link-color: $secondary;
         border: none !important;
     }
 
+    &-primary-translucent {
+        @include bootstrap-button(rgba($primary, .75));
+        border: none !important;
+    }
+
     &-secondary-translucent {
-        @include bootstrap-button(rgba($secondary, .85));
+        @include bootstrap-button(rgba($secondary, .75));
+        border: none !important;
     }
 
     &-info-translucent {
-        @include bootstrap-button(rgba($info, .85));
+        @include bootstrap-button(rgba($info, .75));
+        border: none !important;
     }
 
     &-light-translucent {
-        @include bootstrap-button(rgba($lighter, .85));
+        @include bootstrap-button(rgba($lighter, .75));
+        border: none !important;
+
+    }
+
+    &-dark-translucent {
+        @include bootstrap-button(rgba($dark, .75));
+        border: none !important;
     }
 
     &-ellipse {

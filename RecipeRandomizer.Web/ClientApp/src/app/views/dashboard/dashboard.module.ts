@@ -3,8 +3,8 @@ import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {CommonModule} from '@angular/common';
 import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
 import {NgSelectModule} from '@ng-select/ng-select';
-import {MarkdownModule} from 'ngx-markdown';
 import {ScrollingModule} from '@angular/cdk/scrolling';
+import {CKEditorModule} from '@ckeditor/ckeditor5-angular';
 
 import {DashboardRoutingModule} from './dashboard.routing';
 
@@ -16,7 +16,6 @@ import {EnumListPipe} from '@app/helpers/enumlist.pipe';
 import {NavbarComponent} from '@app/components/navbar/navbar.component';
 import {TopbarComponent} from '@app/components/topbar/topbar.component';
 import {FileUploadComponent} from '@app/components/file-upload/file-upload.component';
-import {CheatSheetComponent} from '@app/components/cheat-sheet/cheat-sheet.component';
 
 // views
 import {DashboardLayoutComponent} from './dashboard-layout/dashboard-layout.component';
@@ -38,8 +37,8 @@ import {ChangeRoleComponent} from './admin/change-role/change-role.component';
         DashboardRoutingModule,
         NgbModule,
         NgSelectModule,
-        MarkdownModule.forChild(),
-        ScrollingModule
+        ScrollingModule,
+        CKEditorModule
     ],
     declarations: [
         DashboardLayoutComponent,
@@ -52,7 +51,6 @@ import {ChangeRoleComponent} from './admin/change-role/change-role.component';
         ChangePasswordModal,
         EnumListPipe,
         FileUploadComponent,
-        CheatSheetComponent,
         UserListComponent,
         OrphanRecipesComponent,
         AttributionComponent,
@@ -60,7 +58,6 @@ import {ChangeRoleComponent} from './admin/change-role/change-role.component';
     ],
     entryComponents: [
         ChangePasswordComponent,
-        CheatSheetComponent,
         AttributionComponent,
         ChangeRoleComponent
     ],
