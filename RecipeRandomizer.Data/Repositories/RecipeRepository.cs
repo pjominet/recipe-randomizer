@@ -52,6 +52,38 @@ namespace RecipeRandomizer.Data.Repositories
             return GetRecipesFromTagsQueryable(tagIds).AsEnumerable();
         }
 
+        public IEnumerable<Recipe> GetLikedRecipesForUser(int userId)
+        {
+            var recipes = Context.RecipeLikes
+                .Where(rl => rl.UserId == userId)
+                .Select(rl => rl.Recipe)
+                .Where(r => r.DeletedOn == null)
+                .Distinct();
+
+            if (!recipes.Any())
+                return null;
+
+            return recipes
+                .Include(r => r.User)
+                .Include(r => r.Ingredients)
+                .ThenInclude(i => i.QuantityUnit)
+                .Include(r => r.RecipeTagAssociations)
+                .ThenInclude(rta => rta.Tag);
+        }
+
+        public void HardDeleteRecipe(int id)
+        {
+            foreach (var tagAssociation in Context.RecipeTagAssociations.Where(rta => rta.RecipeId == id))
+                Delete(tagAssociation);
+
+            foreach (var recipeLike in Context.RecipeLikes.Where(rl => rl.RecipeId == id))
+                Delete(recipeLike);
+
+            Delete(Context.Recipes.Where(r => r.Id == id));
+        }
+
+        #region helpers
+
         private IQueryable<Recipe> GetRecipesFromTagsQueryable(ICollection<int> tagIds)
         {
             var matchingRecipeIds = Context.RecipeTagAssociations
@@ -77,35 +109,6 @@ namespace RecipeRandomizer.Data.Repositories
                 .ThenInclude(rta => rta.Tag);
         }
 
-        public IEnumerable<Recipe> GetLikedRecipesForUser(int userId)
-        {
-            var recipes = Context.RecipeLikes
-                .Where(rl => rl.UserId == userId)
-                .Select(rl => rl.Recipe)
-                .Where(r => r.DeletedOn == null)
-                .Distinct();
-
-            if (!recipes.Any())
-                return null;
-
-            foreach (var recipe in recipes.ToList())
-            {
-                recipe.Ingredients = Context.Ingredients.Where(i => i.RecipeId == recipe.Id).Include(i => i.QuantityUnit).ToList();
-                recipe.RecipeTagAssociations = Context.RecipeTagAssociations.Where(rta => rta.RecipeId == recipe.Id).Include(rta => rta.Tag).ToList();
-                recipe.User = Context.Users.Single(u => u.Id == recipe.UserId);
-            }
-            return recipes;
-        }
-
-        public void HardDeleteRecipe(int id)
-        {
-            foreach (var tagAssociation in Context.RecipeTagAssociations.Where(rta => rta.RecipeId == id))
-                Delete(tagAssociation);
-
-            foreach (var recipeLike in Context.RecipeLikes.Where(rl => rl.RecipeId == id))
-                Delete(recipeLike);
-
-            Delete(Context.Recipes.Where(r => r.Id == id));
-        }
+        #endregion
     }
 }
