@@ -3,7 +3,15 @@
 
 .nav {
     &-header {
+        display: block;
         height: $topbar-height;
+        margin-left: 1rem;
+
+        img {
+            max-height: $topbar-height;
+            width: auto;
+            padding: 0.5rem 1rem;
+        }
     }
 
     &-body {
