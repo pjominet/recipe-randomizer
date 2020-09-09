@@ -102,7 +102,7 @@ namespace RecipeRandomizer.Web.Controllers
         }
 
         [Authorize(Role.Admin)]
-        [HttpPost("{id:int}")]
+        [HttpPost("lock/{id:int}")]
         [ProducesResponseType(typeof(object), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public IActionResult ToggleUserLock([FromRoute] int id, [FromBody] LockRequest lockRequest)

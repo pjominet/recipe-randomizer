@@ -129,7 +129,19 @@ namespace RecipeRandomizer.Business.Services
 
         public bool ToggleUserLock(int id, LockRequest lockRequest)
         {
-            return false;
+            if (lockRequest.LockedById.HasValue && lockRequest.LockedById == id)
+                throw new BadRequestException("Locking yourself is not allowed!");
+
+            var user = _userRepository.GetFirstOrDefault<Entities.User>(u => u.Id == id);
+
+            user.LockedOn = lockRequest.UserLock
+                ? (DateTime?) DateTime.UtcNow
+                : null;
+
+            user.LockedById = lockRequest.LockedById;
+
+            _userRepository.Update(user);
+            return _userRepository.SaveChanges();
         }
     }
 }

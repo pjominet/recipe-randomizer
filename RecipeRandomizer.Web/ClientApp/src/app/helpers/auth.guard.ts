@@ -29,7 +29,7 @@ export class AuthGuard implements CanActivate {
             return true;
         }
 
-        this.alertService.warn("You are not logged in!", {keepAfterRouteChange: true, autoCloseTimeOut: 1500});
+        this.alertService.info("Your session has expired!", {keepAfterRouteChange: true, autoCloseTimeOut: 2000});
         // not logged in so redirect to login page with the return url
         this.router.navigate(['/auth/login'], {queryParams: {returnUrl: state.url}});
         return false;
