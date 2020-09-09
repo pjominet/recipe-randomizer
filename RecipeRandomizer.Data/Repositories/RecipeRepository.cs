@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Migrations.Operations;
 using RecipeRandomizer.Data.Contexts;
 using RecipeRandomizer.Data.Entities;
 
@@ -41,43 +40,41 @@ namespace RecipeRandomizer.Data.Repositories
 
             var recipes = Context.Recipes.Select(r => r);
             if (tagIds.Any())
-                recipes = Context.RecipeTagAssociations
-                    .Where(rta => tagIds.Contains(rta.TagId))
-                    .Select(rta => rta.Recipe);
-
-            if (!recipes.Any())
-                return null;
+                recipes = GetRecipesFromTagsQueryable(tagIds);
 
             return recipes
-                .Where(r => r.DeletedOn == null)
-                .Where(r => r.UserId.HasValue)
                 .Skip(rnd.Next(0, total))
-                .Include(r => r.User)
-                .Include(r => r.Ingredients)
-                .ThenInclude(i => i.QuantityUnit)
-                .Include(r => r.RecipeTagAssociations)
-                .ThenInclude(rta => rta.Tag)
                 .FirstOrDefault()?.Id;
         }
 
         public IEnumerable<Recipe> GetRecipesFromTags(IList<int> tagIds)
         {
-            var recipes = Context.RecipeTagAssociations
+            return GetRecipesFromTagsQueryable(tagIds).AsEnumerable();
+        }
+
+        private IQueryable<Recipe> GetRecipesFromTagsQueryable(ICollection<int> tagIds)
+        {
+            var matchingRecipeIds = Context.RecipeTagAssociations
                 .Where(rta => tagIds.Contains(rta.TagId))
-                .Select(rta => rta.Recipe)
+                .GroupBy(rta => rta.RecipeId)
+                .Where(grp => grp.Count() == tagIds.Count)
+                .Select(grp => grp.Key);
+
+            var recipes = Context.Recipes
+                .Where(r => matchingRecipeIds.Contains(r.Id))
+                .Where(r => r.DeletedOn == null)
                 .Where(r => r.UserId.HasValue)
-                .Where(r => r.DeletedOn == null);
+                .Distinct();
 
             if (!recipes.Any())
                 return null;
 
-            foreach (var recipe in recipes.ToList())
-            {
-                recipe.Ingredients = Context.Ingredients.Where(i => i.RecipeId == recipe.Id).Include(i => i.QuantityUnit).ToList();
-                recipe.RecipeTagAssociations = Context.RecipeTagAssociations.Where(rta => rta.RecipeId == recipe.Id).Include(rta => rta.Tag).ToList();
-                recipe.User = Context.Users.Single(u => u.Id == recipe.UserId);
-            }
-            return recipes;
+            return recipes
+                .Include(r => r.User)
+                .Include(r => r.Ingredients)
+                .ThenInclude(i => i.QuantityUnit)
+                .Include(r => r.RecipeTagAssociations)
+                .ThenInclude(rta => rta.Tag);
         }
 
         public IEnumerable<Recipe> GetLikedRecipesForUser(int userId)
@@ -85,7 +82,8 @@ namespace RecipeRandomizer.Data.Repositories
             var recipes = Context.RecipeLikes
                 .Where(rl => rl.UserId == userId)
                 .Select(rl => rl.Recipe)
-                .Where(r => r.DeletedOn == null);
+                .Where(r => r.DeletedOn == null)
+                .Distinct();
 
             if (!recipes.Any())
                 return null;
