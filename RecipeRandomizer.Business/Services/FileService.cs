@@ -18,16 +18,19 @@ namespace RecipeRandomizer.Business.Services
 
         public FileService()
         {
+            // https://www.filesignatures.net/
             _allowedFileExtensions = new List<AllowedFileExtension>
             {
                 new AllowedFileExtension
                 {
-                    ExtensionAliases = new List<string> {".jpeg", ".jpg"},
+                    ExtensionAliases = new List<string> {".jpeg", ".jpg", ".jpe"},
                     Signatures = new List<byte[]>
                     {
                         new byte[] {0xFF, 0xD8, 0xFF, 0xE0},
+                        new byte[] {0xFF, 0xD8, 0xFF, 0xE1},
                         new byte[] {0xFF, 0xD8, 0xFF, 0xE2},
-                        new byte[] {0xFF, 0xD8, 0xFF, 0xE3}
+                        new byte[] {0xFF, 0xD8, 0xFF, 0xE3},
+                        new byte[] {0xFF, 0xD8, 0xFF, 0xE8},
                     }
                 },
                 new AllowedFileExtension
