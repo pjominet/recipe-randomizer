@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using RecipeRandomizer.Data.Contexts;
 using RecipeRandomizer.Data.Entities;
@@ -11,16 +12,16 @@ namespace RecipeRandomizer.Data.Repositories
     {
         public RecipeRepository(RRContext context) : base(context) { }
 
-        public int GetPublishedRecipeCount()
+        public async Task<int> GetPublishedRecipeCountAsync()
         {
-            return Context.Recipes
+            return await Context.Recipes
                 .Where(r => r.UserId.HasValue)
-                .Count(r => r.DeletedOn == null);
+                .CountAsync(r => r.DeletedOn == null);
         }
 
-        public IEnumerable<Recipe> GetRecipes(bool deleted = false)
+        public async Task<IEnumerable<Recipe>> GetRecipesAsync(bool deleted = false)
         {
-            return Context.Recipes
+            return await Context.Recipes
                 .Where(r => r.UserId.HasValue)
                 .Include(r => r.Cost)
                 .Include(r => r.Difficulty)
@@ -29,30 +30,30 @@ namespace RecipeRandomizer.Data.Repositories
                 .ThenInclude(i => i.QuantityUnit)
                 .Include(r => r.RecipeTagAssociations)
                 .ThenInclude(rta => rta.Tag)
-                .AsEnumerable()
-                .Where(r => r.IsDeleted == deleted);
+                .Where(r => (r.DeletedOn != null) == deleted)
+                .ToListAsync();
         }
 
-        public int? GetRandomRecipe(IList<int> tagIds)
+        public async Task<Recipe> GetRandomRecipeAsync(IList<int> tagIds)
         {
-            var total = Context.Recipes.Count();
+            var total = await Context.Recipes.CountAsync();
             var rnd = new Random();
 
             var recipes = Context.Recipes.Select(r => r);
             if (tagIds.Any())
-                recipes = GetRecipesFromTagsQueryable(tagIds);
+                recipes = GetRecipesFromTagsAsQueryable(tagIds);
 
-            return recipes
+            return await recipes
                 .Skip(rnd.Next(0, total))
-                .FirstOrDefault()?.Id;
+                .FirstOrDefaultAsync();
         }
 
-        public IEnumerable<Recipe> GetRecipesFromTags(IList<int> tagIds)
+        public async Task<IEnumerable<Recipe>> GetRecipesFromTagsAsync(IList<int> tagIds)
         {
-            return GetRecipesFromTagsQueryable(tagIds).AsEnumerable();
+            return await GetRecipesFromTagsAsQueryable(tagIds).ToListAsync();
         }
 
-        public IEnumerable<Recipe> GetLikedRecipesForUser(int userId)
+        public async Task<IEnumerable<Recipe>> GetLikedRecipesForUserAsync(int userId)
         {
             var recipes = Context.RecipeLikes
                 .Where(rl => rl.UserId == userId)
@@ -63,12 +64,13 @@ namespace RecipeRandomizer.Data.Repositories
             if (!recipes.Any())
                 return null;
 
-            return recipes
+            return await recipes
                 .Include(r => r.User)
                 .Include(r => r.Ingredients)
                 .ThenInclude(i => i.QuantityUnit)
                 .Include(r => r.RecipeTagAssociations)
-                .ThenInclude(rta => rta.Tag);
+                .ThenInclude(rta => rta.Tag)
+                .ToListAsync();
         }
 
         public void HardDeleteRecipe(int id)
@@ -84,7 +86,7 @@ namespace RecipeRandomizer.Data.Repositories
 
         #region helpers
 
-        private IQueryable<Recipe> GetRecipesFromTagsQueryable(ICollection<int> tagIds)
+        private IQueryable<Recipe> GetRecipesFromTagsAsQueryable(ICollection<int> tagIds)
         {
             var matchingRecipeIds = Context.RecipeTagAssociations
                 .Where(rta => tagIds.Contains(rta.TagId))

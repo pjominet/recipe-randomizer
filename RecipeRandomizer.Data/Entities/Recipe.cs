@@ -30,7 +30,6 @@ namespace RecipeRandomizer.Data.Entities
         public DateTime CreatedOn { get; set; }
         public DateTime? UpdatedOn { get; set; }
         public DateTime? DeletedOn { get; set; }
-        public bool IsDeleted => DeletedOn != null;
 
         public virtual ICollection<Ingredient> Ingredients { get; set; }
         public virtual ICollection<RecipeTagAssociation> RecipeTagAssociations { get; set; }

@@ -22,7 +22,7 @@ namespace RecipeRandomizer.Business.Services
 
         public IEnumerable<QuantityUnit> GetQuantityUnits()
         {
-            return _mapper.Map<IEnumerable<QuantityUnit>>(_quantityRepository.GetAll<Entities.QuantityUnit>());
+            return _mapper.Map<IEnumerable<QuantityUnit>>(_quantityRepository.GetAllAsync<Entities.QuantityUnit>());
         }
     }
 }

@@ -30,17 +30,17 @@ namespace RecipeRandomizer.Business.Services
 
         public IEnumerable<User> GetUsers()
         {
-            return _mapper.Map<IEnumerable<User>>(_userRepository.GetAll<Entities.User>(null, $"{nameof(Entities.User.Role)}"));
+            return _mapper.Map<IEnumerable<User>>(_userRepository.GetAllAsync<Entities.User>(null, $"{nameof(Entities.User.Role)}"));
         }
 
         public User GetUser(int id)
         {
-            return _mapper.Map<User>(_userRepository.GetFirstOrDefault<Entities.User>(u => u.Id == id, $"{nameof(Entities.User.Role)}"));
+            return _mapper.Map<User>(_userRepository.GetFirstOrDefaultAsync<Entities.User>(u => u.Id == id, $"{nameof(Entities.User.Role)}"));
         }
 
         public User Update(int id, UserUpdateRequest userUpdateRequest)
         {
-            var user = _userRepository.GetFirstOrDefault<Entities.User>(u => u.Id == id);
+            var user = _userRepository.GetFirstOrDefaultAsync<Entities.User>(u => u.Id == id);
 
             if (user == null)
                 throw new KeyNotFoundException("User not found");
@@ -65,7 +65,7 @@ namespace RecipeRandomizer.Business.Services
             if (_userRepository.AdminCount() <= 1)
                 throw new BadRequestException("The last admin can't demote himself!");
 
-            var user = _userRepository.GetFirstOrDefault<Entities.User>(u => u.Id == id);
+            var user = _userRepository.GetFirstOrDefaultAsync<Entities.User>(u => u.Id == id);
 
             if (user == null)
                 throw new KeyNotFoundException("User not found");
@@ -82,7 +82,7 @@ namespace RecipeRandomizer.Business.Services
 
         public bool UploadUserAvatar(Stream sourceStream, string untrustedFileName, int id)
         {
-            var user = _userRepository.GetFirstOrDefault<Entities.User>(u => u.Id == id);
+            var user = _userRepository.GetFirstOrDefaultAsync<Entities.User>(u => u.Id == id);
             if (user == null)
                 throw new KeyNotFoundException("User to add avatar to could not be found");
 
@@ -118,7 +118,7 @@ namespace RecipeRandomizer.Business.Services
             if (_userRepository.AdminCount() <= 1)
                 throw new BadRequestException("The last admin can't delete his account!");
 
-            var user = _userRepository.GetFirstOrDefault<Entities.User>(u => u.Id == id);
+            var user = _userRepository.GetFirstOrDefaultAsync<Entities.User>(u => u.Id == id);
 
             if (user == null)
                 throw new KeyNotFoundException("User to delete could not be found.");
@@ -132,7 +132,7 @@ namespace RecipeRandomizer.Business.Services
             if (lockRequest.LockedById.HasValue && lockRequest.LockedById == id)
                 throw new BadRequestException("Locking yourself is not allowed!");
 
-            var user = _userRepository.GetFirstOrDefault<Entities.User>(u => u.Id == id);
+            var user = _userRepository.GetFirstOrDefaultAsync<Entities.User>(u => u.Id == id);
 
             user.LockedOn = lockRequest.UserLock
                 ? (DateTime?) DateTime.UtcNow

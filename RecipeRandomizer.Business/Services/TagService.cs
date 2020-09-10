@@ -21,7 +21,7 @@ namespace RecipeRandomizer.Business.Services
 
         public IEnumerable<Tag> GetTags()
         {
-            return _mapper.Map<IEnumerable<Tag>>(_tagRepository.GetAll<Entities.Tag>());
+            return _mapper.Map<IEnumerable<Tag>>(_tagRepository.GetAllAsync<Entities.Tag>());
         }
 
         public Tag GetTag(int id)
@@ -31,7 +31,7 @@ namespace RecipeRandomizer.Business.Services
                 $"{nameof(Entities.Tag.TagCategory)}"
             };
 
-            return _mapper.Map<Tag>(_tagRepository.GetFirstOrDefault<Entities.Tag>(t => t.Id == id, includes));
+            return _mapper.Map<Tag>(_tagRepository.GetFirstOrDefaultAsync<Entities.Tag>(t => t.Id == id, includes));
         }
 
         public int CreateTag(Tag tag)
@@ -43,7 +43,7 @@ namespace RecipeRandomizer.Business.Services
 
         public bool UpdateTag(Tag tag)
         {
-            var existingRecipe = _tagRepository.GetFirstOrDefault<Entities.Tag>(t => t.Id == tag.Id);
+            var existingRecipe = _tagRepository.GetFirstOrDefaultAsync<Entities.Tag>(t => t.Id == tag.Id);
             _mapper.Map(tag, existingRecipe);
             _tagRepository.Update(existingRecipe);
             return _tagRepository.SaveChanges();
@@ -51,7 +51,7 @@ namespace RecipeRandomizer.Business.Services
 
         public bool DeleteTag(int id)
         {
-            _tagRepository.Delete(_tagRepository.GetFirstOrDefault<Entities.Tag>(t => t.Id == id));
+            _tagRepository.Delete(_tagRepository.GetFirstOrDefaultAsync<Entities.Tag>(t => t.Id == id));
             return _tagRepository.SaveChanges();
         }
 
@@ -61,7 +61,7 @@ namespace RecipeRandomizer.Business.Services
             {
                 $"{nameof(Entities.TagCategory.Tags)}"
             };
-            return _mapper.Map<IEnumerable<TagCategory>>(_tagRepository.GetAll<Entities.TagCategory>(null, includes));
+            return _mapper.Map<IEnumerable<TagCategory>>(_tagRepository.GetAllAsync<Entities.TagCategory>(null, includes));
         }
 
         public TagCategory GetTagCategory(int id)
@@ -71,7 +71,7 @@ namespace RecipeRandomizer.Business.Services
                 $"{nameof(Entities.TagCategory.Tags)}"
             };
 
-            return _mapper.Map<TagCategory>(_tagRepository.GetFirstOrDefault<Entities.TagCategory>(tc => tc.Id == id, includes));
+            return _mapper.Map<TagCategory>(_tagRepository.GetFirstOrDefaultAsync<Entities.TagCategory>(tc => tc.Id == id, includes));
         }
     }
 }

@@ -194,10 +194,10 @@ export class RecipeEditorComponent implements OnInit {
                 });
         } else {
             this.recipeService.addRecipe(this.recipe).subscribe(
-                response => {
+                newRecipe => {
                     this.resetFrom();
                     this.resetView();
-                    this.onEditSuccess(response, 'Successfully created a new recipe!');
+                    this.onEditSuccess(newRecipe.id, 'Successfully created a new recipe!');
                 }, error => {
                     this.resetView();
                     this.alertService.error('Recipe could not be created.');
@@ -232,10 +232,10 @@ export class RecipeEditorComponent implements OnInit {
         });
     }
 
-    private onEditSuccess(response: any, successMessage: string): void {
+    private onEditSuccess(recipeId: number, successMessage: string): void {
         if (this.fileUploadRequest.file) {
             // complete the file upload request
-            this.fileUploadRequest.entityId = response.body;
+            this.fileUploadRequest.entityId = recipeId;
             this.uploadService.uploadFile(this.fileUploadRequest).subscribe(
                 event => {
                     if (event.type === HttpEventType.UploadProgress) {

@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 
 namespace RecipeRandomizer.Data.Repositories
@@ -43,38 +44,42 @@ namespace RecipeRandomizer.Data.Repositories
             return dbQuery;
         }
 
-        protected T FindFirstOrDefault<T>() where T : class
+        protected async Task<T> FindFirstOrDefaultAsync<T>() where T : class
         {
-            return FindAll<T>().FirstOrDefault();
+            return await FindAll<T>().FirstOrDefaultAsync();
         }
 
-        protected T FindFirstOrDefault<T>(params string[] includes) where T : class
+        protected async Task<T> FindFirstOrDefaultAsync<T>(params string[] includes) where T : class
         {
-            return FindAll<T>(includes).FirstOrDefault();
+            return await FindAll<T>(includes).FirstOrDefaultAsync();
         }
 
-        protected T FindFirstOrDefault<T>(Expression<Func<T, bool>> expression) where T : class
+        protected async Task<T> FindFirstOrDefaultAsync<T>(Expression<Func<T, bool>> expression) where T : class
         {
-            return FindAll(expression).FirstOrDefault();
+            return await FindAll(expression).FirstOrDefaultAsync();
         }
 
-        protected T FindFirstOrDefault<T>(Expression<Func<T, bool>> expression, params string[] includes) where T : class
+        protected async Task<T> FindFirstOrDefaultAsync<T>(Expression<Func<T, bool>> expression, params string[] includes) where T : class
         {
-            return FindAll(expression, includes).FirstOrDefault();
+            return await FindAll(expression, includes).FirstOrDefaultAsync();
         }
 
         #endregion
 
         #region public
 
-        public IEnumerable<T> GetAll<T>(Expression<Func<T, bool>> expression = null, params string[] includes) where T : class
+        public async Task<IEnumerable<T>> GetAllAsync<T>(Expression<Func<T, bool>> expression = null, params string[] includes) where T : class
         {
-            return expression == null ? FindAll<T>(includes) : FindAll(expression, includes);
+            return expression == null
+                ? await FindAll<T>(includes).ToListAsync()
+                : await FindAll(expression, includes).ToListAsync();
         }
 
-        public T GetFirstOrDefault<T>(Expression<Func<T, bool>> expression = null, params string[] includes) where T : class
+        public async Task<T> GetFirstOrDefaultAsync<T>(Expression<Func<T, bool>> expression = null, params string[] includes) where T : class
         {
-            return expression == null ? FindFirstOrDefault<T>(includes) : FindFirstOrDefault(expression, includes);
+            return expression == null
+                ? await FindFirstOrDefaultAsync<T>(includes)
+                : await FindFirstOrDefaultAsync(expression, includes);
         }
 
         public bool Exists<T>(Func<T, bool> expression) where T : class
@@ -97,16 +102,16 @@ namespace RecipeRandomizer.Data.Repositories
             Context.Set<T>().Remove(entity);
         }
 
-        public bool SaveChanges()
+        public async Task<bool> SaveChanges()
         {
             try
             {
-                Context.SaveChanges();
+                await Context.SaveChangesAsync();
                 return true;
             }
             catch (Exception e)
             {
-                Console.Error.WriteLine(e.Message);
+                await Console.Error.WriteLineAsync(e.Message);
                 return false;
             }
         }

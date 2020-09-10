@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using RecipeRandomizer.Business.Interfaces;
 using RecipeRandomizer.Business.Models;
 using System.Linq;
+using System.Threading.Tasks;
 using RecipeRandomizer.Business.Models.Identity;
 using RecipeRandomizer.Web.Utils;
 
@@ -21,11 +22,9 @@ namespace RecipeRandomizer.Web.Controllers
 
         [HttpGet]
         [ProducesResponseType(typeof(List<Recipe>), StatusCodes.Status200OK)]
-        public IActionResult GetRecipes([FromQuery(Name = "tag")] int[] tagIds)
+        public async Task<IActionResult> GetRecipes([FromQuery(Name = "tag")] int[] tagIds)
         {
-            return Ok(tagIds.Any()
-                ? _recipeService.GetRecipesFromTags(tagIds)
-                : _recipeService.GetRecipes());
+            return Ok(await _recipeService.GetRecipesAsync(tagIds));
         }
 
         [HttpGet("published-count")]
@@ -74,7 +73,7 @@ namespace RecipeRandomizer.Web.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public IActionResult GetRandomRecipe([FromQuery(Name = "tag")] int[] tagIds)
         {
-            var recipeId = _recipeService.GetRandomRecipe(tagIds);
+            var recipeId = _recipeService.GetRandomRecipeId(tagIds);
             return recipeId.HasValue
                 ? Ok(recipeId.Value)
                 : (IActionResult) NotFound();
@@ -107,9 +106,9 @@ namespace RecipeRandomizer.Web.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public IActionResult AddRecipe([FromBody] Recipe recipe)
         {
-            var id = _recipeService.CreateRecipe(recipe);
-            return id != -1
-                ? CreatedAtAction(nameof(GetRecipe), new {id}, recipe)
+            var newRecipe = _recipeService.CreateRecipe(recipe);
+            return newRecipe != null
+                ? CreatedAtAction(nameof(GetRecipe), new {id = newRecipe.Id}, newRecipe)
                 : (IActionResult) StatusCode(StatusCodes.Status500InternalServerError);
         }
 

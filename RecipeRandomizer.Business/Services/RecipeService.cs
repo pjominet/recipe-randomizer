@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.Extensions.Options;
 using RecipeRandomizer.Business.Interfaces;
@@ -29,32 +30,34 @@ namespace RecipeRandomizer.Business.Services
             _fileService = fileService;
         }
 
-        public IEnumerable<Recipe> GetRecipes()
+        public async Task<IEnumerable<Recipe>> GetRecipesAsync(IList<int> tagIds)
         {
-            return _mapper.Map<IEnumerable<Recipe>>(_recipeRepository.GetRecipes());
+            return _mapper.Map<IEnumerable<Recipe>>(tagIds.Any()
+                ? await _recipeRepository.GetRecipesFromTagsAsync(tagIds)
+                : await _recipeRepository.GetRecipesAsync());
         }
 
-        public int GetPublishedRecipeCount()
+        public async Task<int> GetPublishedRecipeCount()
         {
-            return _recipeRepository.GetPublishedRecipeCount();
+            return await _recipeRepository.GetPublishedRecipeCountAsync();
         }
 
-        public IEnumerable<Recipe> GetDeletedRecipes()
+        public async Task<IEnumerable<Recipe>> GetDeletedRecipes()
         {
-            return _mapper.Map<IEnumerable<Recipe>>(_recipeRepository.GetRecipes(true));
+            return _mapper.Map<IEnumerable<Recipe>>(await _recipeRepository.GetRecipesAsync(true));
         }
 
-        public IEnumerable<Recipe> GetOrphanRecipes()
+        public async Task<IEnumerable<Recipe>> GetOrphanRecipes()
         {
             string[] includes =
             {
                 $"{nameof(Entities.Recipe.RecipeTagAssociations)}.{nameof(Entities.RecipeTagAssociation.Tag)}",
                 $"{nameof(Entities.Recipe.RecipeLikes)}"
             };
-            return _mapper.Map<IEnumerable<Recipe>>(_recipeRepository.GetAll<Entities.Recipe>(r => !r.UserId.HasValue, includes));
+            return _mapper.Map<IEnumerable<Recipe>>(await _recipeRepository.GetAllAsync<Entities.Recipe>(r => !r.UserId.HasValue, includes));
         }
 
-        public Recipe GetRecipe(int id)
+        public async Task<Recipe> GetRecipe(int id)
         {
             string[] includes =
             {
@@ -65,17 +68,12 @@ namespace RecipeRandomizer.Business.Services
                 $"{nameof(Entities.Recipe.RecipeTagAssociations)}.{nameof(Entities.RecipeTagAssociation.Tag)}",
                 $"{nameof(Entities.Recipe.RecipeLikes)}"
             };
-            return _mapper.Map<Recipe>(_recipeRepository.GetFirstOrDefault<Entities.Recipe>(r => r.Id == id, includes));
+            return _mapper.Map<Recipe>(await _recipeRepository.GetFirstOrDefaultAsync<Entities.Recipe>(r => r.Id == id, includes));
         }
 
-        public int? GetRandomRecipe(IList<int> tagIds)
+        public async Task<int?> GetRandomRecipeId(IList<int> tagIds)
         {
-            return _recipeRepository.GetRandomRecipe(tagIds);
-        }
-
-        public IEnumerable<Recipe> GetRecipesFromTags(IList<int> tagIds)
-        {
-            return _mapper.Map<IEnumerable<Recipe>>(_recipeRepository.GetRecipesFromTags(tagIds));
+            return (await _recipeRepository.GetRandomRecipeAsync(tagIds))?.Id;
         }
 
         public IEnumerable<Recipe> GetRecipesForUser(int userId)
@@ -87,35 +85,36 @@ namespace RecipeRandomizer.Business.Services
                 $"{nameof(Entities.Recipe.Ingredients)}.{nameof(Entities.Ingredient.QuantityUnit)}",
                 $"{nameof(Entities.Recipe.RecipeTagAssociations)}.{nameof(Entities.RecipeTagAssociation.Tag)}"
             };
-            return _mapper.Map<IEnumerable<Recipe>>(_recipeRepository.GetAll<Entities.Recipe>(r => r.UserId == userId, includes));
+            return _mapper.Map<IEnumerable<Recipe>>(_recipeRepository.GetAllAsync<Entities.Recipe>(r => r.UserId == userId, includes));
         }
 
         public IEnumerable<Recipe> GetLikedRecipesForUser(int userId)
         {
-            return _mapper.Map<IEnumerable<Recipe>>(_recipeRepository.GetLikedRecipesForUser(userId));
+            return _mapper.Map<IEnumerable<Recipe>>(_recipeRepository.GetLikedRecipesForUserAsync(userId));
         }
 
-        public int CreateRecipe(Recipe recipe)
+        public Recipe CreateRecipe(Recipe recipe)
         {
             var newRecipe = _mapper.Map<Entities.Recipe>(recipe);
             newRecipe.CreatedOn = DateTime.UtcNow;
             newRecipe.UpdatedOn = DateTime.UtcNow;
-            _recipeRepository.Insert(newRecipe);
 
+            _recipeRepository.Insert(newRecipe);
             var result = _recipeRepository.SaveChanges();
+
             if (!result)
-                return -1;
+                return null;
 
             foreach (var tag in recipe.Tags)
                 _recipeRepository.Insert(new Entities.RecipeTagAssociation {TagId = tag.Id, RecipeId = newRecipe.Id});
 
             result &= _recipeRepository.SaveChanges();
-            return result ? newRecipe.Id : -1;
+            return result ? _mapper.Map<Recipe>(newRecipe) : null;
         }
 
         public bool UploadRecipeImage(Stream sourceStream, string untrustedFileName, int id)
         {
-            var recipe = _recipeRepository.GetFirstOrDefault<Entities.Recipe>(r => r.Id == id);
+            var recipe = _recipeRepository.GetFirstOrDefaultAsync<Entities.Recipe>(r => r.Id == id);
             if (recipe == null)
                 throw new KeyNotFoundException("Recipe to add image to could not be found");
 
@@ -155,7 +154,7 @@ namespace RecipeRandomizer.Business.Services
                 $"{nameof(Entities.Recipe.Ingredients)}.{nameof(Entities.Ingredient.QuantityUnit)}",
                 $"{nameof(Entities.Recipe.RecipeTagAssociations)}.{nameof(Entities.RecipeTagAssociation.Tag)}"
             };
-            var existingRecipe = _recipeRepository.GetFirstOrDefault<Entities.Recipe>(r => r.Id == recipe.Id, includes);
+            var existingRecipe = _recipeRepository.GetFirstOrDefaultAsync<Entities.Recipe>(r => r.Id == recipe.Id, includes);
             _mapper.Map(recipe, existingRecipe);
             existingRecipe.UpdatedOn = DateTime.UtcNow;
             _recipeRepository.Update(existingRecipe);
@@ -168,7 +167,7 @@ namespace RecipeRandomizer.Business.Services
                 _recipeRepository.HardDeleteRecipe(id);
             else
             {
-                var recipeToDelete = _recipeRepository.GetFirstOrDefault<Entities.Recipe>(r => r.Id == id);
+                var recipeToDelete = _recipeRepository.GetFirstOrDefaultAsync<Entities.Recipe>(r => r.Id == id);
                 recipeToDelete.DeletedOn = DateTime.UtcNow;
                 _recipeRepository.Update(recipeToDelete);
             }
@@ -178,7 +177,7 @@ namespace RecipeRandomizer.Business.Services
 
         public Recipe RestoreDeletedRecipe(int id)
         {
-            var recipeToRestore = _recipeRepository.GetFirstOrDefault<Entities.Recipe>(r => r.Id == id);
+            var recipeToRestore = _recipeRepository.GetFirstOrDefaultAsync<Entities.Recipe>(r => r.Id == id);
             recipeToRestore.DeletedOn = null;
             _recipeRepository.Update(recipeToRestore);
 
@@ -197,7 +196,7 @@ namespace RecipeRandomizer.Business.Services
             }
             else
                 _recipeRepository.Delete(
-                    _recipeRepository.GetFirstOrDefault<Entities.RecipeLike>(
+                    _recipeRepository.GetFirstOrDefaultAsync<Entities.RecipeLike>(
                         rl => rl.UserId == userId && rl.RecipeId == recipeId));
 
             return _recipeRepository.SaveChanges();
@@ -205,7 +204,7 @@ namespace RecipeRandomizer.Business.Services
 
         public bool AttributeRecipe(AttributionRequest request)
         {
-            var recipe = _recipeRepository.GetFirstOrDefault<Entities.Recipe>(r => r.Id == request.RecipeId);
+            var recipe = _recipeRepository.GetFirstOrDefaultAsync<Entities.Recipe>(r => r.Id == request.RecipeId);
 
             if (recipe == null)
                 throw new KeyNotFoundException("Recipe does not exist");

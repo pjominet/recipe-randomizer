@@ -59,7 +59,7 @@ import {TermsServicesComponent} from './views/terms-services/terms-services.comp
     ],
     providers: [
         // activate for auto login on start-up
-        // {provide: APP_INITIALIZER, useFactory: appInitializer, multi: true, deps: [AuthService]},
+        {provide: APP_INITIALIZER, useFactory: appInitializer, multi: true, deps: [AuthService]},
         {provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true},
         {provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true},
     ],

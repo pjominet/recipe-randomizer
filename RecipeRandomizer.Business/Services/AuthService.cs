@@ -42,7 +42,7 @@ namespace RecipeRandomizer.Business.Services
                 $"{nameof(Entities.User.Role)}",
                 $"{nameof(Entities.User.RefreshTokens)}"
             };
-            var user = _userRepository.GetFirstOrDefault<Entities.User>(u => u.Email == request.Email, includes);
+            var user = _userRepository.GetFirstOrDefaultAsync<Entities.User>(u => u.Email == request.Email, includes);
 
             if (user == null || !BC.Verify(request.Password, user.PasswordHash))
                 throw new BadRequestException("Email or password is incorrect");
@@ -139,7 +139,7 @@ namespace RecipeRandomizer.Business.Services
 
         public void VerifyEmail(ValidationRequest request)
         {
-            var user = _userRepository.GetFirstOrDefault<Entities.User>(u => u.VerificationToken == request.Token);
+            var user = _userRepository.GetFirstOrDefaultAsync<Entities.User>(u => u.VerificationToken == request.Token);
 
             if (user == null) throw new BadRequestException("Verification failed");
 
@@ -153,7 +153,7 @@ namespace RecipeRandomizer.Business.Services
 
         public void ResendEmailVerificationCode(VerificationRequest request, string origin)
         {
-            var user = _userRepository.GetFirstOrDefault<Entities.User>(u => u.Email == request.Email);
+            var user = _userRepository.GetFirstOrDefaultAsync<Entities.User>(u => u.Email == request.Email);
 
             if (user == null)
                 throw new BadRequestException("No user matches the given email address");
@@ -170,7 +170,7 @@ namespace RecipeRandomizer.Business.Services
 
         public void ForgotPassword(VerificationRequest request, string origin)
         {
-            var user = _userRepository.GetFirstOrDefault<Entities.User>(u => u.Email == request.Email);
+            var user = _userRepository.GetFirstOrDefaultAsync<Entities.User>(u => u.Email == request.Email);
 
             // always return ok response to prevent email spamming
             if (user == null)
@@ -190,7 +190,7 @@ namespace RecipeRandomizer.Business.Services
 
         public void ValidateResetToken(ValidationRequest request)
         {
-            var user = _userRepository.GetFirstOrDefault<Entities.User>(u =>
+            var user = _userRepository.GetFirstOrDefaultAsync<Entities.User>(u =>
                 u.ResetToken == request.Token &&
                 u.ResetTokenExpiresOn > DateTime.UtcNow);
 
@@ -200,7 +200,7 @@ namespace RecipeRandomizer.Business.Services
 
         public void ResetPassword(ResetPasswordRequest request)
         {
-            var user = _userRepository.GetFirstOrDefault<Entities.User>(u =>
+            var user = _userRepository.GetFirstOrDefaultAsync<Entities.User>(u =>
                 u.ResetToken == request.Token &&
                 u.ResetTokenExpiresOn > DateTime.UtcNow);
 
@@ -220,7 +220,7 @@ namespace RecipeRandomizer.Business.Services
 
         public void ChangePassword(ChangePasswordRequest request)
         {
-            var user = _userRepository.GetFirstOrDefault<Entities.User>(u => u.Id == request.Id);
+            var user = _userRepository.GetFirstOrDefaultAsync<Entities.User>(u => u.Id == request.Id);
 
             if (user == null)
                 throw new BadRequestException("User could not be found");
@@ -239,14 +239,14 @@ namespace RecipeRandomizer.Business.Services
 
         public IEnumerable<string> GetUserRefreshTokens(int id)
         {
-            return _userRepository.GetFirstOrDefault<Entities.User>(u => u.Id == id, $"{nameof(Entities.User.RefreshTokens)}").RefreshTokens.Select(rt => rt.Token);
+            return _userRepository.GetFirstOrDefaultAsync<Entities.User>(u => u.Id == id, $"{nameof(Entities.User.RefreshTokens)}").RefreshTokens.Select(rt => rt.Token);
         }
 
         #region helpers
 
         private (Entities.RefreshToken, Entities.User) GetRefreshToken(string token)
         {
-            var refreshToken = _userRepository.GetFirstOrDefault<Entities.RefreshToken>(rt => rt.Token == token);
+            var refreshToken = _userRepository.GetFirstOrDefaultAsync<Entities.RefreshToken>(rt => rt.Token == token);
             if (refreshToken == null)
                 throw new ApplicationException("No refresh-token found");
 
@@ -255,7 +255,7 @@ namespace RecipeRandomizer.Business.Services
                 $"{nameof(Entities.User.Role)}",
                 $"{nameof(Entities.User.RefreshTokens)}"
             };
-            var user = _userRepository.GetFirstOrDefault<Entities.User>(u => u.Id == refreshToken.UserId, includes);
+            var user = _userRepository.GetFirstOrDefaultAsync<Entities.User>(u => u.Id == refreshToken.UserId, includes);
             if (user == null)
                 throw new BadRequestException("Invalid token: Token does not match any known user.");
 

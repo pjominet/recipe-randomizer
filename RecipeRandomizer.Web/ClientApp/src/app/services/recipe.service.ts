@@ -50,8 +50,8 @@ export class RecipeService {
         return this.http.get<Recipe>(`${recipeApi}/${id}`).pipe(map(response => response));
     }
 
-    public addRecipe(recipe: Recipe): Observable<any> {
-        return this.http.post<any>(`${recipeApi}`, recipe, {observe: 'response'});
+    public addRecipe(recipe: Recipe): Observable<Recipe> {
+        return this.http.post<Recipe>(`${recipeApi}`, recipe).pipe(map(response => response));
     }
 
     public updateRecipe(recipe: Recipe): Observable<any> {
