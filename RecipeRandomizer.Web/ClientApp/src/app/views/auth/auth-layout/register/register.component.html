@@ -49,8 +49,8 @@
                 </div>
             </div>
             <div class="d-flex justify-content-center mb-3">
-                <button [disabled]="isLoading" class="btn btn-primary btn-ellipse mr-1">
-                    <span *ngIf="isLoading" class="spinner-border spinner-border-sm mr-1"></span>Register
+                <button [disabled]="isLoading" class="btn btn-primary btn-ellipse d-flex align-items-center mr-1">
+                    Register<span *ngIf="isLoading" class="spinner-border spinner-border-sm ml-1"></span>
                 </button>
                 <a class="btn btn-outline-dark btn-ellipse ml-1" routerLink="/">Cancel</a>
             </div>

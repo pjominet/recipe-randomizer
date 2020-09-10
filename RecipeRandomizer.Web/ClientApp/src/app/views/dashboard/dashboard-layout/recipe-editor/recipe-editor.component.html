@@ -180,9 +180,9 @@
 
             <div class="d-flex justify-content-between mt-3">
                 <button type="button" class="btn btn-warning" [disabled]="recipeForm.pristine" (click)="resetFrom()">Reset</button>
-                <button type="submit" [disabled]="recipeForm.pristine || isLoading" class="btn btn-success">
-                    <span *ngIf="isLoading" class="spinner-border spinner-border-sm mr-1"></span>
-                    Save recipe
+                <button type="submit" [disabled]="recipeForm.pristine || isLoading" class="btn btn-success d-flex align-items-center">
+                    Save recipe<i class="fas fa-save ml-1" *ngIf="!isLoading"></i>
+                    <span *ngIf="isLoading" class="spinner-border spinner-border-sm ml-1"></span>
                 </button>
             </div>
         </form>
