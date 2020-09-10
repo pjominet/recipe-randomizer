@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Linq;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using RecipeRandomizer.Business.Interfaces;
+using RecipeRandomizer.Business.Models;
 using RecipeRandomizer.Business.Models.Identity;
 using RecipeRandomizer.Web.Utils;
 
@@ -23,9 +25,9 @@ namespace RecipeRandomizer.Web.Controllers
         [HttpPost("authenticate")]
         [Consumes("application/json")]
         [ProducesResponseType(typeof(User), StatusCodes.Status200OK)]
-        public ActionResult<User> Authenticate([FromBody] AuthRequest request)
+        public async Task<ActionResult<User>> Authenticate([FromBody] AuthRequest request)
         {
-            var (user, refreshToken) = _authService.Authenticate(request, GetIpAddress());
+            var (user, refreshToken) = await _authService.Authenticate(request, GetIpAddress());
             SetTokenCookie(refreshToken);
             return Ok(user);
         }
@@ -33,10 +35,10 @@ namespace RecipeRandomizer.Web.Controllers
         [HttpPost("refresh-token")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(typeof(User), StatusCodes.Status200OK)]
-        public ActionResult<User> RefreshToken()
+        public async Task<ActionResult<User>> RefreshToken()
         {
             var refreshToken = Request.Cookies["refreshToken"];
-            var (user, newRefreshToken) = _authService.RefreshToken(refreshToken, GetIpAddress());
+            var (user, newRefreshToken) = await _authService.RefreshToken(refreshToken, GetIpAddress());
 
             if (user == null)
                 return NoContent();
@@ -49,85 +51,85 @@ namespace RecipeRandomizer.Web.Controllers
         [HttpPost("revoke-token")]
         [Consumes("application/json")]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(SimpleResponse), StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(typeof(bool), StatusCodes.Status200OK)]
-        public IActionResult RevokeToken([FromBody] ValidationRequest request)
+        public async Task<IActionResult> RevokeToken([FromBody] ValidationRequest request)
         {
             // accept token from request body or cookie
             var token = request.Token ?? Request.Cookies["refreshToken"];
 
             if (string.IsNullOrEmpty(token))
-                return BadRequest(new {message = "A refresh token is required"});
+                return BadRequest(new SimpleResponse{Message = "A refresh token is required"});
 
             // users can revoke their own tokens and admins can revoke any tokens
-            if (!OwnsToken(User?.Id, token) && User?.Role != Role.Admin)
-                return Unauthorized(new {message = "Unauthorized"});
+            if (!await OwnsToken(User?.Id, token) && User?.Role != Role.Admin)
+                return Unauthorized(new SimpleResponse{Message = "Unauthorized"});
 
-            _authService.RevokeToken(token, GetIpAddress());
+            await _authService.RevokeToken(token, GetIpAddress());
             return Ok(new {message = "Token revoked"});
         }
 
         [HttpPost("register")]
         [Consumes("application/json")]
-        [ProducesResponseType(typeof(object), StatusCodes.Status200OK)]
-        public IActionResult Register([FromBody] RegisterRequest request)
+        [ProducesResponseType(typeof(SimpleResponse), StatusCodes.Status200OK)]
+        public async Task<ActionResult<SimpleResponse>> Register([FromBody] RegisterRequest request)
         {
-            _authService.Register(request, Request.Headers["origin"]);
-            return Ok(new {message = "Registration successful, please check your email for verification instructions"});
+            await _authService.Register(request, Request.Headers["origin"]);
+            return Ok(new SimpleResponse{Message = "Registration successful, please check your email for verification instructions"});
         }
 
         [HttpPost("verify-email")]
         [Consumes("application/json")]
-        [ProducesResponseType(typeof(object), StatusCodes.Status200OK)]
-        public IActionResult VerifyEmail([FromBody] ValidationRequest request)
+        [ProducesResponseType(typeof(SimpleResponse), StatusCodes.Status200OK)]
+        public async Task<ActionResult<SimpleResponse>> VerifyEmail([FromBody] ValidationRequest request)
         {
-            _authService.VerifyEmail(request);
-            return Ok(new {message = "Verification successful, you can now login"});
+            await _authService.VerifyEmail(request);
+            return Ok(new SimpleResponse{Message = "Verification successful, you can now login"});
         }
 
         [HttpPost("resend-email-verification")]
         [Consumes("application/json")]
-        [ProducesResponseType(typeof(object), StatusCodes.Status200OK)]
-        public IActionResult ResendEmailVerificationCode([FromBody] VerificationRequest request)
+        [ProducesResponseType(typeof(SimpleResponse), StatusCodes.Status200OK)]
+        public async Task<ActionResult<SimpleResponse>> ResendEmailVerificationCode([FromBody] VerificationRequest request)
         {
-            _authService.ResendEmailVerificationCode(request, Request.Headers["origin"]);
-            return Ok(new {message = "New code sent, please check your email for verification instructions"});
+            await _authService.ResendEmailVerificationCode(request, Request.Headers["origin"]);
+            return Ok(new SimpleResponse{Message = "New code sent, please check your email for verification instructions"});
         }
 
         [HttpPost("forgot-password")]
         [Consumes("application/json")]
-        [ProducesResponseType(typeof(object), StatusCodes.Status200OK)]
-        public IActionResult ForgotPassword([FromBody] VerificationRequest request)
+        [ProducesResponseType(typeof(SimpleResponse), StatusCodes.Status200OK)]
+        public async Task<ActionResult<SimpleResponse>> ForgotPassword([FromBody] VerificationRequest request)
         {
-            _authService.ForgotPassword(request, Request.Headers["origin"]);
-            return Ok(new {message = "Please check your email for password reset instructions"});
+            await _authService.ForgotPassword(request, Request.Headers["origin"]);
+            return Ok(new SimpleResponse{Message = "Please check your email for password reset instructions"});
         }
 
         [HttpPost("validate-reset-token")]
         [Consumes("application/json")]
-        [ProducesResponseType(typeof(object), StatusCodes.Status200OK)]
-        public IActionResult ValidateResetToken([FromBody] ValidationRequest request)
+        [ProducesResponseType(typeof(SimpleResponse), StatusCodes.Status200OK)]
+        public async Task<ActionResult<SimpleResponse>> ValidateResetToken([FromBody] ValidationRequest request)
         {
-            _authService.ValidateResetToken(request);
-            return Ok(new {message = "Token is valid"});
+            await _authService.ValidateResetToken(request);
+            return Ok(new SimpleResponse{Message = "Token is valid"});
         }
 
         [HttpPost("reset-password")]
         [Consumes("application/json")]
-        [ProducesResponseType(typeof(object), StatusCodes.Status200OK)]
-        public IActionResult ResetPassword([FromBody] ResetPasswordRequest request)
+        [ProducesResponseType(typeof(SimpleResponse), StatusCodes.Status200OK)]
+        public async Task<ActionResult<SimpleResponse>> ResetPassword([FromBody] ResetPasswordRequest request)
         {
-            _authService.ResetPassword(request);
-            return Ok(new {message = "Password reset successful, you can now login again"});
+            await _authService.ResetPassword(request);
+            return Ok(new SimpleResponse{Message = "Password reset successful, you can now login again"});
         }
 
         [HttpPost("reset-password")]
         [Consumes("application/json")]
-        [ProducesResponseType(typeof(object), StatusCodes.Status200OK)]
-        public IActionResult ResetPassword([FromBody] ChangePasswordRequest request)
+        [ProducesResponseType(typeof(SimpleResponse), StatusCodes.Status200OK)]
+        public async Task<ActionResult<SimpleResponse>> ResetPassword([FromBody] ChangePasswordRequest request)
         {
-            _authService.ChangePassword(request);
-            return Ok(new {message = "Password change successful"});
+            await _authService.ChangePassword(request);
+            return Ok(new SimpleResponse{Message = "Password change successful"});
         }
 
         #region helpers
@@ -150,12 +152,12 @@ namespace RecipeRandomizer.Web.Controllers
             return HttpContext.Connection.RemoteIpAddress.MapToIPv4().ToString();
         }
 
-        private bool OwnsToken(int? userId, string token)
+        private async Task<bool> OwnsToken(int? userId, string token)
         {
             if (!userId.HasValue)
                 return false;
 
-            var tokens = _authService.GetUserRefreshTokens(userId.Value);
+            var tokens = await _authService.GetUserRefreshTokens(userId.Value);
             return tokens.FirstOrDefault(t => t == token) != null;
         }
 

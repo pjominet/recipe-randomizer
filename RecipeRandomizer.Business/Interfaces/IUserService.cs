@@ -7,13 +7,13 @@ namespace RecipeRandomizer.Business.Interfaces
 {
     public interface IUserService
     {
-        public IEnumerable<User> GetUsers();
-        public User GetUser(int id);
-        User Update(int id, UserUpdateRequest userUpdateRequest);
-        User Update(int id, RoleUpdateRequest roleUpdateRequest);
-        public bool UploadUserAvatar(Stream sourceStream, string untrustedFileName, int id);
-        public bool Delete(int id);
-        public bool ToggleUserLock(int id, LockRequest lockRequest);
+        public Task<IEnumerable<User>> GetUsersAsync();
+        public Task<User> GetUserAsync(int id);
+        public Task<User> UpdateAsync(int id, UserUpdateRequest userUpdateRequest);
+        public Task<User> UpdateAsync(int id, RoleUpdateRequest roleUpdateRequest);
+        public Task<bool> UploadUserAvatar(Stream sourceStream, string untrustedFileName, int id);
+        public Task<bool> Delete(int id);
+        public Task<bool> ToggleUserLock(int id, LockRequest lockRequest);
 
     }
 }

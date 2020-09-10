@@ -23,7 +23,7 @@ export class OrphanRecipesComponent implements OnInit, OnDestroy {
     }
 
     public ngOnInit(): void {
-        this.recipeService.getOrphanRecipes().subscribe(
+        this.recipeService.getAbandonedRecipes().subscribe(
             orphans => {
                 this.orphans = orphans;
             });

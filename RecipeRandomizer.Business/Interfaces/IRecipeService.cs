@@ -8,19 +8,19 @@ namespace RecipeRandomizer.Business.Interfaces
     public interface IRecipeService
     {
         public Task<IEnumerable<Recipe>> GetRecipesAsync(IList<int> tagIds);
-        public Task<int> GetPublishedRecipeCount();
-        public Task<IEnumerable<Recipe>> GetDeletedRecipes();
-        public Task<IEnumerable<Recipe>> GetOrphanRecipes();
-        public Task<Recipe> GetRecipe(int id);
-        public Task<int?> GetRandomRecipeId(IList<int> tagIds);
-        public Task<IEnumerable<Recipe>> GetRecipesForUser(int userId);
-        public Task<IEnumerable<Recipe>> GetLikedRecipesForUser(int userId);
+        public Task<int> GetPublishedRecipeCountAsync();
+        public Task<IEnumerable<Recipe>> GetDeletedRecipesAsync();
+        public Task<IEnumerable<Recipe>> GetAbandonedRecipesAsync();
+        public Task<Recipe> GetRecipeAsync(int id);
+        public Task<int?> GetRandomRecipeIdAsync(IList<int> tagIds);
+        public Task<IEnumerable<Recipe>> GetRecipesForUserAsync(int userId);
+        public Task<IEnumerable<Recipe>> GetLikedRecipesForUserAsync(int userId);
         public Task<Recipe> CreateRecipe(Recipe recipe);
-        public bool UploadRecipeImage(Stream sourceStream, string untrustedFileName, int id);
-        public bool UpdateRecipe(Recipe recipe);
-        public bool DeleteRecipe(int id, bool hard = false);
-        public Recipe RestoreDeletedRecipe(int id);
-        public bool ToggleRecipeLike(int recipeId, int userId, bool like);
-        public bool AttributeRecipe(AttributionRequest request);
+        public Task<bool> UploadRecipeImage(Stream sourceStream, string untrustedFileName, int id);
+        public Task<bool> UpdateRecipe(Recipe recipe);
+        public Task<bool> DeleteRecipe(int id, bool hard = false);
+        public Task<Recipe> RestoreDeletedRecipe(int id);
+        public Task<bool> ToggleRecipeLike(int recipeId, LikeRequest request);
+        public Task<bool> AttributeRecipeAsync(AttributionRequest request);
     }
 }

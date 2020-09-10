@@ -5,6 +5,7 @@ import {environment} from '@env/environment';
 import {map} from 'rxjs/operators';
 import {Recipe} from '@app/models/recipe';
 import {AttributionRequest} from '@app/models/attributionRequest';
+import {LikeRequest} from "@app/models/LikeRequest";
 
 const recipeApi = `${environment.apiUrl}/recipes`;
 
@@ -71,16 +72,16 @@ export class RecipeService {
         return this.http.get<Recipe>(`${recipeApi}/restore/${id}`).pipe(map(response => response));
     }
 
-    public toggleRecipeLike(recipeId: number, userId: number, like: boolean): Observable<any> {
-        return this.http.get<any>(`${recipeApi}/${recipeId}/liked-by/${userId}?like=${like}`, {observe: 'response'});
+    public toggleRecipeLike(recipeId: number, likeRequest: LikeRequest): Observable<any> {
+        return this.http.post<any>(`${recipeApi}/like/${recipeId}`, likeRequest, {observe: 'response'});
     }
 
-    public getOrphanRecipes(): Observable<Recipe[]> {
-        return this.http.get<Recipe[]>(`${recipeApi}/orphans`).pipe(map(response => response));
+    public getAbandonedRecipes(): Observable<Recipe[]> {
+        return this.http.get<Recipe[]>(`${recipeApi}/abandoned`).pipe(map(response => response));
     }
 
     public attributeRecipe(attributionRequest: AttributionRequest): Observable<any> {
-        return this.http.post<any>(`${recipeApi}/orphans`, attributionRequest, {observe: 'response'});
+        return this.http.post<any>(`${recipeApi}/abandoned`, attributionRequest, {observe: 'response'});
     }
 
     private generateTagQueryParams(tagIds: number []): string {

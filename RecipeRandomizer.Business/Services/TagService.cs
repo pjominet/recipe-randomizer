@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using AutoMapper;
 using RecipeRandomizer.Business.Interfaces;
 using RecipeRandomizer.Business.Models.Nomenclature;
@@ -19,59 +20,56 @@ namespace RecipeRandomizer.Business.Services
             _mapper = mapper;
         }
 
-        public IEnumerable<Tag> GetTags()
+        public async Task<IEnumerable<Tag>> GetTags()
         {
-            return _mapper.Map<IEnumerable<Tag>>(_tagRepository.GetAllAsync<Entities.Tag>());
+            return _mapper.Map<IEnumerable<Tag>>(await _tagRepository.GetAllAsync<Entities.Tag>());
         }
 
-        public Tag GetTag(int id)
+        public async Task<Tag> GetTag(int id)
         {
             string[] includes =
             {
                 $"{nameof(Entities.Tag.TagCategory)}"
             };
 
-            return _mapper.Map<Tag>(_tagRepository.GetFirstOrDefaultAsync<Entities.Tag>(t => t.Id == id, includes));
+            return _mapper.Map<Tag>(await _tagRepository.GetFirstOrDefaultAsync<Entities.Tag>(t => t.Id == id, includes));
         }
 
-        public int CreateTag(Tag tag)
+        public async Task<Tag> CreateTag(Tag tag)
         {
             var newTag = _mapper.Map<Entities.Tag>(tag);
             _tagRepository.Insert(newTag);
-            return _tagRepository.SaveChanges() ? newTag.Id : -1;
+            return await _tagRepository.SaveChangesAsync()
+                ? _mapper.Map<Tag>(newTag)
+                : null;
         }
 
-        public bool UpdateTag(Tag tag)
+        public async Task<bool> UpdateTag(Tag tag)
         {
-            var existingRecipe = _tagRepository.GetFirstOrDefaultAsync<Entities.Tag>(t => t.Id == tag.Id);
+            var existingRecipe = await _tagRepository.GetFirstOrDefaultAsync<Entities.Tag>(t => t.Id == tag.Id);
             _mapper.Map(tag, existingRecipe);
             _tagRepository.Update(existingRecipe);
-            return _tagRepository.SaveChanges();
+            return await _tagRepository.SaveChangesAsync();
         }
 
-        public bool DeleteTag(int id)
+        public async Task<bool> DeleteTag(int id)
         {
-            _tagRepository.Delete(_tagRepository.GetFirstOrDefaultAsync<Entities.Tag>(t => t.Id == id));
-            return _tagRepository.SaveChanges();
+            _tagRepository.Delete(await _tagRepository.GetFirstOrDefaultAsync<Entities.Tag>(t => t.Id == id));
+            return await _tagRepository.SaveChangesAsync();
         }
 
-        public IEnumerable<TagCategory> GetTagCategories()
+        public async Task<IEnumerable<TagCategory>> GetTagCategories()
         {
-            string[] includes =
-            {
-                $"{nameof(Entities.TagCategory.Tags)}"
-            };
-            return _mapper.Map<IEnumerable<TagCategory>>(_tagRepository.GetAllAsync<Entities.TagCategory>(null, includes));
+            return _mapper.Map<IEnumerable<TagCategory>>(
+                await _tagRepository.GetAllAsync<Entities.TagCategory>(
+                    null, $"{nameof(Entities.TagCategory.Tags)}"));
         }
 
-        public TagCategory GetTagCategory(int id)
+        public async Task<TagCategory> GetTagCategory(int id)
         {
-            string[] includes =
-            {
-                $"{nameof(Entities.TagCategory.Tags)}"
-            };
-
-            return _mapper.Map<TagCategory>(_tagRepository.GetFirstOrDefaultAsync<Entities.TagCategory>(tc => tc.Id == id, includes));
+            return _mapper.Map<TagCategory>(
+                await _tagRepository.GetFirstOrDefaultAsync<Entities.TagCategory>(
+                    tc => tc.Id == id, $"{nameof(Entities.TagCategory.Tags)}"));
         }
     }
 }

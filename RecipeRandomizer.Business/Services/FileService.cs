@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 using RecipeRandomizer.Business.Interfaces;
 
 namespace RecipeRandomizer.Business.Services
@@ -64,13 +65,13 @@ namespace RecipeRandomizer.Business.Services
                 File.Delete(fileName);
         }
 
-        public void SaveFileToDisk(Stream sourceStream, string physicalDestination, string trustedFileName)
+        public async Task SaveFileToDiskAsync(Stream sourceStream, string physicalDestination, string trustedFileName)
         {
             if (!Directory.Exists(physicalDestination))
                 Directory.CreateDirectory(physicalDestination);
 
             var destinationStream = File.Create(Path.Combine(physicalDestination, trustedFileName));
-            sourceStream.CopyTo(destinationStream);
+            await sourceStream.CopyToAsync(destinationStream);
             destinationStream.Close();
         }
     }

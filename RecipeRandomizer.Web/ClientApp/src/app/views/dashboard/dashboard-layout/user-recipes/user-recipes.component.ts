@@ -6,7 +6,8 @@ import {AuthService} from '@app/services/auth.service';
 import {ActivatedRoute, Router} from '@angular/router';
 import {forkJoin} from 'rxjs';
 import {AlertService} from '@app/components/alert/alert.service';
-import {Difficulty} from '../../../../models/nomenclature/difficulty';
+import {Difficulty} from '@app/models/nomenclature/difficulty';
+import {LikeRequest} from '@app/models/LikeRequest';
 
 @Component({
     selector: 'app-user-recipes',
@@ -124,7 +125,7 @@ export class UserRecipesComponent implements OnInit {
 
     public unlike(id: number): void {
         this.alertService.clear();
-        this.recipeService.toggleRecipeLike(id, this.user.id, false).subscribe(
+        this.recipeService.toggleRecipeLike(id, new LikeRequest(false, this.user.id)).subscribe(
             () => {
                 this.user.likedRecipes = this.user.likedRecipes.filter(r => r.id === id);
                 this.alertService.success('Successfully unliked recipe.');

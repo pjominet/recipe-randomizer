@@ -7,6 +7,7 @@ import {Difficulty} from '@app/models/nomenclature/difficulty';
 import {AuthService} from '@app/services/auth.service';
 import {User} from '@app/models/identity/user';
 import {environment} from '@env/environment';
+import {LikeRequest} from "@app/models/LikeRequest";
 
 @Component({
     selector: 'app-recipe',
@@ -45,7 +46,7 @@ export class RecipeComponent implements OnInit {
 
     public like(): void {
         this.isLiked = !this.isLiked;
-        this.recipeService.toggleRecipeLike(this.recipe.id, this.user.id, this.isLiked).subscribe(
+        this.recipeService.toggleRecipeLike(this.recipe.id, new LikeRequest(this.isLiked, this.user.id)).subscribe(
             () => {
                 if (this.isLiked) {
                     this.recipe.likes.push(this.user.id);

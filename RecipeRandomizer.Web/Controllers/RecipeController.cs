@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using RecipeRandomizer.Business.Interfaces;
 using RecipeRandomizer.Business.Models;
-using System.Linq;
 using System.Threading.Tasks;
 using RecipeRandomizer.Business.Models.Identity;
 using RecipeRandomizer.Web.Utils;
@@ -21,80 +20,80 @@ namespace RecipeRandomizer.Web.Controllers
         }
 
         [HttpGet]
-        [ProducesResponseType(typeof(List<Recipe>), StatusCodes.Status200OK)]
-        public async Task<IActionResult> GetRecipes([FromQuery(Name = "tag")] int[] tagIds)
+        [ProducesResponseType(typeof(IEnumerable<Recipe>), StatusCodes.Status200OK)]
+        public async Task<ActionResult<IEnumerable<Recipe>>> GetRecipes([FromQuery(Name = "tag")] int[] tagIds)
         {
             return Ok(await _recipeService.GetRecipesAsync(tagIds));
         }
 
         [HttpGet("published-count")]
         [ProducesResponseType(typeof(int), StatusCodes.Status200OK)]
-        public IActionResult GetPublishedRecipeCount()
+        public async Task<ActionResult<int>> GetPublishedRecipeCount()
         {
-            return Ok(_recipeService.GetPublishedRecipeCount());
+            return Ok(await _recipeService.GetPublishedRecipeCountAsync());
         }
 
         [Authorize]
         [HttpGet("created/{id:int}")]
-        [ProducesResponseType(typeof(List<Recipe>), StatusCodes.Status200OK)]
-        public IActionResult GetRecipesForUser([FromRoute(Name = "id")] int id)
+        [ProducesResponseType(typeof(IEnumerable<Recipe>), StatusCodes.Status200OK)]
+        public async Task<ActionResult<IEnumerable<Recipe>>> GetRecipesForUser([FromRoute(Name = "id")] int id)
         {
-            return Ok(_recipeService.GetRecipesForUser(id));
+            return Ok(await _recipeService.GetRecipesForUserAsync(id));
         }
 
         [Authorize]
         [HttpGet("liked/{id:int}")]
-        [ProducesResponseType(typeof(List<Recipe>), StatusCodes.Status200OK)]
-        public IActionResult GetLikedRecipesForUser([FromRoute(Name = "id")] int id)
+        [ProducesResponseType(typeof(IEnumerable<Recipe>), StatusCodes.Status200OK)]
+        public async Task<ActionResult<IEnumerable<Recipe>>> GetLikedRecipesForUser([FromRoute(Name = "id")] int id)
         {
-            return Ok(_recipeService.GetLikedRecipesForUser(id));
+            return Ok(await _recipeService.GetLikedRecipesForUserAsync(id));
         }
 
         [HttpGet("deleted")]
-        [ProducesResponseType(typeof(List<Recipe>), StatusCodes.Status200OK)]
-        public IActionResult GetDeletedRecipes()
+        [ProducesResponseType(typeof(IEnumerable<Recipe>), StatusCodes.Status200OK)]
+        public async Task<ActionResult<IEnumerable<Recipe>>> GetDeletedRecipes()
         {
-            return Ok(_recipeService.GetDeletedRecipes());
+            return Ok(await _recipeService.GetDeletedRecipesAsync());
         }
 
         [HttpGet("{id:int}")]
         [ProducesResponseType(typeof(Recipe), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public IActionResult GetRecipe([FromRoute] int id)
+        public async Task<ActionResult<Recipe>> GetRecipe([FromRoute] int id)
         {
-            var recipe = _recipeService.GetRecipe(id);
+            var recipe = await _recipeService.GetRecipeAsync(id);
             return recipe != null
                 ? Ok(recipe)
-                : (IActionResult) NotFound();
+                : (ActionResult) NotFound();
         }
 
         [HttpGet("random")]
         [ProducesResponseType(typeof(Recipe), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public IActionResult GetRandomRecipe([FromQuery(Name = "tag")] int[] tagIds)
+        public async Task<ActionResult<Recipe>> GetRandomRecipe([FromQuery(Name = "tag")] int[] tagIds)
         {
-            var recipeId = _recipeService.GetRandomRecipeId(tagIds);
+            var recipeId = await _recipeService.GetRandomRecipeIdAsync(tagIds);
             return recipeId.HasValue
                 ? Ok(recipeId.Value)
-                : (IActionResult) NotFound();
+                : (ActionResult) NotFound();
         }
 
         [Authorize(Role.Admin)]
-        [HttpGet("orphans")]
-        [ProducesResponseType(typeof(List<Recipe>), StatusCodes.Status200OK)]
-        public IActionResult GetOrphanRecipes()
+        [HttpGet("abandoned")]
+        [ProducesResponseType(typeof(IEnumerable<Recipe>), StatusCodes.Status200OK)]
+        public async Task<ActionResult<IEnumerable<Recipe>>> GetAbandonedRecipes()
         {
-            return Ok(_recipeService.GetOrphanRecipes());
+            return Ok(await _recipeService.GetAbandonedRecipesAsync());
         }
 
         [Authorize(Role.Admin)]
-        [HttpPost("orphans")]
+        [HttpPost("abandoned")]
         [Consumes("application/json")]
-        [ProducesResponseType(typeof(List<Recipe>), StatusCodes.Status204NoContent)]
+        [ProducesResponseType(typeof(IEnumerable<Recipe>), StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public IActionResult AttributeRecipe([FromBody] AttributionRequest request)
+        public async Task<ActionResult<IEnumerable<Recipe>>> AttributeRecipe([FromBody] AttributionRequest request)
         {
-            return _recipeService.AttributeRecipe(request)
+            return await _recipeService.AttributeRecipeAsync(request)
                 ? NoContent()
                 : StatusCode(StatusCodes.Status500InternalServerError);
         }
@@ -102,14 +101,14 @@ namespace RecipeRandomizer.Web.Controllers
         [Authorize]
         [HttpPost]
         [Consumes("application/json")]
-        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(typeof(Recipe), StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public IActionResult AddRecipe([FromBody] Recipe recipe)
+        public async Task<ActionResult<Recipe>> AddRecipe([FromBody] Recipe recipe)
         {
-            var newRecipe = _recipeService.CreateRecipe(recipe);
+            var newRecipe = await _recipeService.CreateRecipe(recipe);
             return newRecipe != null
                 ? CreatedAtAction(nameof(GetRecipe), new {id = newRecipe.Id}, newRecipe)
-                : (IActionResult) StatusCode(StatusCodes.Status500InternalServerError);
+                : (ActionResult) StatusCode(StatusCodes.Status500InternalServerError);
         }
 
         [Authorize]
@@ -118,7 +117,7 @@ namespace RecipeRandomizer.Web.Controllers
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public IActionResult UploadRecipeImage([FromForm(Name = "file")] IFormFile image, [FromForm(Name = "id")] int? recipeId)
+        public async Task<IActionResult> UploadRecipeImage([FromForm(Name = "file")] IFormFile image, [FromForm(Name = "id")] int? recipeId)
         {
             if (image == null || image.Length <= 0 || !recipeId.HasValue)
                 return BadRequest("Missing information");
@@ -127,7 +126,7 @@ namespace RecipeRandomizer.Web.Controllers
                 return BadRequest("File is too large");
 
             var stream = image.OpenReadStream();
-            var result = _recipeService.UploadRecipeImage(stream, image.FileName, recipeId.Value);
+            var result = await _recipeService.UploadRecipeImage(stream, image.FileName, recipeId.Value);
             stream.Close();
 
             return result
@@ -139,33 +138,33 @@ namespace RecipeRandomizer.Web.Controllers
         [HttpDelete("{id:int}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public IActionResult DeleteRecipe([FromRoute] int id, [FromQuery(Name = "hard")] bool hard = false)
+        public async Task<IActionResult> DeleteRecipe([FromRoute] int id, [FromQuery(Name = "hard")] bool hard = false)
         {
-            return _recipeService.DeleteRecipe(id, hard)
+            return await _recipeService.DeleteRecipe(id, hard)
                 ? NoContent()
-                : StatusCode(StatusCodes.Status404NotFound);
+                : (IActionResult) NotFound();
         }
 
         [Authorize]
         [HttpGet("restore/{id:int}")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(Recipe), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public IActionResult RestoreDeletedRecipe([FromRoute] int id)
+        public async Task<ActionResult<Recipe>> RestoreDeletedRecipe([FromRoute] int id)
         {
-            var restoredRecipe = _recipeService.RestoreDeletedRecipe(id);
+            var restoredRecipe = await _recipeService.RestoreDeletedRecipe(id);
 
             return restoredRecipe != null
                 ? Ok(restoredRecipe)
-                : (IActionResult) StatusCode(StatusCodes.Status404NotFound);
+                : (ActionResult) NotFound();
         }
 
         [Authorize]
-        [HttpGet("{recipeId:int}/liked-by/{userId:int}")]
+        [HttpPost("like/{recipeId:int}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public IActionResult ToggleRecipeLike([FromRoute(Name = "recipeId")] int recipeId, [FromRoute(Name = "userId")] int userId, [FromQuery(Name = "like")] bool like = false)
+        public async Task<IActionResult> ToggleRecipeLike([FromRoute(Name = "recipeId")] int recipeId, [FromBody] LikeRequest request)
         {
-            return _recipeService.ToggleRecipeLike(recipeId, userId, like)
+            return await _recipeService.ToggleRecipeLike(recipeId, request)
                 ? NoContent()
                 : StatusCode(StatusCodes.Status500InternalServerError);
         }
@@ -175,9 +174,9 @@ namespace RecipeRandomizer.Web.Controllers
         [Consumes("application/json")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public IActionResult EditRecipe([FromBody] Recipe recipe)
+        public async Task<IActionResult> EditRecipe([FromBody] Recipe recipe)
         {
-            return _recipeService.UpdateRecipe(recipe)
+            return await _recipeService.UpdateRecipe(recipe)
                 ? Ok(recipe.Id)
                 : (IActionResult) StatusCode(StatusCodes.Status500InternalServerError);
         }

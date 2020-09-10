@@ -102,7 +102,7 @@ namespace RecipeRandomizer.Data.Repositories
             Context.Set<T>().Remove(entity);
         }
 
-        public async Task<bool> SaveChanges()
+        public async Task<bool> SaveChangesAsync()
         {
             try
             {

@@ -4,6 +4,7 @@ using System.Net;
 using System.Text.Json;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
+using RecipeRandomizer.Business.Models;
 using RecipeRandomizer.Business.Utils.Exceptions;
 
 namespace RecipeRandomizer.Web.Utils
@@ -41,7 +42,7 @@ namespace RecipeRandomizer.Web.Utils
                     _ => (int) HttpStatusCode.InternalServerError
                 };
 
-                var result = JsonSerializer.Serialize(new {message = error.Message});
+                var result = JsonSerializer.Serialize(new SimpleResponse{Message = error.Message});
                 await response.WriteAsync(result);
             }
         }

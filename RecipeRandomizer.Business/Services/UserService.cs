@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.Extensions.Options;
 using RecipeRandomizer.Business.Interfaces;
@@ -28,19 +29,19 @@ namespace RecipeRandomizer.Business.Services
             _fileService = fileService;
         }
 
-        public IEnumerable<User> GetUsers()
+        public async Task<IEnumerable<User>> GetUsersAsync()
         {
-            return _mapper.Map<IEnumerable<User>>(_userRepository.GetAllAsync<Entities.User>(null, $"{nameof(Entities.User.Role)}"));
+            return _mapper.Map<IEnumerable<User>>(await _userRepository.GetAllAsync<Entities.User>(null, $"{nameof(Entities.User.Role)}"));
         }
 
-        public User GetUser(int id)
+        public async Task<User> GetUserAsync(int id)
         {
-            return _mapper.Map<User>(_userRepository.GetFirstOrDefaultAsync<Entities.User>(u => u.Id == id, $"{nameof(Entities.User.Role)}"));
+            return _mapper.Map<User>(await _userRepository.GetFirstOrDefaultAsync<Entities.User>(u => u.Id == id, $"{nameof(Entities.User.Role)}"));
         }
 
-        public User Update(int id, UserUpdateRequest userUpdateRequest)
+        public async Task<User> UpdateAsync(int id, UserUpdateRequest userUpdateRequest)
         {
-            var user = _userRepository.GetFirstOrDefaultAsync<Entities.User>(u => u.Id == id);
+            var user = await _userRepository.GetFirstOrDefaultAsync<Entities.User>(u => u.Id == id);
 
             if (user == null)
                 throw new KeyNotFoundException("User not found");
@@ -54,18 +55,18 @@ namespace RecipeRandomizer.Business.Services
             user.Email = userUpdateRequest.Email;
             user.UpdatedOn = DateTime.UtcNow;
             _userRepository.Update(user);
-            if (!_userRepository.SaveChanges())
+            if (!await _userRepository.SaveChangesAsync())
                 throw new ApplicationException("Database error: Changes could not be saved correctly");
 
             return _mapper.Map<User>(user);
         }
 
-        public User Update(int id, RoleUpdateRequest roleUpdateRequest)
+        public async Task<User> UpdateAsync(int id, RoleUpdateRequest roleUpdateRequest)
         {
-            if (_userRepository.AdminCount() <= 1)
+            if (await _userRepository.AdminCountAsync() <= 1)
                 throw new BadRequestException("The last admin can't demote himself!");
 
-            var user = _userRepository.GetFirstOrDefaultAsync<Entities.User>(u => u.Id == id);
+            var user = await _userRepository.GetFirstOrDefaultAsync<Entities.User>(u => u.Id == id);
 
             if (user == null)
                 throw new KeyNotFoundException("User not found");
@@ -74,15 +75,15 @@ namespace RecipeRandomizer.Business.Services
             user.RoleId = (int) roleUpdateRequest.Role;
             user.UpdatedOn = DateTime.UtcNow;
             _userRepository.Update(user);
-            if (!_userRepository.SaveChanges())
+            if (!await _userRepository.SaveChangesAsync())
                 throw new ApplicationException("Database error: Changes could not be saved correctly");
 
             return _mapper.Map<User>(user);
         }
 
-        public bool UploadUserAvatar(Stream sourceStream, string untrustedFileName, int id)
+        public async Task<bool> UploadUserAvatar(Stream sourceStream, string untrustedFileName, int id)
         {
-            var user = _userRepository.GetFirstOrDefaultAsync<Entities.User>(u => u.Id == id);
+            var user = await _userRepository.GetFirstOrDefaultAsync<Entities.User>(u => u.Id == id);
             if (user == null)
                 throw new KeyNotFoundException("User to add avatar to could not be found");
 
@@ -98,13 +99,13 @@ namespace RecipeRandomizer.Business.Services
 
                  // save new avatar
                 var trustedFileName = Guid.NewGuid() + proposedFileExtension;
-                _fileService.SaveFileToDisk(sourceStream, Path.Combine(physicalRoot, _appSettings.UserAvatarsFolder), trustedFileName);
+                await _fileService.SaveFileToDiskAsync(sourceStream, Path.Combine(physicalRoot, _appSettings.UserAvatarsFolder), trustedFileName);
 
                 user.ProfileImageUri = Path.Combine(_appSettings.UserAvatarsFolder, trustedFileName);
                 user.UpdatedOn = DateTime.UtcNow;
                 _userRepository.Update(user);
 
-                return _userRepository.SaveChanges();
+                return await _userRepository.SaveChangesAsync();
             }
             catch (IOException e)
             {
@@ -113,26 +114,26 @@ namespace RecipeRandomizer.Business.Services
             }
         }
 
-        public bool Delete(int id)
+        public async Task<bool> Delete(int id)
         {
-            if (_userRepository.AdminCount() <= 1)
+            if (await _userRepository.AdminCountAsync() <= 1)
                 throw new BadRequestException("The last admin can't delete his account!");
 
-            var user = _userRepository.GetFirstOrDefaultAsync<Entities.User>(u => u.Id == id);
+            var user = await _userRepository.GetFirstOrDefaultAsync<Entities.User>(u => u.Id == id);
 
             if (user == null)
                 throw new KeyNotFoundException("User to delete could not be found.");
 
             _userRepository.Delete(user);
-            return _userRepository.SaveChanges();
+            return await _userRepository.SaveChangesAsync();
         }
 
-        public bool ToggleUserLock(int id, LockRequest lockRequest)
+        public async Task<bool> ToggleUserLock(int id, LockRequest lockRequest)
         {
             if (lockRequest.LockedById.HasValue && lockRequest.LockedById == id)
                 throw new BadRequestException("Locking yourself is not allowed!");
 
-            var user = _userRepository.GetFirstOrDefaultAsync<Entities.User>(u => u.Id == id);
+            var user = await _userRepository.GetFirstOrDefaultAsync<Entities.User>(u => u.Id == id);
 
             user.LockedOn = lockRequest.UserLock
                 ? (DateTime?) DateTime.UtcNow
@@ -141,7 +142,7 @@ namespace RecipeRandomizer.Business.Services
             user.LockedById = lockRequest.LockedById;
 
             _userRepository.Update(user);
-            return _userRepository.SaveChanges();
+            return await _userRepository.SaveChangesAsync();
         }
     }
 }

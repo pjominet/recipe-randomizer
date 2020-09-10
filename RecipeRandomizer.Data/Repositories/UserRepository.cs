@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 using RecipeRandomizer.Data.Contexts;
 
 namespace RecipeRandomizer.Data.Repositories
@@ -7,14 +8,14 @@ namespace RecipeRandomizer.Data.Repositories
     {
         public UserRepository(RRContext context) : base(context) { }
 
-        public bool HasUsers()
+        public async Task<bool> HasUsersAsync()
         {
-            return Context.Users.Any();
+            return await Context.Users.AnyAsync();
         }
 
-        public int AdminCount()
+        public async Task<int> AdminCountAsync()
         {
-            return Context.Users.Count(r => r.RoleId == 1);
+            return await Context.Users.CountAsync(r => r.RoleId == 1);
         }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using System.IO;
+using System.Threading.Tasks;
 
 namespace RecipeRandomizer.Business.Interfaces
 {
@@ -6,6 +7,6 @@ namespace RecipeRandomizer.Business.Interfaces
     {
         public void CheckForAllowedSignature(Stream stream, string proposedExtension);
         public void DeleteExistingFile(string fileName);
-        public void SaveFileToDisk(Stream sourceStream, string physicalDestination, string trustedFileName);
+        public Task SaveFileToDiskAsync(Stream sourceStream, string physicalDestination, string trustedFileName);
     }
 }
