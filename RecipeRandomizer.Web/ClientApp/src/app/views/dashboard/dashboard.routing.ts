@@ -4,6 +4,7 @@ import {Routes, RouterModule} from '@angular/router';
 // helpers
 import {Role} from '@app/models/identity/user';
 import {AuthGuard} from '@app/helpers/auth.guard';
+import {UnsavedChangesGuard} from '@app/helpers/unsaved-changes.guard';
 
 // routable views
 import {DashboardLayoutComponent} from './dashboard-layout/dashboard-layout.component';
@@ -31,8 +32,8 @@ const routes: Routes = [
                     {path: ':rid', component: RecipeModal}
                 ]
             },
-            {path: 'recipe-editor', component: RecipeEditorComponent},
-            {path: 'recipe-editor/:rid', component: RecipeEditorComponent},
+            {path: 'recipe-editor', component: RecipeEditorComponent, canDeactivate: [UnsavedChangesGuard]},
+            {path: 'recipe-editor/:rid', component: RecipeEditorComponent, canDeactivate: [UnsavedChangesGuard]},
             {path: 'random-recipe', component: RandomRecipeComponent},
             {
                 path: 'recipes', component: RecipeListComponent, children: [

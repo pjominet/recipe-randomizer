@@ -16,6 +16,7 @@ import {EnumListPipe} from '@app/helpers/enumlist.pipe';
 import {NavbarComponent} from '@app/components/navbar/navbar.component';
 import {TopbarComponent} from '@app/components/topbar/topbar.component';
 import {FileUploadComponent} from '@app/components/file-upload/file-upload.component';
+import {ConfirmationDialogComponent} from '@app/components/confirmation-dialog/confirmation-dialog.component';
 
 // views
 import {DashboardLayoutComponent} from './dashboard-layout/dashboard-layout.component';
@@ -54,12 +55,14 @@ import {ChangeRoleComponent} from './admin/change-role/change-role.component';
         UserListComponent,
         OrphanRecipesComponent,
         AttributionComponent,
-        ChangeRoleComponent
+        ChangeRoleComponent,
+        ConfirmationDialogComponent
     ],
     entryComponents: [
         ChangePasswordComponent,
         AttributionComponent,
-        ChangeRoleComponent
+        ChangeRoleComponent,
+        ConfirmationDialogComponent
     ],
     providers: [
         UnsavedChangesGuard

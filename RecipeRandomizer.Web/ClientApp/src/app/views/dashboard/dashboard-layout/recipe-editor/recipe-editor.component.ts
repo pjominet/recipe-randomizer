@@ -11,7 +11,7 @@ import {RecipeService} from '@app/services/recipe.service';
 import {QuantityService} from '@app/services/quantity.service';
 import {TagService} from '@app/services/tag.service';
 import {TagCategory} from '@app/models/nomenclature/tagCategory';
-import {forkJoin} from 'rxjs';
+import {forkJoin, Observable, Subject} from 'rxjs';
 import {AlertService} from '@app/components/alert/alert.service';
 import {FileUploadRequest} from '@app/models/fileUploadRequest';
 import {environment} from '@env/environment';
@@ -20,6 +20,7 @@ import {HttpEventType, HttpResponse} from '@angular/common/http';
 import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
 import {FileUploadService} from '@app/components/file-upload/file-upload.service';
 import * as ClassicEditor from '@ckeditor/ckeditor5-build-classic';
+import {ConfirmationDialogComponent} from '@app/components/confirmation-dialog/confirmation-dialog.component';
 
 @Component({
     selector: 'app-recipe-editor',
@@ -211,6 +212,23 @@ export class RecipeEditorComponent implements OnInit {
         this.recipeForm.reset();
         // re-add starting element
         this.onIngredientAdd();
+    }
+
+    public canDeactivate(): Observable<boolean> | Promise<boolean> | boolean {
+        if (!this.recipeForm.pristine && !this.isSubmitted) {
+            const navigationConfirmation = new Subject<boolean>();
+
+            const modalRef = this.modalService.open(ConfirmationDialogComponent,
+                {size: 'sm', keyboard: false, backdrop: 'static'});
+            modalRef.result.then(result => {
+                navigationConfirmation.next(result);
+                navigationConfirmation.complete();
+            });
+
+            return navigationConfirmation.asObservable();
+        }
+
+        return true;
     }
 
     private resetView(): void {
