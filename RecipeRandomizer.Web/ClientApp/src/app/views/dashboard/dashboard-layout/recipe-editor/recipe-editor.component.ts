@@ -191,7 +191,7 @@ export class RecipeEditorComponent implements OnInit {
                     this.onEditSuccess(response, 'Successfully updated this recipe!');
                 }, error => {
                     this.resetView();
-                    this.alertService.error('Recipe could not be updated.');
+                    this.alertService.error('Recipe could not be updated.', {autoCloseTimeOut: 5000});
                 });
         } else {
             this.recipeService.addRecipe(this.recipe).subscribe(
@@ -201,7 +201,7 @@ export class RecipeEditorComponent implements OnInit {
                     this.onEditSuccess(newRecipe.id, 'Successfully created a new recipe!');
                 }, error => {
                     this.resetView();
-                    this.alertService.error('Recipe could not be created.');
+                    this.alertService.error('Recipe could not be created.', {autoCloseTimeOut: 5000});
                 });
         }
     }
@@ -262,15 +262,15 @@ export class RecipeEditorComponent implements OnInit {
                         this.isLoading = false;
                         this.fileUploadSuccess = true;
                         this.fileUploadService.setFileUploadSuccess();
-                        this.alertService.success(successMessage);
+                        this.alertService.success(successMessage, {autoCloseTimeOut: 5000});
                     }
                 },
                 error => {
-                    this.isLoading = false;
-                    this.alertService.error(error);
+                    this.resetView();
+                    this.alertService.error(error, {autoCloseTimeOut: 5000});
                 });
         } else {
-            this.alertService.success(successMessage);
+            this.alertService.success(successMessage, {autoCloseTimeOut: 5000});
             this.isLoading = false;
         }
     }
