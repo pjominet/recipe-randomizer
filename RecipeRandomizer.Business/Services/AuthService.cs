@@ -224,7 +224,7 @@ namespace RecipeRandomizer.Business.Services
             var user = await _userRepository.GetFirstOrDefaultAsync<Entities.User>(u => u.Id == request.Id);
 
             if (user == null)
-                throw new BadRequestException("User could not be found");
+                throw new KeyNotFoundException("User could not be found");
 
             if (!BC.Verify(request.Password, user.PasswordHash))
                 throw new BadRequestException("Current password is not correct");
@@ -250,7 +250,7 @@ namespace RecipeRandomizer.Business.Services
         {
             var refreshToken = await _userRepository.GetFirstOrDefaultAsync<Entities.RefreshToken>(rt => rt.Token == token);
             if (refreshToken == null)
-                throw new ApplicationException("No refresh-token found");
+                throw new KeyNotFoundException("No refresh-token found");
 
             string[] includes =
             {
