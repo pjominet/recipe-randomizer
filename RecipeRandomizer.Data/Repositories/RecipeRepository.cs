@@ -75,11 +75,15 @@ namespace RecipeRandomizer.Data.Repositories
 
         public void HardDeleteRecipe(int id)
         {
-            foreach (var tagAssociation in Context.RecipeTagAssociations.Where(rta => rta.RecipeId == id))
-                Delete(tagAssociation);
+            /*foreach (var tagAssociation in Context.RecipeTagAssociations.Where(rta => rta.RecipeId == id))
+                Delete(tagAssociation);*/
 
-            foreach (var recipeLike in Context.RecipeLikes.Where(rl => rl.RecipeId == id))
-                Delete(recipeLike);
+            Parallel.ForEach(Context.RecipeTagAssociations.Where(rta => rta.RecipeId == id), Delete);
+
+            /*foreach (var recipeLike in Context.RecipeLikes.Where(rl => rl.RecipeId == id))
+                Delete(recipeLike);*/
+
+            Parallel.ForEach(Context.RecipeLikes.Where(rl => rl.RecipeId == id), Delete);
 
             Delete(Context.Recipes.Where(r => r.Id == id));
         }
