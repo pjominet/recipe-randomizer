@@ -11,7 +11,7 @@ import {RecipeService} from '@app/services/recipe.service';
 import {QuantityService} from '@app/services/quantity.service';
 import {TagService} from '@app/services/tag.service';
 import {TagCategory} from '@app/models/nomenclature/tagCategory';
-import {forkJoin} from 'rxjs';
+import {forkJoin, Observable, Subject} from 'rxjs';
 import {AlertService} from '@app/components/alert/alert.service';
 import {FileUploadRequest} from '@app/models/fileUploadRequest';
 import {environment} from '@env/environment';
@@ -20,6 +20,7 @@ import {HttpEventType, HttpResponse} from '@angular/common/http';
 import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
 import {FileUploadService} from '@app/components/file-upload/file-upload.service';
 import * as ClassicEditor from '@ckeditor/ckeditor5-build-classic';
+import {ConfirmationDialogComponent} from '@app/components/confirmation-dialog/confirmation-dialog.component';
 
 @Component({
     selector: 'app-recipe-editor',
@@ -190,7 +191,7 @@ export class RecipeEditorComponent implements OnInit {
                     this.onEditSuccess(response, 'Successfully updated this recipe!');
                 }, error => {
                     this.resetView();
-                    this.alertService.error('Recipe could not be updated.');
+                    this.alertService.error('Recipe could not be updated.', {autoCloseTimeOut: 5000});
                 });
         } else {
             this.recipeService.addRecipe(this.recipe).subscribe(
@@ -200,7 +201,7 @@ export class RecipeEditorComponent implements OnInit {
                     this.onEditSuccess(newRecipe.id, 'Successfully created a new recipe!');
                 }, error => {
                     this.resetView();
-                    this.alertService.error('Recipe could not be created.');
+                    this.alertService.error('Recipe could not be created.', {autoCloseTimeOut: 5000});
                 });
         }
     }
@@ -211,6 +212,23 @@ export class RecipeEditorComponent implements OnInit {
         this.recipeForm.reset();
         // re-add starting element
         this.onIngredientAdd();
+    }
+
+    public canDeactivate(): Observable<boolean> | Promise<boolean> | boolean {
+        if (!this.recipeForm.pristine && !this.isSubmitted) {
+            const navigationConfirmation = new Subject<boolean>();
+
+            const modalRef = this.modalService.open(ConfirmationDialogComponent,
+                {size: 'sm', keyboard: false, backdrop: 'static'});
+            modalRef.result.then(result => {
+                navigationConfirmation.next(result);
+                navigationConfirmation.complete();
+            });
+
+            return navigationConfirmation.asObservable();
+        }
+
+        return true;
     }
 
     private resetView(): void {
@@ -244,15 +262,15 @@ export class RecipeEditorComponent implements OnInit {
                         this.isLoading = false;
                         this.fileUploadSuccess = true;
                         this.fileUploadService.setFileUploadSuccess();
-                        this.alertService.success(successMessage);
+                        this.alertService.success(successMessage, {autoCloseTimeOut: 5000});
                     }
                 },
                 error => {
-                    this.isLoading = false;
-                    this.alertService.error(error);
+                    this.resetView();
+                    this.alertService.error(error, {autoCloseTimeOut: 5000});
                 });
         } else {
-            this.alertService.success(successMessage);
+            this.alertService.success(successMessage, {autoCloseTimeOut: 5000});
             this.isLoading = false;
         }
     }

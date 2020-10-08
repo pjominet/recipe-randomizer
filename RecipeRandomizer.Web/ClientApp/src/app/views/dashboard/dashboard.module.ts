@@ -16,6 +16,7 @@ import {EnumListPipe} from '@app/helpers/enumlist.pipe';
 import {NavbarComponent} from '@app/components/navbar/navbar.component';
 import {TopbarComponent} from '@app/components/topbar/topbar.component';
 import {FileUploadComponent} from '@app/components/file-upload/file-upload.component';
+import {ConfirmationDialogComponent} from '@app/components/confirmation-dialog/confirmation-dialog.component';
 
 // views
 import {DashboardLayoutComponent} from './dashboard-layout/dashboard-layout.component';
@@ -25,7 +26,7 @@ import {RecipeEditorComponent} from './dashboard-layout/recipe-editor/recipe-edi
 import {ChangePasswordComponent} from './change-password/change-password.component';
 import {ChangePasswordModal} from './change-password/change-password-modal';
 import {UserListComponent} from './admin/user-list/user-list.component';
-import {OrphanRecipesComponent} from './admin/orphan-recipes/orphan-recipes.component';
+import {AbandonedRecipesComponent} from './admin/abandoned-recipes/abandoned-recipes.component';
 import {AttributionComponent} from './admin/attribution/attribution.component';
 import {ChangeRoleComponent} from './admin/change-role/change-role.component';
 
@@ -52,14 +53,16 @@ import {ChangeRoleComponent} from './admin/change-role/change-role.component';
         EnumListPipe,
         FileUploadComponent,
         UserListComponent,
-        OrphanRecipesComponent,
+        AbandonedRecipesComponent,
         AttributionComponent,
-        ChangeRoleComponent
+        ChangeRoleComponent,
+        ConfirmationDialogComponent
     ],
     entryComponents: [
         ChangePasswordComponent,
         AttributionComponent,
-        ChangeRoleComponent
+        ChangeRoleComponent,
+        ConfirmationDialogComponent
     ],
     providers: [
         UnsavedChangesGuard

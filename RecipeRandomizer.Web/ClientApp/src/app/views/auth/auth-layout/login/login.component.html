@@ -19,8 +19,8 @@
             </div>
 
             <div class="d-flex justify-content-center mb-2">
-                <button [disabled]="isLoading" class="btn btn-primary btn-ellipse mr-1">
-                    <span *ngIf="isLoading" class="spinner-border spinner-border-sm mr-1"></span>Login
+                <button [disabled]="isLoading" class="btn btn-primary btn-ellipse mr-1 d-flex align-items-center">
+                    Login<span *ngIf="isLoading" class="spinner-border spinner-border-sm ml-1"></span>
                 </button>
                 <button class="btn btn-outline-dark btn-ellipse ml-1" (click)="back()">Cancel</button>
             </div>
