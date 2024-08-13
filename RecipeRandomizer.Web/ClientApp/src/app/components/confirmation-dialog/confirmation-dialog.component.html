@@ -1,0 +1,18 @@
+<div class="modal-body p-0">
+    <div class="card">
+        <div class="card-header">
+            <h5 class="text-center mb-0">
+                <strong>You have unsaved changes</strong>
+            </h5>
+        </div>
+        <div class="card-body">
+            <p class="text-center">
+                Are you sure you want to leave?
+            </p>
+            <div class="container d-flex justify-content-around">
+                <button class="btn btn-danger btn-ellipse w-25" (click)="confirmNavigation(true)">Yes</button>
+                <button class="btn btn-success btn-ellipse w-25" ngbAutofocus (click)="confirmNavigation(false)">No</button>
+            </div>
+        </div>
+    </div>
+</div>

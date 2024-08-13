@@ -9,7 +9,7 @@
         },
         "array-type": false,
         "arrow-return-shorthand": true,
-        "curly": true,
+        "curly": [true, "as-needed"],
         "deprecation": {
             "severity": "warning"
         },
@@ -112,6 +112,10 @@
             "object-destructuring",
             "array-destructuring"
         ],
+        "triple-equals": [
+            true,
+            "allow-null-check"
+        ],
         "typedef-whitespace": {
             "options": [
                 {
@@ -161,6 +165,6 @@
         "use-pipe-transform-interface": true
     },
     "rulesDirectory": [
-        "codelyzer"
+        "node_modules/codelyzer"
     ]
 }

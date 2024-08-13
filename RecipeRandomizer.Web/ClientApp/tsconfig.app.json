@@ -10,5 +10,8 @@
     ],
     "include": [
         "src/**/*.d.ts"
+    ],
+    "typeRoots": [
+        "node_modules/@types"
     ]
 }

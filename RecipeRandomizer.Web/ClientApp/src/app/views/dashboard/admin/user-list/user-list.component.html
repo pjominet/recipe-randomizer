@@ -29,7 +29,8 @@
             <button class="btn btn-sm btn-primary mr-2" ngbTooltip="Change role" (click)="showChangeRoleDialog(user)">
                 <i class="fas fa-fw fa-user-cog"></i>
             </button>
-            <button (click)="toggleUserLock(user)" class="btn btn-sm btn-warning mr-2" [disabled]="currentUser.id === user.id" ngbTooltip="Lock out user">
+            <button (click)="toggleUserLock(user)" class="btn btn-sm btn-{{!user.lockedOn ? 'warning' : 'success'}} mr-2"
+                    [disabled]="currentUser.id === user.id" ngbTooltip="{{!user.lockedOn ? 'Lock out user' : 'Unlock user'}}">
                 <i *ngIf="!user.lockedOn" class="fas fa-fw fa-lock"></i>
                 <i *ngIf="user.lockedOn" class="fas fa-fw fa-unlock"></i>
             </button>

@@ -32,6 +32,14 @@ $link-color: $secondary;
         darken($bg-color, 10%), darken($bg-color, 12.5%));
 }
 
+.font-serif {
+    font-family: $font-family-serif;
+}
+
+.font-sans {
+    font-family: $font-family-sans-serif;
+}
+
 .btn {
     @include custom-box-shadow(3px, 3px, 10px, -2px, lighten($dark, 30%));
 
@@ -58,25 +66,41 @@ $link-color: $secondary;
         border: none !important;
     }
 
+    &-primary-translucent {
+        @include bootstrap-button(rgba($primary, .75));
+        border: none !important;
+    }
+
     &-secondary-translucent {
-        @include bootstrap-button(rgba($secondary, .85));
+        @include bootstrap-button(rgba($secondary, .75));
+        border: none !important;
     }
 
     &-info-translucent {
-        @include bootstrap-button(rgba($info, .85));
+        @include bootstrap-button(rgba($info, .75));
+        border: none !important;
     }
 
     &-light-translucent {
-        @include bootstrap-button(rgba($lighter, .85));
+        @include bootstrap-button(rgba($lighter, .75));
+        border: none !important;
+
+    }
+
+    &-dark-translucent {
+        @include bootstrap-button(rgba($dark, .75));
+        border: none !important;
     }
 
     &-ellipse {
         @include custom-border-radius(45px);
+        padding-right: 1.5rem;
+        padding-left: 1.5rem;
     }
 
     &-gradient {
         border: none;
-        background-image: linear-gradient(150deg, $primary 0%, $gradient-middle 35%, $secondary 100%);
+        background-image: linear-gradient(150deg, $secondary 0%, $tertiary 60%, $primary 100%);
         background-size: 170%;
         background-position: left;
         transition: background-position .75s;
@@ -101,6 +125,13 @@ $link-color: $secondary;
 
     &-primary-dark {
         @include badge-variant(darken($primary, 10%))
+    }
+}
+
+.card {
+    &-2-rounded-corners {
+        @include border-radius-by-corner(0, 45px, 45px, 0);
+
     }
 }
 
@@ -185,15 +216,6 @@ $ng-select-value-font-size: 0.9em;
     }
 }
 
-pre {
-    line-height: 1.5;
-    white-space: pre-wrap;
-}
-
-pre > code, code {
-    color: $info;
-}
-
 blockquote {
     background: rgba($primary, .5);
     border-left: 4px solid $primary;
@@ -201,6 +223,14 @@ blockquote {
     color: $lighter;
     margin: 1.2rem 0;
     padding: .1rem .7rem;
+
+    a {
+        color: darken($secondary, 15%);
+
+        &:hover {
+            color: $secondary;
+        }
+    }
 }
 
 .img-circle {

@@ -11,14 +11,14 @@ body {
     position: relative;
     min-height: 100vh;
     background-color: $primary; // fallback color
-    background-image: linear-gradient(135deg, lighten($secondary, 15%) 0%, $gradient-middle 45%, $primary 100%);
-    background-size: 300%;
+    background-image: linear-gradient(135deg, lighten($secondary, 10%) 0%, $tertiary 60%, $primary 100%);
+    background-size: 200%;
     animation: bg-animation 120s infinite alternate;
 
     .body-overlay {
-        background-image: url("/../assets/img/artwork-bg-overlay.png");
-        background-repeat: no-repeat;
-        background-size: cover;
+        min-height: 100vh;
+        background-image: url("/../assets/img/bg-overlay.png");
+        background-repeat: repeat;
     }
 }
 

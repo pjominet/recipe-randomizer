@@ -5,6 +5,7 @@ import {AuthService} from '@app/services/auth.service';
 import {AuthRequest} from '@app/models/identity/authRequest';
 import {AlertService} from '@app/components/alert/alert.service';
 import {first} from 'rxjs/operators';
+import {Location} from '@angular/common';
 
 @Component({
     selector: 'app-login',
@@ -21,7 +22,8 @@ export class LoginComponent implements OnInit {
                 private route: ActivatedRoute,
                 private router: Router,
                 private authenticationService: AuthService,
-                private alertService: AlertService) {
+                private alertService: AlertService,
+                private location: Location) {
         // redirect to user dashboard if already logged in
         if (this.authenticationService.user) {
             this.router.navigate(['/dashboard']);
@@ -65,5 +67,9 @@ export class LoginComponent implements OnInit {
                     this.isLoading = false;
                 }
             });
+    }
+
+    public back(): void {
+        this.location.back();
     }
 }

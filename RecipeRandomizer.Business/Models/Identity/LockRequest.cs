@@ -2,7 +2,7 @@
 {
     public class LockRequest
     {
-        public bool IsLocked { get; set; }
+        public bool UserLock { get; set; }
         public int? LockedById { get; set; }
     }
 }

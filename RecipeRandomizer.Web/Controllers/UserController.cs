@@ -1,7 +1,9 @@
 ﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using RecipeRandomizer.Business.Interfaces;
+using RecipeRandomizer.Business.Models;
 using RecipeRandomizer.Business.Models.Identity;
 using RecipeRandomizer.Web.Utils;
 
@@ -21,45 +23,45 @@ namespace RecipeRandomizer.Web.Controllers
 
         [Authorize(Role.Admin)]
         [HttpGet]
-        [ProducesResponseType(typeof(List<User>), StatusCodes.Status200OK)]
-        public ActionResult<IEnumerable<User>> GetUsers()
+        [ProducesResponseType(typeof(IEnumerable<User>), StatusCodes.Status200OK)]
+        public async Task<ActionResult<IEnumerable<User>>> GetUsers()
         {
-            return Ok(_userService.GetUsers());
+            return Ok(await _userService.GetUsersAsync());
         }
 
         [Authorize]
         [HttpGet("{id:int}")]
-        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(typeof(SimpleResponse), StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(typeof(User), StatusCodes.Status200OK)]
-        public ActionResult<User> GetUser([FromRoute] int id)
+        public async Task<ActionResult<User>> GetUser([FromRoute] int id)
         {
             // users can get their own account and admins can get any account
             if (id != User?.Id && User?.Role != Role.Admin)
-                return Unauthorized(new {message = "Unauthorized"});
+                return Unauthorized(new SimpleResponse{Message = "Unauthorized"});
 
-            return Ok(_userService.GetUser(id));
+            return Ok(await _userService.GetUserAsync(id));
         }
 
         [Authorize]
         [HttpPut("{id:int}")]
-        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(typeof(SimpleResponse), StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(typeof(User), StatusCodes.Status200OK)]
-        public ActionResult<User> UpdateUser([FromRoute] int id, [FromBody] UserUpdateRequest userUpdateRequest)
+        public async Task<ActionResult<User>> UpdateUser([FromRoute] int id, [FromBody] UserUpdateRequest userUpdateRequest)
         {
             // users can update their own account and admins can update any account
             if (id != User?.Id && User?.Role != Role.Admin)
-                return Unauthorized(new {message = "Unauthorized"});
+                return Unauthorized(new SimpleResponse{Message = "Unauthorized"});
 
-            return Ok(_userService.Update(id, userUpdateRequest));
+            return Ok(await _userService.UpdateAsync(id, userUpdateRequest));
         }
 
         [Authorize(Role.Admin)]
         [HttpPut("{id:int}/role")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public ActionResult<User> UpdateUserRole([FromRoute] int id, [FromBody] RoleUpdateRequest roleUpdateRequest)
+        public async Task<IActionResult> UpdateUserRole([FromRoute] int id, [FromBody] RoleUpdateRequest roleUpdateRequest)
         {
-            return Ok(_userService.Update(id, roleUpdateRequest));
+            return Ok(await _userService.UpdateAsync(id, roleUpdateRequest));
         }
 
         [Authorize]
@@ -68,7 +70,7 @@ namespace RecipeRandomizer.Web.Controllers
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public IActionResult UploadUserAvatar([FromForm(Name = "file")] IFormFile image, [FromForm(Name = "id")] int? userId)
+        public async Task<IActionResult> UploadUserAvatar([FromForm(Name = "file")] IFormFile image, [FromForm(Name = "id")] int? userId)
         {
             if (image == null || image.Length <= 0 || !userId.HasValue)
                 return BadRequest("Missing information");
@@ -77,7 +79,7 @@ namespace RecipeRandomizer.Web.Controllers
                 return BadRequest("File is too large");
 
             var stream = image.OpenReadStream();
-            var result = _userService.UploadUserAvatar(stream, image.FileName, userId.Value);
+            var result = await _userService.UploadUserAvatar(stream, image.FileName, userId.Value);
             stream.Close();
 
             return result
@@ -88,27 +90,27 @@ namespace RecipeRandomizer.Web.Controllers
         [Authorize]
         [HttpDelete("{id:int}")]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        [ProducesResponseType(typeof(object), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(SimpleResponse), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public IActionResult DeleteUser([FromRoute] int id)
+        public async Task<IActionResult> DeleteUser([FromRoute] int id)
         {
             // users can delete their own account and admins can delete any account
             if (id != User?.Id && User?.Role != Role.Admin)
                 return Unauthorized(new {message = "Unauthorized"});
 
-            return _userService.Delete(id)
-                ? Ok(new {message = "Account deleted successfully"})
+            return await _userService.Delete(id)
+                ? Ok(new SimpleResponse{Message = "Account deleted successfully"})
                 : (IActionResult) StatusCode(StatusCodes.Status500InternalServerError);
         }
 
         [Authorize(Role.Admin)]
-        [HttpPost("{id:int}")]
-        [ProducesResponseType(typeof(object), StatusCodes.Status200OK)]
+        [HttpPost("lock/{id:int}")]
+        [ProducesResponseType(typeof(SimpleResponse), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public IActionResult ToggleUserLock([FromRoute] int id, [FromBody] LockRequest lockRequest)
+        public async Task<IActionResult> ToggleUserLock([FromRoute] int id, [FromBody] LockRequest lockRequest)
         {
-            return _userService.ToggleUserLock(id, lockRequest)
-                ? Ok(new {message = "Successfully changed user lock"})
+            return await _userService.ToggleUserLock(id, lockRequest)
+                ? Ok(new SimpleResponse{Message = "Successfully changed user lock"})
                 : (IActionResult) StatusCode(StatusCodes.Status500InternalServerError);
         }
     }

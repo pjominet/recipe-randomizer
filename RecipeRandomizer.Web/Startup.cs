@@ -120,7 +120,7 @@ namespace RecipeRandomizer.Web
                 spa.Options.SourcePath = "ClientApp";
 
                 if (env.IsDevelopment())
-                    spa.UseProxyToSpaDevelopmentServer("http://localhost:4200");
+                    spa.UseProxyToSpaDevelopmentServer("http://localhost:4242");
             });
         }
 

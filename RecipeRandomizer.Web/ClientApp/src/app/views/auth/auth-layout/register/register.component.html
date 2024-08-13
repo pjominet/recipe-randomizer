@@ -1,5 +1,5 @@
-<div class="card">
-    <h4 class="card-header text-center">Hello there!</h4>
+<div class="card card-2-rounded-corners">
+    <h2 class="card-header text-center font-serif">Hello there!</h2>
     <div class="card-body">
         <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
             <div class="form-group">
@@ -41,7 +41,7 @@
                 <div class="custom-control custom-checkbox">
                     <input type="checkbox" formControlName="acceptTerms" class="custom-control-input" id="acceptTermsCheck" tabindex="6">
                     <label class="custom-control-label" for="acceptTermsCheck">
-                        <a href="#">Accept terms & services</a>
+                        <a href="/terms-and-services">Read & accepted terms & services</a>
                     </label>
                 </div>
                 <div *ngIf="isSubmitted && f.acceptTerms.errors" class="invalid-feedback">
@@ -49,10 +49,10 @@
                 </div>
             </div>
             <div class="d-flex justify-content-center mb-3">
-                <button [disabled]="isLoading" class="btn btn-primary mr-1">
-                    <span *ngIf="isLoading" class="spinner-border spinner-border-sm mr-1"></span>Register
+                <button [disabled]="isLoading" class="btn btn-primary btn-ellipse d-flex align-items-center mr-1">
+                    Register<span *ngIf="isLoading" class="spinner-border spinner-border-sm ml-1"></span>
                 </button>
-                <a class="btn btn-outline-dark ml-1" routerLink="/">Cancel</a>
+                <a class="btn btn-outline-dark btn-ellipse ml-1" routerLink="/">Cancel</a>
             </div>
         </form>
     </div>

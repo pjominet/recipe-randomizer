@@ -28,12 +28,12 @@ namespace RecipeRandomizer.Web.Utils
             var token = httpContext.Request.Headers["Authorization"].FirstOrDefault()?.Split(" ").Last();
 
             if (token != null)
-                AttachUserToContext(httpContext, userService, token);
+                await AttachUserToContext(httpContext, userService, token);
 
             await _next(httpContext);
         }
 
-        private void AttachUserToContext(HttpContext httpContext, IUserService userService, string token)
+        private async Task AttachUserToContext(HttpContext httpContext, IUserService userService, string token)
         {
             try
             {
@@ -53,12 +53,12 @@ namespace RecipeRandomizer.Web.Utils
                 var userId = int.Parse(jwtToken.Claims.First(c => c.Type == "id").Value);
 
                 // attach current user to context on successful jwt validation
-                httpContext.Items[$"{nameof(User)}"] = userService.GetUser(userId);
+                httpContext.Items[$"{nameof(User)}"] = await userService.GetUserAsync(userId);
             }
             catch (Exception e)
             {
 #if DEBUG
-                Console.Error.WriteLine(e.Message);
+                await Console.Error.WriteLineAsync(e.Message);
 #endif
                 // do nothing if jwt validation fails
                 // account is not attached to context so request won't have access to secure routes

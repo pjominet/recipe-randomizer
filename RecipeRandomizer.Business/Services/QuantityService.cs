@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using AutoMapper;
 using RecipeRandomizer.Business.Interfaces;
 using RecipeRandomizer.Business.Models.Nomenclature;
@@ -20,9 +21,9 @@ namespace RecipeRandomizer.Business.Services
             _mapper = mapper;
         }
 
-        public IEnumerable<QuantityUnit> GetQuantityUnits()
+        public async Task<IEnumerable<QuantityUnit>> GetQuantityUnitsAsync()
         {
-            return _mapper.Map<IEnumerable<QuantityUnit>>(_quantityRepository.GetAll<Entities.QuantityUnit>());
+            return _mapper.Map<IEnumerable<QuantityUnit>>(await _quantityRepository.GetAllAsync<Entities.QuantityUnit>());
         }
     }
 }

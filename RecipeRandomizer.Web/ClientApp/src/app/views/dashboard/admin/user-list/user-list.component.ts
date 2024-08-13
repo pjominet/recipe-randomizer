@@ -29,10 +29,7 @@ export class UserListComponent implements OnInit {
     }
 
     public ngOnInit(): void {
-        this.userService.getUsers().subscribe(
-            users => {
-                this.users = users;
-            });
+        this.fetchUsers();
 
         this.changeRoleService.onChange().subscribe(
             user => {
@@ -57,9 +54,8 @@ export class UserListComponent implements OnInit {
 
         this.userService.toggleUserLock(user.id, new LockRequest(!user.lockedOn, !user.lockedOn ? this.currentUser.id : null)).subscribe(
             () => {
-                let user = this.users.find(u => u.id === user.id);
-                user.lockedBy = this.currentUser;
-                this.alertService.success(`Successfully locked out user: ${user.username}`);
+                this.alertService.success(`Successfully locked out user: ${user.username}`, {keepAfterRouteChange: true});
+                this.fetchUsers();
             }, error => {
                 this.alertService.error(`${user.username}'s role could not be locked out`);
             }
@@ -69,5 +65,12 @@ export class UserListComponent implements OnInit {
     public showChangeRoleDialog(user: IUser): void {
         const modalRef = this.modalService.open(ChangeRoleComponent, {centered: true, backdrop: 'static'});
         modalRef.componentInstance.user = user;
+    }
+
+    private fetchUsers(): void {
+        this.userService.getUsers().subscribe(
+            users => {
+                this.users = users;
+            });
     }
 }

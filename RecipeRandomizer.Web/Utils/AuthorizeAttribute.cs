@@ -4,6 +4,7 @@ using System.Linq;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
+using RecipeRandomizer.Business.Models;
 using RecipeRandomizer.Business.Models.Identity;
 
 namespace RecipeRandomizer.Web.Utils
@@ -24,7 +25,7 @@ namespace RecipeRandomizer.Web.Utils
             if (user == null || (_roles.Any() && !_roles.Contains(user.Role)))
             {
                 // not logged in or role not authorized
-                context.Result = new JsonResult(new {message = "Unauthorized"}) {StatusCode = StatusCodes.Status401Unauthorized};
+                context.Result = new JsonResult(new SimpleResponse{Message = "Unauthorized"}) {StatusCode = StatusCodes.Status401Unauthorized};
             }
         }
     }

@@ -1,6 +1,9 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using RecipeRandomizer.Business.Interfaces;
+using RecipeRandomizer.Business.Models.Nomenclature;
 
 namespace RecipeRandomizer.Web.Controllers
 {
@@ -15,10 +18,10 @@ namespace RecipeRandomizer.Web.Controllers
         }
 
         [HttpGet("units")]
-        [ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
-        public IActionResult GetQuantityUnits()
+        [ProducesResponseType(typeof(IEnumerable<QuantityUnit>), StatusCodes.Status200OK)]
+        public async Task<ActionResult<IEnumerable<QuantityUnit>>> GetQuantityUnits()
         {
-            return Ok(_quantityService.GetQuantityUnits());
+            return Ok(await _quantityService.GetQuantityUnitsAsync());
         }
     }
 }

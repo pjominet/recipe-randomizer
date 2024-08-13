@@ -3,8 +3,8 @@ import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {CommonModule} from '@angular/common';
 import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
 import {NgSelectModule} from '@ng-select/ng-select';
-import {MarkdownModule} from 'ngx-markdown';
 import {ScrollingModule} from '@angular/cdk/scrolling';
+import {CKEditorModule} from '@ckeditor/ckeditor5-angular';
 
 import {DashboardRoutingModule} from './dashboard.routing';
 
@@ -16,7 +16,7 @@ import {EnumListPipe} from '@app/helpers/enumlist.pipe';
 import {NavbarComponent} from '@app/components/navbar/navbar.component';
 import {TopbarComponent} from '@app/components/topbar/topbar.component';
 import {FileUploadComponent} from '@app/components/file-upload/file-upload.component';
-import {CheatSheetComponent} from '@app/components/cheat-sheet/cheat-sheet.component';
+import {ConfirmationDialogComponent} from '@app/components/confirmation-dialog/confirmation-dialog.component';
 
 // views
 import {DashboardLayoutComponent} from './dashboard-layout/dashboard-layout.component';
@@ -26,7 +26,7 @@ import {RecipeEditorComponent} from './dashboard-layout/recipe-editor/recipe-edi
 import {ChangePasswordComponent} from './change-password/change-password.component';
 import {ChangePasswordModal} from './change-password/change-password-modal';
 import {UserListComponent} from './admin/user-list/user-list.component';
-import {OrphanRecipesComponent} from './admin/orphan-recipes/orphan-recipes.component';
+import {AbandonedRecipesComponent} from './admin/abandoned-recipes/abandoned-recipes.component';
 import {AttributionComponent} from './admin/attribution/attribution.component';
 import {ChangeRoleComponent} from './admin/change-role/change-role.component';
 
@@ -38,8 +38,8 @@ import {ChangeRoleComponent} from './admin/change-role/change-role.component';
         DashboardRoutingModule,
         NgbModule,
         NgSelectModule,
-        MarkdownModule.forChild(),
-        ScrollingModule
+        ScrollingModule,
+        CKEditorModule
     ],
     declarations: [
         DashboardLayoutComponent,
@@ -52,17 +52,17 @@ import {ChangeRoleComponent} from './admin/change-role/change-role.component';
         ChangePasswordModal,
         EnumListPipe,
         FileUploadComponent,
-        CheatSheetComponent,
         UserListComponent,
-        OrphanRecipesComponent,
+        AbandonedRecipesComponent,
         AttributionComponent,
-        ChangeRoleComponent
+        ChangeRoleComponent,
+        ConfirmationDialogComponent
     ],
     entryComponents: [
         ChangePasswordComponent,
-        CheatSheetComponent,
         AttributionComponent,
-        ChangeRoleComponent
+        ChangeRoleComponent,
+        ConfirmationDialogComponent
     ],
     providers: [
         UnsavedChangesGuard

@@ -8,11 +8,11 @@ import {AttributionService} from '../attribution/attribution.service';
 import {Subscription} from 'rxjs';
 
 @Component({
-    selector: 'app-orphan-recipes',
-    templateUrl: './orphan-recipes.component.html',
+    selector: 'app-abandoned-recipes',
+    templateUrl: './abandoned-recipes.component.html',
     styleUrls: []
 })
-export class OrphanRecipesComponent implements OnInit, OnDestroy {
+export class AbandonedRecipesComponent implements OnInit, OnDestroy {
 
     public orphans: Recipe[] = [];
     public sub: Subscription;
@@ -23,7 +23,7 @@ export class OrphanRecipesComponent implements OnInit, OnDestroy {
     }
 
     public ngOnInit(): void {
-        this.recipeService.getOrphanRecipes().subscribe(
+        this.recipeService.getAbandonedRecipes().subscribe(
             orphans => {
                 this.orphans = orphans;
             });

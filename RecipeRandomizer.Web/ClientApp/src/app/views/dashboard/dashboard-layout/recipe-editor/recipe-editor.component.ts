@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnInit, ViewEncapsulation} from '@angular/core';
 import {FormArray, FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {ActivatedRoute} from '@angular/router';
 import {Recipe} from '@app/models/recipe';
@@ -11,15 +11,16 @@ import {RecipeService} from '@app/services/recipe.service';
 import {QuantityService} from '@app/services/quantity.service';
 import {TagService} from '@app/services/tag.service';
 import {TagCategory} from '@app/models/nomenclature/tagCategory';
-import {forkJoin} from 'rxjs';
+import {forkJoin, Observable, Subject} from 'rxjs';
 import {AlertService} from '@app/components/alert/alert.service';
 import {FileUploadRequest} from '@app/models/fileUploadRequest';
 import {environment} from '@env/environment';
 import {UploadService} from '@app/services/upload.service';
 import {HttpEventType, HttpResponse} from '@angular/common/http';
-import {NgbModal, NgbTooltip} from '@ng-bootstrap/ng-bootstrap';
-import {CheatSheetComponent} from '@app/components/cheat-sheet/cheat-sheet.component';
+import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
 import {FileUploadService} from '@app/components/file-upload/file-upload.service';
+import * as ClassicEditor from '@ckeditor/ckeditor5-build-classic';
+import {ConfirmationDialogComponent} from '@app/components/confirmation-dialog/confirmation-dialog.component';
 
 @Component({
     selector: 'app-recipe-editor',
@@ -43,6 +44,34 @@ export class RecipeEditorComponent implements OnInit {
     public fileUploadSuccess: boolean = false;
     public changeImage: boolean = false;
     public imageUploadProgress: number = 0;
+
+    public editor = ClassicEditor;
+    public editorConfig = {
+        removePlugin: [
+            'CKFinderUploadAdapter',
+            'CKFinder',
+            'EasyImage',
+            'Image',
+            'ImageCaption',
+            'ImageStyle',
+            'ImageToolbar',
+            'ImageUpload',
+            'Link',
+            'MediaEmbed',
+        ],
+        toolbar: [
+            'heading', '|',
+            'bold', 'italic', 'bulletedList', 'numberedList', '|',
+            'undo', 'redo'
+        ],
+        heading: {
+            options: [
+                {model: 'paragraph', title: 'Paragraph', class: 'ck-heading_paragraph'},
+                {model: 'heading1', view: 'h4', title: 'Heading 1', class: 'ck-heading_heading1'},
+                {model: 'heading2', view: 'h5', title: 'Heading 2', class: 'ck-heading_heading2'}
+            ]
+        }
+    };
 
     constructor(private route: ActivatedRoute,
                 private formBuilder: FormBuilder,
@@ -143,11 +172,6 @@ export class RecipeEditorComponent implements OnInit {
         this.fileUploadRequest.file = file;
     }
 
-    public showCheatSheet(tooltip: NgbTooltip): void {
-        tooltip.close();
-        this.modalService.open(CheatSheetComponent, {size: 'xl', scrollable: true});
-    }
-
     public onSubmit(): void {
         this.isSubmitted = true;
 
@@ -163,18 +187,21 @@ export class RecipeEditorComponent implements OnInit {
         if (this.isEditMode) {
             this.recipeService.updateRecipe(this.recipe).subscribe(
                 response => {
+                    this.resetView();
                     this.onEditSuccess(response, 'Successfully updated this recipe!');
                 }, error => {
-                    this.isLoading = false;
-                    this.alertService.error('Recipe could not be updated.');
+                    this.resetView();
+                    this.alertService.error('Recipe could not be updated.', {autoCloseTimeOut: 5000});
                 });
         } else {
             this.recipeService.addRecipe(this.recipe).subscribe(
-                response => {
-                    this.onEditSuccess(response, 'Successfully created a new recipe!');
+                newRecipe => {
+                    this.resetFrom();
+                    this.resetView();
+                    this.onEditSuccess(newRecipe.id, 'Successfully created a new recipe!');
                 }, error => {
-                    this.isLoading = false;
-                    this.alertService.error('Recipe could not be created.');
+                    this.resetView();
+                    this.alertService.error('Recipe could not be created.', {autoCloseTimeOut: 5000});
                 });
         }
     }
@@ -185,6 +212,28 @@ export class RecipeEditorComponent implements OnInit {
         this.recipeForm.reset();
         // re-add starting element
         this.onIngredientAdd();
+    }
+
+    public canDeactivate(): Observable<boolean> | Promise<boolean> | boolean {
+        if (!this.recipeForm.pristine && !this.isSubmitted) {
+            const navigationConfirmation = new Subject<boolean>();
+
+            const modalRef = this.modalService.open(ConfirmationDialogComponent,
+                {size: 'sm', keyboard: false, backdrop: 'static'});
+            modalRef.result.then(result => {
+                navigationConfirmation.next(result);
+                navigationConfirmation.complete();
+            });
+
+            return navigationConfirmation.asObservable();
+        }
+
+        return true;
+    }
+
+    private resetView(): void {
+        this.isLoading = false;
+        window.scrollTo(0, 0);
     }
 
     private addIngredientGroup(): FormGroup {
@@ -201,10 +250,10 @@ export class RecipeEditorComponent implements OnInit {
         });
     }
 
-    private onEditSuccess(response: any, successMessage: string): void {
+    private onEditSuccess(recipeId: number, successMessage: string): void {
         if (this.fileUploadRequest.file) {
             // complete the file upload request
-            this.fileUploadRequest.entityId = response.body;
+            this.fileUploadRequest.entityId = recipeId;
             this.uploadService.uploadFile(this.fileUploadRequest).subscribe(
                 event => {
                     if (event.type === HttpEventType.UploadProgress) {
@@ -213,15 +262,15 @@ export class RecipeEditorComponent implements OnInit {
                         this.isLoading = false;
                         this.fileUploadSuccess = true;
                         this.fileUploadService.setFileUploadSuccess();
-                        this.alertService.success(successMessage);
+                        this.alertService.success(successMessage, {autoCloseTimeOut: 5000});
                     }
                 },
                 error => {
-                    this.isLoading = false;
-                    this.alertService.error(error);
+                    this.resetView();
+                    this.alertService.error(error, {autoCloseTimeOut: 5000});
                 });
         } else {
-            this.alertService.success(successMessage);
+            this.alertService.success(successMessage, {autoCloseTimeOut: 5000});
             this.isLoading = false;
         }
     }

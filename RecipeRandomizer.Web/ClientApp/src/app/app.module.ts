@@ -6,7 +6,6 @@ import {AppRouting} from '@app/app.routing';
 import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
 import {NgSelectModule} from '@ng-select/ng-select';
 import {ScrollingModule} from '@angular/cdk/scrolling';
-import {MarkdownModule} from 'ngx-markdown';
 
 // helpers
 import {appInitializer} from '@app/helpers/app.initializer';
@@ -27,6 +26,8 @@ import {RecipeComponent} from '@app/views/recipes/recipe/recipe.component';
 import {RecipeModal} from '@app/views/recipes/recipe/recipe-modal';
 import {RandomRecipeComponent} from './views/recipes/random-recipe/random-recipe.component';
 import {RecipeListComponent} from './views/recipes/recipe-list/recipe-list.component';
+import {AboutComponent} from './views/about/about.component';
+import {TermsServicesComponent} from './views/terms-services/terms-services.component';
 
 @NgModule({
     declarations: [
@@ -39,7 +40,9 @@ import {RecipeListComponent} from './views/recipes/recipe-list/recipe-list.compo
         RecipeComponent,
         RecipeModal,
         RandomRecipeComponent,
-        RecipeListComponent
+        RecipeListComponent,
+        AboutComponent,
+        TermsServicesComponent
     ],
     imports: [
         BrowserModule,
@@ -49,13 +52,13 @@ import {RecipeListComponent} from './views/recipes/recipe-list/recipe-list.compo
         NgbModule,
         NgSelectModule,
         ReactiveFormsModule,
-        ScrollingModule,
-        MarkdownModule.forRoot()
+        ScrollingModule
     ],
     entryComponents: [
         RecipeComponent
     ],
     providers: [
+        // activate for auto login on start-up
         {provide: APP_INITIALIZER, useFactory: appInitializer, multi: true, deps: [AuthService]},
         {provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true},
         {provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true},

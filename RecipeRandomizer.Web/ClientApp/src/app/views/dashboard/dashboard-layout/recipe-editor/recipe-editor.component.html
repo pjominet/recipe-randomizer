@@ -64,47 +64,20 @@
                     </div>
                 </div>
 
-                <ng-template #markdownHint>
-                    <p class="mb-1">Supports markdown</p>
-                    <button type="button" class="btn btn-sm btn-info btn-shadow-none mb-1" (click)="showCheatSheet(markdownTip)">show cheatsheet</button>
-                </ng-template>
-
                 <div class="col-12 col-md-6 form-group order-7">
-                    <label for="descriptionText">
-                        Description<i class="fas fa-info-circle text-info ml-2"
-                                      [ngbTooltip]="markdownHint"
-                                      #markdownTip="ngbTooltip"
-                                      [closeDelay]="3000"></i>
-                    </label>
-                    <textarea formControlName="description" class="form-control custom-scroll" id="descriptionText"
-                              [ngClass]="{ 'is-invalid': isSubmitted && f.description.errors }"></textarea>
+                    <label for="descriptionText">Description</label>
+                    <ckeditor [editor]="editor" [config]="editorConfig" formControlName="description" id="descriptionText"></ckeditor>
                     <div *ngIf="isSubmitted && f.description.errors" class="invalid-feedback">
-                        <div *ngIf="f.description.errors.required">Name is required</div>
+                        <div *ngIf="f.description.errors.required">Description is required</div>
                     </div>
                 </div>
 
                 <div class="col-12 col-md-6 form-group order-9 order-md-8">
-                    <label for="preparationText">
-                        Preparation<i class="fas fa-info-circle text-info ml-2"
-                                      [ngbTooltip]="markdownHint"
-                                      #markdownTip="ngbTooltip"
-                                      [closeDelay]="3000"></i>
-                    </label>
-                    <textarea formControlName="preparation" class="form-control custom-scroll" id="preparationText"
-                              [ngClass]="{ 'is-invalid': isSubmitted && f.preparation.errors }"></textarea>
+                    <label for="preparationText">Preparation</label>
+                    <ckeditor [editor]="editor" [config]="editorConfig" formControlName="preparation" id="preparationText"></ckeditor>
                     <div *ngIf="isSubmitted && f.preparation.errors" class="invalid-feedback">
-                        <div *ngIf="f.preparation.errors.required">Name is required</div>
+                        <div *ngIf="f.preparation.errors.required">Preparation is required</div>
                     </div>
-                </div>
-
-                <div class="col-12 col-md-6 form-group order-8 order-md-9" *ngIf="f.description.value">
-                    <label>Description Preview</label>
-                    <div class="form-control h-auto" [innerHTML]="f.description.value | markdown"></div>
-                </div>
-
-                <div class="col-12 col-md-6 form-group order-10" *ngIf="f.preparation.value">
-                    <label>Preparation Preview</label>
-                    <div class="form-control h-auto" [innerHTML]="f.preparation.value | markdown"></div>
                 </div>
             </div>
 
@@ -153,7 +126,7 @@
             <div class="row">
                 <h3 class="col-12">Tags & Image</h3>
                 <div class="form-group col-12 col-md-6">
-                    <label>Add descriptive tags</label>
+                    <label>Add matching tags</label>
                     <ng-select class="custom-ng-select w-100"
                                [items]="tagCategories"
                                [multiple]="true"
@@ -188,7 +161,7 @@
                             </p>
                         </ng-template>
                         <app-file-upload (onFileStaged)="onFileStaged($event)" [allowedMimeTypes]="'image/jpeg, image/png'">
-                            <label>Recipe Image<i class="fas fa-exclamation-triangle text-warning mx-2" [ngbTooltip]="imageWarning"></i></label>
+                            <label>Optional recipe image<i class="fas fa-exclamation-triangle text-warning mx-2" [ngbTooltip]="imageWarning"></i></label>
                         </app-file-upload>
                     </ng-container>
                     <ng-template #hasImage>
@@ -207,9 +180,9 @@
 
             <div class="d-flex justify-content-between mt-3">
                 <button type="button" class="btn btn-warning" [disabled]="recipeForm.pristine" (click)="resetFrom()">Reset</button>
-                <button type="submit" [disabled]="recipeForm.pristine || isLoading" class="btn btn-success">
-                    <span *ngIf="isLoading" class="spinner-border spinner-border-sm mr-1"></span>
-                    Save recipe
+                <button type="submit" [disabled]="recipeForm.pristine || isLoading" class="btn btn-success d-flex align-items-center">
+                    Save recipe<i class="fas fa-save ml-1" *ngIf="!isLoading"></i>
+                    <span *ngIf="isLoading" class="spinner-border spinner-border-sm ml-1"></span>
                 </button>
             </div>
         </form>

@@ -65,6 +65,6 @@ export class UserService {
     }
 
     public toggleUserLock(id: number, lockRequest: LockRequest): Observable<any> {
-        return this.http.post(`${usersApi}/${id}`, lockRequest, {observe: 'response'});
+        return this.http.post(`${usersApi}/lock/${id}`, lockRequest, {observe: 'response'});
     }
 }

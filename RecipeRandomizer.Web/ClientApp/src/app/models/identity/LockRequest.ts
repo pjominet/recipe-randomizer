@@ -1,9 +1,9 @@
 ﻿export class LockRequest {
-    isLocked: boolean;
-    lockedById: number;
+    userLock: boolean;
+    lockedById?: number;
 
-    constructor(isLocked: boolean, lockedById: number) {
-        this.isLocked = isLocked;
+    constructor(userLock: boolean, lockedById?: number) {
+        this.userLock = userLock;
         this.lockedById = lockedById;
     }
 }

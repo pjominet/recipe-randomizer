@@ -1,5 +1,5 @@
-<div class="card">
-    <h3 class="card-header text-center">Verifying Email</h3>
+<div class="card card-2-rounded-corners">
+    <h2 class="card-header text-center font-serif">Verifying Email</h2>
     <div class="card-body">
         <div *ngIf="currentStatus == emailStatus.Verifying">
             Verification in process<span class="spinner-border spinner-border-sm ml-2"></span>
@@ -18,11 +18,10 @@
                         </div>
                     </div>
                     <div class="form-group col-12 d-flex justify-content-center">
-                        <button [disabled]="isLoading" class="btn btn-primary mr-1">
-                            <span *ngIf="isLoading" class="spinner-border spinner-border-sm mr-1"></span>
-                            Resent verification code
+                        <button [disabled]="isLoading" class="btn btn-primary btn-ellipse d-flex align-items-center mr-1">
+                            Resent verification code<span *ngIf="isLoading" class="spinner-border spinner-border-sm ml-1"></span>
                         </button>
-                        <a class="btn btn-outline-dark ml-1" routerLink="../login">Cancel</a>
+                        <a class="btn btn-outline-dark btn-ellipse ml-1" routerLink="../login">Cancel</a>
                     </div>
                 </div>
             </form>

@@ -1,8 +1,24 @@
 @import 'variables';
+@import 'mixins';
 
 .nav {
     &-header {
+        display: block;
         height: $topbar-height;
+        margin-left: 1rem;
+
+        .img-wrapper {
+            height: 100%;
+            padding: .5rem 1rem;
+
+            > img {
+                height: 100%;
+                width: auto;
+                padding: .2rem .5rem;
+                border: white 2px solid;
+                @include custom-border-radius(15px);
+            }
+        }
     }
 
     &-body {

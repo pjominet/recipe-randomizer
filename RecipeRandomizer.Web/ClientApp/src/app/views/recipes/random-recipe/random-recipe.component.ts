@@ -41,7 +41,7 @@ export class RandomRecipeComponent implements OnInit {
             });
         }, () => {
             this.loadTimeOut(() => {
-                this.alertService.info("No recipe matches the current filter selection :(", {autoCloseTimeOut: 5000});
+                this.alertService.info("No recipe matches the current filter selection 😥", {autoCloseTimeOut: 5000});
             });
         });
     }

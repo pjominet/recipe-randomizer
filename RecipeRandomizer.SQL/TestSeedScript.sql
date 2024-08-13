@@ -1,7 +1,14 @@
 ﻿begin transaction
     set identity_insert [RecipeRandomizer].[Recipe] on
     merge [RecipeRandomizer].[Recipe] as target
-    using (values (1, null, N'Test Recipe', N'Do not cook this', null, 7, 2, 2, 15, 30, N'None', getutcdate(), getutcdate(), null)
+    using (values (1,  null,
+                   N'Test Recipe',
+                   N'<h4>Description</h4><p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi eu sapien pulvinar, faucibus lorem quis, malesuada mauris. Donec a egestas sem. Cras odio dolor, facilisis et gravida sed, bibendum ut velit. In nunc ex, hendrerit id tincidunt et, suscipit sed massa. In molestie est et nibh consectetur, sed placerat arcu dictum. Vestibulum lectus massa, pharetra vel leo ultricies, iaculis ultrices orci. Maecenas tempor ipsum sed efficitur molestie. Vivamus fringilla dolor quam, suscipit bibendum dui pellentesque et. Aliquam vitae turpis eget massa vulputate porttitor at ac ipsum. Fusce pellentesque varius magna at vestibulum. Mauris in convallis diam. Sed a dapibus turpis, quis dictum diam.</p>',
+                   null, 7, 2, 2, 15, 30,
+                   N'<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi eu sapien pulvinar, faucibus lorem quis, malesuada mauris. Donec a egestas sem. Cras odio dolor, facilisis et gravida sed, bibendum ut velit. In nunc ex, hendrerit id tincidunt et, suscipit sed massa. In molestie est et nibh consectetur, sed placerat arcu dictum. Vestibulum lectus massa, pharetra vel leo ultricies, iaculis ultrices orci. Maecenas tempor ipsum sed efficitur molestie. Vivamus fringilla dolor quam, suscipit bibendum dui pellentesque et. Aliquam vitae turpis eget massa vulputate porttitor at ac ipsum. Fusce pellentesque varius magna at vestibulum. Mauris in convallis diam. Sed a dapibus turpis, quis dictum diam.</p>',
+                   getutcdate(),
+                   getutcdate(),
+                   null)
     ) as source ([Id], [UserId], [Name], [Description], [ImageUri], [NumberOfPeople], [CostId], [DifficultyId],
                  [PrepTime], [CookTime], [Preparation], [CreatedOn], [UpdatedOn], [DeletedOn])
     on (target.[Id] = source.[Id])

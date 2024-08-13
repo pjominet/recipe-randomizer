@@ -15,6 +15,7 @@ export class ChangeRoleComponent {
 
     @Input() public user: IUser
     public roles: typeof Role = Role;
+    public isLoading: boolean = false;
 
     constructor(private userService: UserService,
                 public activeModal: NgbActiveModal,
@@ -23,14 +24,17 @@ export class ChangeRoleComponent {
     }
 
     public onSubmit(): void {
+        this.isLoading = true;
         this.alertService.clear();
 
         this.userService.updateUserRole(this.user.id, new RoleUpdateRequest(this.user.role)).subscribe(
             () => {
+                this.isLoading = false;
                 this.activeModal.dismiss();
                 this.changeRoleService.changeSuccess(this.user);
                 this.alertService.success(`Successfully changed ${this.user.username}'s role.`);
             }, error => {
+                this.isLoading = false;
                 this.activeModal.dismiss();
                 this.alertService.error(error);
             }

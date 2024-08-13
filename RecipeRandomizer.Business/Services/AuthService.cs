@@ -5,6 +5,7 @@ using System.Linq;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
+using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
@@ -35,14 +36,14 @@ namespace RecipeRandomizer.Business.Services
             _emailService = emailService;
         }
 
-        public (User, string) Authenticate(AuthRequest request, string ipAddress)
+        public async Task<(User, string)> Authenticate(AuthRequest request, string ipAddress)
         {
             string[] includes =
             {
                 $"{nameof(Entities.User.Role)}",
                 $"{nameof(Entities.User.RefreshTokens)}"
             };
-            var user = _userRepository.GetFirstOrDefault<Entities.User>(u => u.Email == request.Email, includes);
+            var user = await _userRepository.GetFirstOrDefaultAsync<Entities.User>(u => u.Email == request.Email, includes);
 
             if (user == null || !BC.Verify(request.Password, user.PasswordHash))
                 throw new BadRequestException("Email or password is incorrect");
@@ -57,13 +58,13 @@ namespace RecipeRandomizer.Business.Services
             var jwtToken = GenerateJwtToken(user);
 
             // check if there is already an active refresh token and use that instead of generating a new one
-            var activeRefreshToken = user.RefreshTokens.SingleOrDefault(r => r.IsActive && r.ExpiresOn >= DateTime.UtcNow);
+            var activeRefreshToken = user.RefreshTokens.FirstOrDefault(r => r.IsActive && r.ExpiresOn >= DateTime.UtcNow);
             var refreshToken = activeRefreshToken ?? GenerateRefreshToken(ipAddress);
 
             // save refresh token
             user.RefreshTokens.Add(refreshToken);
             _userRepository.Update(user);
-            if (!_userRepository.SaveChanges())
+            if (!await _userRepository.SaveChangesAsync())
                 throw new ApplicationException("Database error: Changes could not be saved correctly");
 
             var authenticatedUser = _mapper.Map<User>(user);
@@ -72,12 +73,12 @@ namespace RecipeRandomizer.Business.Services
             return (authenticatedUser, refreshToken.Token);
         }
 
-        public (User, string) RefreshToken(string token, string ipAddress)
+        public async Task<(User, string)> RefreshToken(string token, string ipAddress)
         {
             if (string.IsNullOrWhiteSpace(token))
                 return (null, null);
 
-            var (refreshToken, user) = GetRefreshToken(token);
+            var (refreshToken, user) = await GetRefreshToken(token);
 
             // replace old refresh token with a new one and save
             var newRefreshToken = GenerateRefreshToken(ipAddress);
@@ -86,7 +87,7 @@ namespace RecipeRandomizer.Business.Services
             refreshToken.ReplacedByToken = newRefreshToken.Token;
             user.RefreshTokens.Add(newRefreshToken);
             _userRepository.Update(user);
-            if (!_userRepository.SaveChanges())
+            if (!await _userRepository.SaveChangesAsync())
                 throw new ApplicationException("Database error: Changes could not be saved correctly");
 
             var jwtToken = GenerateJwtToken(user);
@@ -96,19 +97,19 @@ namespace RecipeRandomizer.Business.Services
             return (authenticatedUser, newRefreshToken.Token);
         }
 
-        public void RevokeToken(string token, string ipAddress)
+        public async Task RevokeToken(string token, string ipAddress)
         {
-            var (refreshToken, user) = GetRefreshToken(token);
+            var (refreshToken, user) = await GetRefreshToken(token);
 
             // revoke token and save
             refreshToken.RevokedOn = DateTime.UtcNow;
             refreshToken.RevokedByIp = ipAddress;
             _userRepository.Update(user);
-            if (!_userRepository.SaveChanges())
+            if (!await _userRepository.SaveChangesAsync())
                 throw new ApplicationException("Database error: Changes could not be saved correctly");
         }
 
-        public void Register(RegisterRequest request, string origin)
+        public async Task Register(RegisterRequest request, string origin)
         {
             if (!request.HasAcceptedTerms)
                 throw new BadRequestException("Terms and services have not been accepted");
@@ -124,22 +125,22 @@ namespace RecipeRandomizer.Business.Services
             var user = _mapper.Map<Entities.User>(request);
 
             // first registered account is an admin
-            user.RoleId = !_userRepository.HasUsers() ? (int) Role.Admin : (int) Role.User;
+            user.RoleId = !await _userRepository.HasUsersAsync() ? (int) Role.Admin : (int) Role.User;
 
             user.CreatedOn = DateTime.UtcNow;
             user.VerificationToken = GenerateRandomToken();
             user.PasswordHash = BC.HashPassword(request.Password);
 
             _userRepository.Insert(user);
-            if (!_userRepository.SaveChanges())
+            if (!await _userRepository.SaveChangesAsync())
                 throw new ApplicationException("Database error: Changes could not be saved correctly");
 
             SendVerificationEmail(user, origin);
         }
 
-        public void VerifyEmail(ValidationRequest request)
+        public async Task VerifyEmail(ValidationRequest request)
         {
-            var user = _userRepository.GetFirstOrDefault<Entities.User>(u => u.VerificationToken == request.Token);
+            var user = await _userRepository.GetFirstOrDefaultAsync<Entities.User>(u => u.VerificationToken == request.Token);
 
             if (user == null) throw new BadRequestException("Verification failed");
 
@@ -147,13 +148,13 @@ namespace RecipeRandomizer.Business.Services
             user.VerificationToken = null;
 
             _userRepository.Update(user);
-            if (!_userRepository.SaveChanges())
+            if (!await _userRepository.SaveChangesAsync())
                 throw new ApplicationException("Database error: Changes could not be saved correctly");
         }
 
-        public void ResendEmailVerificationCode(VerificationRequest request, string origin)
+        public async Task ResendEmailVerificationCode(VerificationRequest request, string origin)
         {
-            var user = _userRepository.GetFirstOrDefault<Entities.User>(u => u.Email == request.Email);
+            var user = await _userRepository.GetFirstOrDefaultAsync<Entities.User>(u => u.Email == request.Email);
 
             if (user == null)
                 throw new BadRequestException("No user matches the given email address");
@@ -162,15 +163,15 @@ namespace RecipeRandomizer.Business.Services
             user.VerificationToken = GenerateRandomToken();
 
             _userRepository.Update(user);
-            if (!_userRepository.SaveChanges())
+            if (!await _userRepository.SaveChangesAsync())
                 throw new ApplicationException("Database error: Changes could not be saved correctly");
 
             SendVerificationEmail(user, origin);
         }
 
-        public void ForgotPassword(VerificationRequest request, string origin)
+        public async Task ForgotPassword(VerificationRequest request, string origin)
         {
-            var user = _userRepository.GetFirstOrDefault<Entities.User>(u => u.Email == request.Email);
+            var user = await _userRepository.GetFirstOrDefaultAsync<Entities.User>(u => u.Email == request.Email);
 
             // always return ok response to prevent email spamming
             if (user == null)
@@ -181,16 +182,16 @@ namespace RecipeRandomizer.Business.Services
             user.ResetTokenExpiresOn = DateTime.UtcNow.AddHours(24);
 
             _userRepository.Update(user);
-            if (!_userRepository.SaveChanges())
+            if (!await _userRepository.SaveChangesAsync())
                 throw new ApplicationException("Database error: Changes could not be saved correctly");
 
             // send email
             SendPasswordResetEmail(user, origin);
         }
 
-        public void ValidateResetToken(ValidationRequest request)
+        public async Task ValidateResetToken(ValidationRequest request)
         {
-            var user = _userRepository.GetFirstOrDefault<Entities.User>(u =>
+            var user = await _userRepository.GetFirstOrDefaultAsync<Entities.User>(u =>
                 u.ResetToken == request.Token &&
                 u.ResetTokenExpiresOn > DateTime.UtcNow);
 
@@ -198,9 +199,9 @@ namespace RecipeRandomizer.Business.Services
                 throw new BadRequestException("Invalid token");
         }
 
-        public void ResetPassword(ResetPasswordRequest request)
+        public async Task ResetPassword(ResetPasswordRequest request)
         {
-            var user = _userRepository.GetFirstOrDefault<Entities.User>(u =>
+            var user = await _userRepository.GetFirstOrDefaultAsync<Entities.User>(u =>
                 u.ResetToken == request.Token &&
                 u.ResetTokenExpiresOn > DateTime.UtcNow);
 
@@ -214,16 +215,16 @@ namespace RecipeRandomizer.Business.Services
             user.ResetTokenExpiresOn = null;
 
             _userRepository.Update(user);
-            if (!_userRepository.SaveChanges())
+            if (!await _userRepository.SaveChangesAsync())
                 throw new ApplicationException("Database error: Changes could not be saved correctly");
         }
 
-        public void ChangePassword(ChangePasswordRequest request)
+        public async Task ChangePassword(ChangePasswordRequest request)
         {
-            var user = _userRepository.GetFirstOrDefault<Entities.User>(u => u.Id == request.Id);
+            var user = await _userRepository.GetFirstOrDefaultAsync<Entities.User>(u => u.Id == request.Id);
 
             if (user == null)
-                throw new BadRequestException("User could not be found");
+                throw new KeyNotFoundException("User could not be found");
 
             if (!BC.Verify(request.Password, user.PasswordHash))
                 throw new BadRequestException("Current password is not correct");
@@ -233,29 +234,30 @@ namespace RecipeRandomizer.Business.Services
             user.PasswordResetOn = DateTime.UtcNow;
 
             _userRepository.Update(user);
-            if (!_userRepository.SaveChanges())
+            if (!await _userRepository.SaveChangesAsync())
                 throw new ApplicationException("Database error: Changes could not be saved correctly");
         }
 
-        public IEnumerable<string> GetUserRefreshTokens(int id)
+        public async Task<IEnumerable<string>> GetUserRefreshTokens(int id)
         {
-            return _userRepository.GetFirstOrDefault<Entities.User>(u => u.Id == id, $"{nameof(Entities.User.RefreshTokens)}").RefreshTokens.Select(rt => rt.Token);
+            return (await _userRepository.GetFirstOrDefaultAsync<Entities.User>(u => u.Id == id, $"{nameof(Entities.User.RefreshTokens)}"))
+                ?.RefreshTokens.Select(rt => rt.Token);
         }
 
         #region helpers
 
-        private (Entities.RefreshToken, Entities.User) GetRefreshToken(string token)
+        private async Task<(Entities.RefreshToken, Entities.User)> GetRefreshToken(string token)
         {
-            var refreshToken = _userRepository.GetFirstOrDefault<Entities.RefreshToken>(rt => rt.Token == token);
+            var refreshToken = await _userRepository.GetFirstOrDefaultAsync<Entities.RefreshToken>(rt => rt.Token == token);
             if (refreshToken == null)
-                throw new ApplicationException("No refresh-token found");
+                throw new KeyNotFoundException("No refresh-token found");
 
             string[] includes =
             {
                 $"{nameof(Entities.User.Role)}",
                 $"{nameof(Entities.User.RefreshTokens)}"
             };
-            var user = _userRepository.GetFirstOrDefault<Entities.User>(u => u.Id == refreshToken.UserId, includes);
+            var user = await _userRepository.GetFirstOrDefaultAsync<Entities.User>(u => u.Id == refreshToken.UserId, includes);
             if (user == null)
                 throw new BadRequestException("Invalid token: Token does not match any known user.");
 
