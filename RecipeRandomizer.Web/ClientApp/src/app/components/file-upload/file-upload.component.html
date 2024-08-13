@@ -1,8 +1,0 @@
-<ng-content select="label"></ng-content>
-<div class="custom-file">
-    <label class="custom-file-label" for="fileInput">
-        <span *ngIf="!file; else fileName">Choose file...</span>
-        <ng-template #fileName>{{file.name}}</ng-template>
-    </label>
-    <input type="file" #fileInput id="fileInput" (change)="stageFile()" class="custom-file-input" accept="{{allowedMimeTypes}}">
-</div>

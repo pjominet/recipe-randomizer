@@ -3,15 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.30320.27
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RecipeRandomizer.Web", "RecipeRandomizer.Web\RecipeRandomizer.Web.csproj", "{C60BBD27-24D0-4D3E-BFD4-8F0CB73A117D}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RecipeRandomizer.Business", "RecipeRandomizer.Business\RecipeRandomizer.Business.csproj", "{ADB2A9CF-EF3C-4666-B8BC-2F985A3C9346}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RecipeRandomizer.Data", "RecipeRandomizer.Data\RecipeRandomizer.Data.csproj", "{5BBCA639-F591-4511-82C4-EC5E09C3A123}"
-EndProject
-Project("{00D1A9C2-B5F0-4AF3-8072-F6C62B433612}") = "RecipeRandomizer.SQL", "RecipeRandomizer.SQL\RecipeRandomizer.SQL.sqlproj", "{FF29919A-A71D-4BC9-9D0A-FBAF4D44A762}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RecipeRandomizer.Tests", "RecipeRandomizer.Tests\RecipeRandomizer.Tests.csproj", "{1C221CE4-44C0-444A-94BD-F45F118C77AE}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -19,10 +13,6 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{C60BBD27-24D0-4D3E-BFD4-8F0CB73A117D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{C60BBD27-24D0-4D3E-BFD4-8F0CB73A117D}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{C60BBD27-24D0-4D3E-BFD4-8F0CB73A117D}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{C60BBD27-24D0-4D3E-BFD4-8F0CB73A117D}.Release|Any CPU.Build.0 = Release|Any CPU
 		{ADB2A9CF-EF3C-4666-B8BC-2F985A3C9346}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{ADB2A9CF-EF3C-4666-B8BC-2F985A3C9346}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{ADB2A9CF-EF3C-4666-B8BC-2F985A3C9346}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -37,10 +27,6 @@ Global
 		{FF29919A-A71D-4BC9-9D0A-FBAF4D44A762}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FF29919A-A71D-4BC9-9D0A-FBAF4D44A762}.Release|Any CPU.Build.0 = Release|Any CPU
 		{FF29919A-A71D-4BC9-9D0A-FBAF4D44A762}.Release|Any CPU.Deploy.0 = Release|Any CPU
-		{1C221CE4-44C0-444A-94BD-F45F118C77AE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{1C221CE4-44C0-444A-94BD-F45F118C77AE}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{1C221CE4-44C0-444A-94BD-F45F118C77AE}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{1C221CE4-44C0-444A-94BD-F45F118C77AE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
